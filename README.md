@@ -1,5 +1,6 @@
 # PoleInfo
 
+## API
 ### Lancer l'API de test
 1. Créer un environnement virtuel python
 ```py
@@ -15,9 +16,18 @@ source env/bin/activate
 ```py
 pip install "uvicorn[standard]"
 pip install fastapi
+pip install passlib
 ```
 
 4. Lancer l'API
 ```py
 uvicorn api:app --reload
 ```
+---
+## Database
+---
+## Embedded
+---
+## Backend
+---
+## Frontend
