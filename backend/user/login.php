@@ -21,7 +21,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $token_data = json_decode($token_response, true);
     if (isset($token_data['access_token'])) {
         $_SESSION['token'] = $token_data['access_token'];
-        echo "Connexion réussie. Vous pouvez maintenant réserver une salle.";
+        echo "Connexion réussie.";
+        echo $_SESSION['token'];
+        header('Location: http://127.0.0.1/backend/user/dashboard.php');
+        exit;
     } else {
         echo "Erreur de connexion : Identifiants incorrects.";
     }

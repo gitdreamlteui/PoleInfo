@@ -149,3 +149,14 @@ def get_reservation(reservation_id: int):
     if not reservation:
         raise HTTPException(status_code=404, detail="Réservation non trouvée")
     return {"id": reservation_id, **reservation}
+
+# Vérifier un token
+@app.get("/verify-token/")
+def verify_token_endpoint(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = pyjwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return {"valid": True, "user": payload.get("sub")}
+    except pyjwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expiré")
+    except pyjwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token invalide")
