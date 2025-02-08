@@ -3,8 +3,8 @@ import requests
 URL = "http://127.0.0.1:8000/users/"
 
 DATA = {
-  "username": "ethan",
-  "password": "mdpethan"
+  "username": "dev_account",
+  "password": "ciel"
 }
 
 r = requests.post(url=URL, json=DATA)
