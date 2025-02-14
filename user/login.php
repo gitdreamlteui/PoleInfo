@@ -17,15 +17,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ]
     ]));
 
+    echo "Réponse de l'API : " . $token_response;
+
     $token_data = json_decode($token_response, true);
+    
     if (isset($token_data['access_token'])) {
         $_SESSION['token'] = $token_data['access_token'];
-        echo "Connexion réussie.";
-        echo $_SESSION['token'];
+        $_SESSION['username'] = $username;
+
+        // Redirection après le stockage du token
         header('Location: http://poleinfo.local/user/dashboard.php');
         exit;
     } else {
-        echo "Erreur de connexion : Identifiants incorrects.";
+        header('Location: http://poleinfo.local/user/index.html');
     }
 }
 ?>

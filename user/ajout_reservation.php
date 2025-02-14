@@ -27,7 +27,7 @@ if (!empty($horaire_debut) && !empty($duration)) {
 } else {
     die("Erreur : Heure de début et durée requises.");
 }
-$username = $data["user"] ?? "Inconnu";
+$username = $_SESSION['username'] ?? "Inconnu";
 $data = [
     "salle" => $salle,
     "matiere" => $matiere,
