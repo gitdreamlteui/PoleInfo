@@ -6,7 +6,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
     $api_url_token = "http://127.0.0.1:8000/token";
 
-    // 1. Récupérer le token JWT
     $token_response = file_get_contents($api_url_token, false, stream_context_create([
         'http' => [
             'method' => 'POST',
@@ -23,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['token'] = $token_data['access_token'];
         echo "Connexion réussie.";
         echo $_SESSION['token'];
-        header('Location: http://127.0.0.1/backend/user/dashboard.php');
+        header('Location: http://poleinfo.local/user/dashboard.php');
         exit;
     } else {
         echo "Erreur de connexion : Identifiants incorrects.";
