@@ -56,8 +56,9 @@ curl_close($ch);
 
 // Vérification de la réponse
 if ($http_code === 201 || $http_code === 200) {
-    $_SESSION['success_message'] = "Réservation ajoutée avec succès!";
-    header("Location: /user/dashboard.php?success=reservation_added");
+    $_SESSION['info_message'] = "Réservation ajoutée avec succès!";
+    header("Location: /user/dashboard.php");
+    //?success=reservation_added
     exit;
 } else {
     echo "<pre>";

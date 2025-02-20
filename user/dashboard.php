@@ -43,10 +43,10 @@ if (!$data) {
 $username = $data["user"] ?? "Inconnu";
 
 $success_message = "";
-if (isset($_SESSION['success_message'])) {
-    $success_message = $_SESSION['success_message'];
+if (isset($_SESSION['info_message'])) {
+    $success_message = $_SESSION['info_message'];
     $success_message = "Réservation ajoutée avec succès!";
-    unset($_SESSION['success_message']);
+    unset($_SESSION['info_message']);
 }
 
 // Récupérer les réservations
