@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Utilisation de cURL pour une meilleure gestion des erreurs
     $ch = curl_init($api_url_token);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    
+
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
         'grant_type' => 'password',
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         } else {
             // Si le token n'est pas présent dans la réponse
-            header('Location: http://poleinfo.local/user/index.html?error=no_token');
+            header('Location: http://poleinfo.local/user/index.php?error=no_token');
             exit();
         }
     } else {
@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif ($http_code === 401) {
             $error_message = "Non autorisé";
         }
-        header('Location: http://poleinfo.local/user/index.html?error=' . urlencode($error_message));
+        header('Location: http://poleinfo.local/user/index.php?error=' . urlencode($error_message));
         exit();
     }
 }
