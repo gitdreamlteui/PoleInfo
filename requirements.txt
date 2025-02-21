@@ -1,2 +1,5 @@
 fastapi
 uvicorn
+pyjwt
+python-multipart
+passlib
