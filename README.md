@@ -2,8 +2,8 @@
 	<h1>Pole Info</h1>
 </div>
 
-# Déploiment de l'API (outdated)
-## Lancer l'API en local
+# Déploiment de l'API 
+## Lancer l'API en local (outdated)
 ```py
 python3 -m venv env
 source env/bin/activate
