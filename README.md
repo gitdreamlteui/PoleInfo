@@ -2,7 +2,14 @@
 	<h1>Pole Info</h1>
 </div>
 
-# Déploiment automatique de l'API
+# Déploiment de l'API
+## Lancer l'API en local
+```py
+python3 -m venv env
+source env/bin/activate
+pip -r requirements.txt
+python main.py
+```
 
 ## Ajouter l'api au systemd du raspbery pi
 Prérequis : environnement virtuel et dépendances installées
