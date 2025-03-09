@@ -1,0 +1,20 @@
+- name: Déployer l'API sur le PC distant
+  hosts: api_poleinfo
+  tasks:
+    - name: Récupérer le dernier code depuis GitHub
+      ansible.builtin.git:
+        repo: "git@github.com:gitdreamlteui/PoleInfo.git"
+        dest: "/home/elias/PoleInfo/poleinfo_api"
+        version: dev
+        accept_hostkey: yes
+
+    - name: Installer les dépendances Python (si nécessaire)
+      ansible.builtin.pip:
+        requirements: "/home/elias/PoleInfo/requirements.txt"
+        virtualenv: "/home/elias/PoleInfo/poleinfo_api/venv"
+
+    - name: Redémarrer l'API
+      ansible.builtin.systemd:
+        name: poleinfo_api
+        state: restarted
+        enabled: yes
