@@ -4,4 +4,3 @@ pyjwt
 python-multipart
 passlib
 requests
-mariadb
