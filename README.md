@@ -8,9 +8,7 @@
 ### Tâches réalisés 
 
 <br>Elias</br>
-- 
-- 
--
+- Déploiment avec Ansible réalisé, github action ne fonctionne pas encore
 ---
 <br>Ethan</br>
 -
