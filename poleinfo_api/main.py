@@ -16,7 +16,7 @@ app.include_router(reservations.router, prefix="/reservations", tags=["reservati
 
 @app.get("/")
 def read_root():
-    return {"message": "Bienvenue sur l'API PoleInfo"}
+    return {"message": "Bienvenue sur l'API PoleInfo, le déploiement auto fonctionne"}
 
 if __name__ == "__main__":
     import uvicorn
