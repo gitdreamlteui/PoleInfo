@@ -4,14 +4,14 @@
     - name: Récupérer le dernier code depuis GitHub
       ansible.builtin.git:
         repo: "git@github.com:gitdreamlteui/PoleInfo.git"
-        dest: "/home/elias/PoleInfo/poleinfo_api"
+        dest: "/var/www/html/PoleInfo/poleinfo_api"
         version: dev
         accept_hostkey: yes
 
     - name: Installer les dépendances Python (si nécessaire)
       ansible.builtin.pip:
-        requirements: "/home/elias/PoleInfo/requirements.txt"
-        virtualenv: "/home/elias/PoleInfo/poleinfo_api/venv"
+        requirements: "/var/www/html/PoleInfo/requirements.txt"
+        virtualenv: "/var/www/html/PoleInfo/poleinfo_api/venv"
 
     - name: Redémarrer l'API
       ansible.builtin.systemd:
