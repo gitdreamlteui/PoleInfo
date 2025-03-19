@@ -31,11 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['token'] = $token_data['access_token'];
             $_SESSION['username'] = $username;
             // Redirection après le stockage du token
-            header('Location: http://192.168.8.152/user/dashboard.php');
+            header('Location: http://192.168.8.152/PoleInfo/user/dashboard.php');
             exit();
         } else {
             // Si le token n'est pas présent dans la réponse
-            header('Location: http://192.168.8.152/user/index.php?error=no_token');
+            header('Location: http://192.168.8.152/PoleInfo/user/index.php?error=no_token');
             exit();
         }
     } else {
@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif ($http_code === 401) {
             $error_message = "Non autorisé";
         }
-        header('Location: http://192.168.8.152/user/index.php?error=' . urlencode($error_message));
+        header('Location: http://192.168.8.152/PoleInfo/user/index.php?error=' . urlencode($error_message));
         exit();
     }
 }
