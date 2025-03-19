@@ -5,7 +5,7 @@
       ansible.builtin.git:
         repo: "git@github.com:gitdreamlteui/PoleInfo.git"
         dest: "/var/www/html/PoleInfo"
-        version: dev
+        version: main
         accept_hostkey: yes
         force: yes
 

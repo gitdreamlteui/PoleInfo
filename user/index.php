@@ -7,7 +7,7 @@
 </head>
 <body>
     <h2>Connexion test</h2>
-    <form action="/user/login.php" method="post">
+    <form action="login.php" method="post">
         <label for="username">Nom d'utilisateur :</label>
         <input type="text" id="username" name="username" required><br><br>
 
