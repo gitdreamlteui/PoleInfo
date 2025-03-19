@@ -22,7 +22,9 @@ $data = json_decode($response, true);
     <!-- Barre de navigation -->
     <header class="bg-gray-800 text-white p-4 flex justify-between items-center w-full fixed top-0 left-0 right-0">
         <h1 class="text-xl font-bold">Réservation</h1>
-        <button class="bg-blue-500 px-4 py-2 rounded-md">Login</button>
+        <a href="interface_login.php">
+            <button class="bg-blue-500 px-4 py-2 rounded-md">Login</button>
+        </a>
     </header>
     
     <div class="max-w-3xl mx-auto mt-16">
