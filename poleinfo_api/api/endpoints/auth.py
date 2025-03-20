@@ -1,30 +1,29 @@
 """Routes d'authentification"""
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from db.fake_db import fake_users_db
 
-from core.security import verify_password, create_access_token
+from core.security import create_access_token
 from core.auth import verify_token
 from models.schemas import Token
+from models.user import authenticate_user
 
 router = APIRouter(tags=["authentication"])
 
 @router.post("/token", response_model=Token)
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     """Authentification des utilisateurs existants et génération de token JWT"""
-    user = next((u for u in fake_users_db.values() if u["username"] == form_data.username), None)
+    user = authenticate_user(form_data.username, form_data.password)
     
-    if not user or not verify_password(form_data.password, user["password"]):
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Identifiants incorrects"
         )
     
-    token = create_access_token(user["username"])
+    token = create_access_token(user["id_user"])
     return {"access_token": token, "token_type": "bearer"}
 
-@router.get("/verify-token", tags=["authentication"])
-def verify_token_endpoint(username: str = Depends(verify_token)):
+@router.get("/verify-token")
+def verify_token_endpoint(user_id: int = Depends(verify_token)):
     """Vérifie la validité d'un token JWT"""
-    return {"valid": True, "user": username}
-
+    return {"valid": True, "user_id": user_id}

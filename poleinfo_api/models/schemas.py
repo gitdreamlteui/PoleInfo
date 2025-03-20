@@ -28,8 +28,7 @@ class ReservationResponse(BaseModel):
     duree: int
     date: date
     info: Optional[str] = None
-
-
+    
 class Token(BaseModel):
     access_token: str
     token_type: str

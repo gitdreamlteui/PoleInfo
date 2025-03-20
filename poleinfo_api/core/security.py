@@ -14,11 +14,11 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Vérifie si un mot de passe correspond au hachage"""
     return pwd_context.verify(plain_password, hashed_password)
 
-def create_access_token(username: str):
+def create_access_token(user_id: int):
     """Crée un token JWT d'accès"""
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {
-        "sub": username,
+        "sub": str(user_id),  # Convertir l'ID en chaîne pour JWT
         "exp": expire
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
