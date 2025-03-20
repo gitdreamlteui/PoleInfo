@@ -1,7 +1,6 @@
 <?php
 $request_reservation = "http://192.168.8.152:8000/reservations"; // Remplace par l'URL de l'API
 $response_reservation = file_get_contents($request_reservation);
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -31,7 +30,7 @@ $response_reservation = file_get_contents($request_reservation);
     <!-- Barre de navigation -->
     <header class="bg-blue-600 text-white p-4 flex justify-between items-center w-full fixed top-0 left-0 right-0">
         <h1 class="text-xl font-bold">Réservation</h1>
-        <a href="interface_login.php">
+        <a href="interface_login.php">Date
             <button class="bg-white px-4 py-2 rounded-md text-black">Login</button>
         </a>
     </header>
@@ -42,6 +41,7 @@ $response_reservation = file_get_contents($request_reservation);
             Tableau Prévisionnel des séances à venir
         </div> 
 <?
+echo $request_reservation;
 ?>       
         <!-- Tableau -->
         <div class="space-y-4">
@@ -49,7 +49,7 @@ $response_reservation = file_get_contents($request_reservation);
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm text-gray-900">Prof</p>
+                <p class="text-sm text-gray-900"><strong>Prof</strong></p>
             </div>
             <div id="details1" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
@@ -59,7 +59,7 @@ $response_reservation = file_get_contents($request_reservation);
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm">Prof</p>
+                <p class="text-sm"><strong>Prof</strong></p>
             </div>
             <div id="details2" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
@@ -69,7 +69,7 @@ $response_reservation = file_get_contents($request_reservation);
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm text-gray-900">Prof</p>
+                <p class="text-sm text-gray-900"><strong>Prof</strong></p>
             </div>
             <div id="details3" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
@@ -79,7 +79,7 @@ $response_reservation = file_get_contents($request_reservation);
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm">Prof</p>
+                <p class="text-sm"><strong>Prof</strong></p>
             </div>
             <div id="details4" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
