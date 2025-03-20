@@ -49,7 +49,7 @@ foreach($data as $data){
     $salle=$data['numero_salle'];
     echo $salle;
 }
-echo "Nombre de réservations : " + str($compteur);
+echo $compteur;
 ?>  
 </h1>     
         <!-- Tableau -->
