@@ -1,44 +1,59 @@
+# routes/reservation.py
 """Routes pour la gestion des réservations"""
 from fastapi import APIRouter, HTTPException, Depends, status
-from db.fake_db import fake_reservation_db
 from models.schemas import ReservationCreate, ReservationResponse
-from core.auth import verify_token
+from core.auth import verify_token, get_user_id
+from db.reservation_repository import create_reservation, get_all_reservations, get_reservation_by_id
+from mysql.connector import Error
 
 router = APIRouter()
 
 @router.post("/", response_model=dict)
-def create_reservation(reservation: ReservationCreate, username: str = Depends(verify_token)):
+def create_reservation_endpoint(reservation: ReservationCreate, user_info: dict = Depends(verify_token)):
     """Créer une nouvelle réservation (protégée par authentification)"""
-    reservation_id = len(fake_reservation_db) + 1
-    fake_reservation_db[reservation_id] = {
-        "salle": reservation.salle, 
-        "matiere": reservation.matiere,
-        "prof": reservation.prof,
-        "classe": reservation.classe,
-        "horaire_debut": reservation.horaire_debut,
-        "horaire_fin": reservation.horaire_fin,
-        "date": reservation.date,
-        "info": reservation.info
-    }
-    return {"message": f"Réservation enregistrée par {username}.", "id": reservation_id}
+    try:
+        # Supposons que verify_token renvoie un dictionnaire contenant l'ID et le nom d'utilisateur
+        id_user = user_info["id_user"]
+        username = user_info["username"]
+        
+        reservation_id = create_reservation(reservation, id_user)
+        return {"message": f"Réservation enregistrée par {username}.", "id_reservation": reservation_id}
+    except Error as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erreur lors de la création de la réservation: {str(e)}"
+        )
 
 @router.get("/", response_model=list[ReservationResponse])
-def get_reservations():
+def get_reservations_endpoint():
     """Récupérer la liste des réservations"""
-    if not fake_reservation_db:
+    try:
+        reservations = get_all_reservations()
+        if not reservations:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Aucune réservation"
+            )
+        return reservations
+    except Error as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Aucune réservation"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erreur lors de la récupération des réservations: {str(e)}"
         )
-    return [{"id": res_id, **data} for res_id, data in fake_reservation_db.items()]
 
 @router.get("/{reservation_id}", response_model=ReservationResponse)
-def get_reservation(reservation_id: int):
+def get_reservation_endpoint(reservation_id: int):
     """Récupérer une réservation par son ID"""
-    reservation = fake_reservation_db.get(reservation_id)
-    if not reservation:
+    try:
+        reservation = get_reservation_by_id(reservation_id)
+        if not reservation:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Réservation non trouvée"
+            )
+        return reservation
+    except Error as e:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Réservation non trouvée"
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Erreur lors de la récupération de la réservation: {str(e)}"
         )
-    return {"id": reservation_id, **reservation}

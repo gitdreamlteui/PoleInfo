@@ -1,5 +1,7 @@
 """Modèles de données Pydantic"""
 from pydantic import BaseModel
+from typing import Optional
+from datetime import date
 
 class UserCreate(BaseModel):
     username: str
@@ -10,25 +12,23 @@ class UserResponse(BaseModel):
     username: str
 
 class ReservationCreate(BaseModel):
-    salle: str
-    matiere: str
-    prof: str
-    classe: str
-    horaire_debut: str
-    horaire_fin: str
-    date: str
-    info: str
+    id_salle: int
+    id_matiere: int
+    id_creneau: int
+    duree: int
+    date: date
+    info: Optional[str] = None
 
 class ReservationResponse(BaseModel):
-    id: int
-    salle: str
-    matiere: str
-    prof: str
-    classe: str
-    horaire_debut: str
-    horaire_fin: str
-    date: str
-    info: str
+    id_reservation: int
+    id_salle: int
+    id_matiere: int
+    id_creneau: int
+    id_user: int
+    duree: int
+    date: date
+    info: Optional[str] = None
+
 
 class Token(BaseModel):
     access_token: str
