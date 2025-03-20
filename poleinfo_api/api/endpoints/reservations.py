@@ -9,10 +9,7 @@ from datetime import date
 
 from models.reservation import get_all_reservations
 
-router = APIRouter(
-    prefix="/reservations",
-    tags=["reservations"]
-)
+router = APIRouter()
 
 ### POST RESERVATION (ENCORE SUR FAKE DB)
 @router.post("/", response_model=dict)
