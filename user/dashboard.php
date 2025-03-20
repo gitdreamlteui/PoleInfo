@@ -1,7 +1,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['token'])) {
-    header("Location: login.php");
+    header("Location: http://192.168.8.152/PoleInfo/interface_login.php?error=expired");
     exit;
 }
 
