@@ -39,4 +39,4 @@ def get_reservations():
             detail="Aucune réservation trouvée"
         )
     
-    return reservations
+    return {"message":reservations}
