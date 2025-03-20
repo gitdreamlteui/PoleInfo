@@ -41,9 +41,11 @@ $data =json_decode($response_reservation);
         <div class="bg-blue-600 text-white text-xl font-bold p-4 rounded-md mb-4">
             Tableau Prévisionnel des séances à venir
         </div> 
-<?
-echo '<h1>'.$data.'</h1>';
-?>       
+<h1>
+<?php
+echo $data;
+?>  
+</h1>     
         <!-- Tableau -->
         <div class="space-y-4">
             <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
