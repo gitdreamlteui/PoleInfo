@@ -26,7 +26,7 @@ class ReservationResponse(BaseModel):
     id_matiere: int
     id_creneau: int
     id_user: int
-    duree: int
+    duree: float
     date: date
     info: Optional[str] = None
 
