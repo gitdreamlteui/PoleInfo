@@ -45,41 +45,41 @@ $response_reservation = file_get_contents($request_reservation);
 ?>       
         <!-- Tableau -->
         <div class="space-y-4">
-            <div class="bg-white text-white p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
+            <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm text-blue-900">Prof</p>
+                <p class="text-sm text-gray-900">Prof</p>
             </div>
             <div id="details1" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
             </div>
             
-            <div class="bg-blue-400 shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details2')">
+            <div class="bg-blue-400 text-white p-4 rounded-md cursor-pointer" onclick="toggleDetails('details2')">
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm text-gray-500">Prof</p>
+                <p class="text-sm text-blue-500">Prof</p>
             </div>
             <div id="details2" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
             </div>
             
-            <div class="bg-white text-white p-4 rounded-md cursor-pointer" onclick="toggleDetails('details3')">
+            <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details3')">
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm text-blue-900">Prof</p>
+                <p class="text-sm text-gray-900">Prof</p>
             </div>
             <div id="details3" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
             </div>
             
-            <div class="bg-blue-400 shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details4')">
+            <div class="bg-blue-400 p-4 text-white rounded-md cursor-pointer" onclick="toggleDetails('details4')">
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm text-gray-500">Prof</p>
+                <p class="text-sm text-blue-500">Prof</p>
             </div>
             <div id="details4" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
