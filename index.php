@@ -43,7 +43,7 @@ $data =json_decode($response_reservation);
         </div> 
 <h1>
 <?php
-echo $data;
+echo $response_reservation;
 ?>  
 </h1>     
         <!-- Tableau -->
