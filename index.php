@@ -59,7 +59,7 @@ $response_reservation = file_get_contents($request_reservation);
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm text-blue-500">Prof</p>
+                <p class="text-sm">Prof</p>
             </div>
             <div id="details2" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
@@ -79,7 +79,7 @@ $response_reservation = file_get_contents($request_reservation);
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
                 <p class="flex justify-end"><strong>HeureDEBUT-HeureFIN</strong></p>
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
-                <p class="text-sm text-blue-500">Prof</p>
+                <p class="text-sm">Prof</p>
             </div>
             <div id="details4" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
