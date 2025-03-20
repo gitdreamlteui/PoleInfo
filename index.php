@@ -42,7 +42,7 @@ $response_reservation = file_get_contents($request_reservation);
         </div> 
 <h1>
 <?php
-echo $response_reservation[0];
+echo $response_reservation[2];
 ?>  
 </h1>     
         <!-- Tableau -->
