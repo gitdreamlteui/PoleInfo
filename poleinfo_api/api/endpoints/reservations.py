@@ -11,12 +11,11 @@ def create_reservation(reservation: ReservationCreate, username: str = Depends(v
     """Créer une nouvelle réservation (protégée par authentification)"""
     reservation_id = len(fake_reservation_db) + 1
     fake_reservation_db[reservation_id] = {
-        "salle": reservation.salle, 
-        "matiere": reservation.matiere,
-        "prof": reservation.prof,
-        "classe": reservation.classe,
-        "horaire_debut": reservation.horaire_debut,
-        "horaire_fin": reservation.horaire_fin,
+        "id_salle": reservation.salle,
+        "id_user": reservation.user,
+        "id_matiere": reservation.matiere,
+        "id_creneau": reservation.horaire_debut,
+        "duree" : reservation.duree,
         "date": reservation.date,
         "info": reservation.info
     }

@@ -13,6 +13,7 @@ class UserResponse(BaseModel):
 
 class ReservationCreate(BaseModel):
     id_salle: int
+    id_user:int
     id_matiere: int
     id_creneau: int
     duree: int
@@ -28,7 +29,7 @@ class ReservationResponse(BaseModel):
     duree: int
     date: date
     info: Optional[str] = None
-    
+
 class Token(BaseModel):
     access_token: str
     token_type: str
