@@ -25,13 +25,13 @@ curl_close($ch);
 if ($http_code != 200 || !$response) {
     error_log("Erreur de vérification du token : HTTP $http_code - $curl_error");
     session_destroy();
-    header("Location: login.php?error=expired");
+    header("Location: ../login.php?error=expired");
     exit;
 }
 
 if ($http_code != 200) {
     session_destroy();
-    header("Location: login.php?error=expired");
+    header("Location: ../login.php?error=expired");
     exit;
 }
 
