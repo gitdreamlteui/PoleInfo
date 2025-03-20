@@ -26,7 +26,14 @@ $response_classe_reservation = file_get_contents($request_classe_reservation);
     <script>
         function toggleDetails(id) {
             const details = document.getElementById(id);
-            details.classList.toggle("hidden");
+            if (details.classList.contains("max-h-0")) {
+            details.classList.remove("max-h-0");
+            details.classList.add("max-h-40", "p-4");
+            }   
+            else {
+            details.classList.remove("max-h-40", "p-4");
+            details.classList.add("max-h-0");
+            }
         }
     </script>
 </head>
@@ -55,7 +62,7 @@ $response_classe_reservation = file_get_contents($request_classe_reservation);
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
                 <p class="text-sm text-blue-900">Prof</p>
                 </div>
-            <div id="details1" class="hidden bg-blue-200 p-4 rounded-md">
+            <div id="details1" class="max-h-0 overflow-hidden bg-blue-200 p-0 rounded-md transition-[max-height] duration-300 ease-in-out">
                 <p>Informations générales sur la séance...</p>
             </div>
             
@@ -65,7 +72,7 @@ $response_classe_reservation = file_get_contents($request_classe_reservation);
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
                 <p class="text-sm text-gray-500">Prof</p>
             </div>
-            <div id="details2" class="hidden bg-gray-200 p-4 rounded-md">
+            <div id="details2" class="max-h-0 overflow-hidden bg-blue-200 p-0 rounded-md transition-[max-height] duration-300 ease-in-out">
                 <p>Informations générales sur la séance...</p>
             </div>
             
@@ -75,7 +82,7 @@ $response_classe_reservation = file_get_contents($request_classe_reservation);
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
                 <p class="text-sm text-blue-900">Prof</p>
             </div>
-            <div id="details3" class="hidden bg-blue-200 p-4 rounded-md">
+            <div id="details3" class="max-h-0 overflow-hidden bg-blue-200 p-0 rounded-md transition-[max-height] duration-300 ease-in-out">
                 <p>Informations générales sur la séance...</p>
             </div>
             
@@ -85,7 +92,7 @@ $response_classe_reservation = file_get_contents($request_classe_reservation);
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
                 <p class="text-sm text-gray-500">Prof</p>
             </div>
-            <div id="details4" class="hidden bg-gray-200 p-4 rounded-md">
+            <div id="details4" class="max-h-0 overflow-hidden bg-blue-200 p-0 rounded-md transition-[max-height] duration-300 ease-in-out">
                 <p>Informations générales sur la séance...</p>
             </div>
         </div>
