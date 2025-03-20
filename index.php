@@ -64,7 +64,7 @@ $response_classe_reservation = file_get_contents($request_classe_reservation);
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
                 <p class="text-sm text-blue-900">Prof</p>
                 </div>
-            <div id="details1" class="mbg-blue-200 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+            <div id="details1" class="bg-white-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
             </div>
             
@@ -74,7 +74,7 @@ $response_classe_reservation = file_get_contents($request_classe_reservation);
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
                 <p class="text-sm text-gray-500">Prof</p>
             </div>
-            <div id="details2" class="bg-blue-200 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+            <div id="details2" class="bg-blue-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
             </div>
             
@@ -84,7 +84,7 @@ $response_classe_reservation = file_get_contents($request_classe_reservation);
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
                 <p class="text-sm text-blue-900">Prof</p>
             </div>
-            <div id="details3" class="bg-blue-200 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+            <div id="details3" class="bg-white-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
             </div>
             
@@ -94,7 +94,7 @@ $response_classe_reservation = file_get_contents($request_classe_reservation);
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
                 <p class="text-sm text-gray-500">Prof</p>
             </div>
-            <div id="details4" class="bg-blue-200 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+            <div id="details4" class="bg-blue-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
             </div>
         </div>
