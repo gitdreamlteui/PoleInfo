@@ -43,10 +43,13 @@ $data=json_decode($response_reservation, true);
         </div> 
 <h1>
 <?php
+$compteur=0;
 foreach($data as $data){
+    $compteur=$compteur+1;
     $salle=$data['numero_salle'];
     echo $salle;
 }
+echo "Nombre de réservations : " + str($compteur);
 ?>  
 </h1>     
         <!-- Tableau -->
