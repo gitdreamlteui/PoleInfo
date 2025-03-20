@@ -3,20 +3,3 @@
 </div>
 
 - [DOCS.md](DOCS.md) : Documentation et procédures liées aux interfaces, API etc
-
-## Séance 14/03/2025
-### Tâches réalisés 
-
-<br>Elias</br>
-- Déploiment avec Ansible réalisé, github action ne fonctionne pas encore
----
-<br>Ethan</br>
--
--
--
----
-<br>Lucas</br>
--
--
--
----
