@@ -4,7 +4,7 @@ session_start();
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $api_url_token = "http://127.0.0.1:8000/token";
+    $api_url_token = "http://192.168.8.152:8000/token";
 
     // Utilisation de cURL pour une meilleure gestion des erreurs
     $ch = curl_init($api_url_token);

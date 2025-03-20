@@ -2,7 +2,7 @@
 from pydantic import BaseModel
 from typing import Optional
 from datetime import date
-
+from datetime import timedelta
 class UserCreate(BaseModel):
     username: str
     password: str
@@ -22,13 +22,18 @@ class ReservationCreate(BaseModel):
 
 class ReservationResponse(BaseModel):
     id_reservation: int
-    id_salle: int
-    id_matiere: int
-    id_creneau: int
-    id_user: int
     duree: float
     date: date
-    info: Optional[str] = None
+    info: str
+    numero_salle: str
+    capacite_salle: int
+    type_salle: str
+    nom_matiere: str
+    heure_debut: timedelta
+    nom_user: str
+    prenom: str
+    noms_classes: str
+
 
 class Token(BaseModel):
     access_token: str
