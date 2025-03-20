@@ -12,7 +12,7 @@ from models.reservation import get_all_reservations
 router = APIRouter(
     tags=["reservations"]
 )
-### POST RESERVATION (ENCORE SUR FAKE DB)
+### POST RESERVATION (ENCORE SUR FAKE DB) 
 @router.post("/", response_model=dict)
 def create_reservation(reservation: ReservationCreate, username: str = Depends(verify_token)):
     """Créer une nouvelle réservation (protégée par authentification)"""
@@ -29,7 +29,7 @@ def create_reservation(reservation: ReservationCreate, username: str = Depends(v
     return {"message": f"Réservation enregistrée par {username}.", "id": reservation_id}
 
 ### GET RESERVATION
-@router.get("/", response_model=List[ReservationResponse])
+@router.get("", response_model=List[ReservationResponse])
 def get_reservations():
     reservations = get_all_reservations()
     if not reservations:
