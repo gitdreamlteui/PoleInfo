@@ -1,11 +1,20 @@
 """Routes pour la gestion des réservations"""
-from fastapi import APIRouter, HTTPException, Depends, status
 from db.fake_db import fake_reservation_db
 from models.schemas import ReservationCreate, ReservationResponse
 from core.auth import verify_token
 
-router = APIRouter()
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from typing import List, Optional
+from datetime import date
 
+from models.reservation import get_all_reservations
+
+router = APIRouter(
+    prefix="/reservations",
+    tags=["reservations"]
+)
+
+### POST RESERVATION (ENCORE SUR FAKE DB)
 @router.post("/", response_model=dict)
 def create_reservation(reservation: ReservationCreate, username: str = Depends(verify_token)):
     """Créer une nouvelle réservation (protégée par authentification)"""
@@ -21,23 +30,14 @@ def create_reservation(reservation: ReservationCreate, username: str = Depends(v
     }
     return {"message": f"Réservation enregistrée par {username}.", "id": reservation_id}
 
-@router.get("/", response_model=list[ReservationResponse])
+### GET RESERVATION
+@router.get("/", response_model=List[ReservationResponse])
 def get_reservations():
-    """Récupérer la liste des réservations"""
-    if not fake_reservation_db:
+    reservations = get_all_reservations()
+    if not reservations:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="Aucune réservation"
+            detail="Aucune réservation trouvée"
         )
-    return [{"id": res_id, **data} for res_id, data in fake_reservation_db.items()]
-
-@router.get("/{reservation_id}", response_model=ReservationResponse)
-def get_reservation(reservation_id: int):
-    """Récupérer une réservation par son ID"""
-    reservation = fake_reservation_db.get(reservation_id)
-    if not reservation:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Réservation non trouvée"
-        )
-    return {"id": reservation_id, **reservation}
+    
+    return reservations

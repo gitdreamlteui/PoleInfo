@@ -13,7 +13,7 @@ try:
         print("Connexion réussie à la base de données MySQL.")
 
         cursor = connection.cursor()
-        requete = "SELECT * FROM user"
+        requete = "SELECT * FROM reservation"
         cursor.execute(requete)
         resultats = cursor.fetchall()
 
