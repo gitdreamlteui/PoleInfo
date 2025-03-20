@@ -1,6 +1,7 @@
 <?php
 $request_reservation = "http://192.168.8.152:8000/reservations"; // Remplace par l'URL de l'API
 $response_reservation = file_get_contents($request_reservation);
+$data =json_decode($response_reservation);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -41,7 +42,7 @@ $response_reservation = file_get_contents($request_reservation);
             Tableau Prévisionnel des séances à venir
         </div> 
 <?
-echo $request_reservation;
+echo $data;
 ?>       
         <!-- Tableau -->
         <div class="space-y-4">
@@ -85,7 +86,7 @@ echo $request_reservation;
                 <p>Informations générales sur la séance...</p>
             </div>
         </div>
-        
+
     </div>
 </body>
 </html>
