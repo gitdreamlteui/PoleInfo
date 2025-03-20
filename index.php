@@ -1,7 +1,20 @@
 <?php
-$api = "http://192.168.8.152:8000/reservations"; // Remplace par l'URL de l'API
-$response = file_get_contents($api);
-$data = json_decode($response, true);
+$request_reservation = "http://192.168.8.152:8000/reservations"; // Remplace par l'URL de l'API
+$request_user = "http://192.168.8.152:8000/users";
+$request_salle = "http://192.168.8.152:8000/salles";
+$request_creneau = "http://192.168.8.152:8000/creneaux";
+$request_matiere = "http://192.168.8.152:8000/matieres";
+$request_classe = "http://192.168.8.152:8000/classes";
+$request_classe_reservation = "http://192.168.8.152:8000/classes_reservation";
+
+$response_reservation = file_get_contents($request_reservation);
+$response_user = file_get_contents($request_user);
+$response_salle = file_get_contents($request_salle);
+$response_creneau = file_get_contents($request_creneau);
+$response_matiere = file_get_contents($request_matiere);
+$response_classe = file_get_contents($request_classe);
+$response_classe_reservation = file_get_contents($request_classe_reservation);
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -33,15 +46,14 @@ $data = json_decode($response, true);
             Tableau Prévisionnel des séances à venir
         </div> 
 <?
-echo $response;
-echo $data;
 ?>       
         <!-- Tableau -->
         <div class="space-y-4">
             <div class="bg-blue-400 text-white p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
+                <p class="flex justify-end"><strong>Heure</strong></p>
                 <p class="text-sm text-blue-900">Prof</p>
-            </div>
+                </div>
             <div id="details1" class="hidden bg-blue-200 p-4 rounded-md">
                 <p>Informations générales sur la séance...</p>
             </div>
