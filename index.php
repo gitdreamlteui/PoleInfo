@@ -38,7 +38,7 @@ $response_reservation = file_get_contents($request_reservation);
     
     <div class="max-w-3xl mx-auto mt-16">
         <!-- Titre -->
-        <div class="bg-gray-800 text-white text-xl font-bold p-4 rounded-md mb-4">
+        <div class="bg-blue-600 text-white text-xl font-bold p-4 rounded-md mb-4">
             Tableau Prévisionnel des séances à venir
         </div> 
 <?
@@ -61,7 +61,7 @@ $response_reservation = file_get_contents($request_reservation);
                 <p class="flex justify-end"><strong>Date(j-m)</strong></p>
                 <p class="text-sm text-gray-500">Prof</p>
             </div>
-            <div id="details2" class="bg-gray-300 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+            <div id="details2" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>Informations générales sur la séance...</p>
             </div>
             
