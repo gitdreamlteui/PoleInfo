@@ -1,7 +1,6 @@
 <?php
 $request_reservation = "http://192.168.8.152:8000/reservations"; // Remplace par l'URL de l'API
 $response_reservation = file_get_contents($request_reservation);
-$data =json_decode($response_reservation);
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -43,7 +42,7 @@ $data =json_decode($response_reservation);
         </div> 
 <h1>
 <?php
-echo $response_reservation;
+echo $response_reservation[0];
 ?>  
 </h1>     
         <!-- Tableau -->
