@@ -12,7 +12,6 @@ router = APIRouter()
 def create_reservation_endpoint(reservation: ReservationCreate, user_info: dict = Depends(verify_token)):
     """Créer une nouvelle réservation (protégée par authentification)"""
     try:
-        # Supposons que verify_token renvoie un dictionnaire contenant l'ID et le nom d'utilisateur
         id_user = user_info["id_user"]
         username = user_info["username"]
         
