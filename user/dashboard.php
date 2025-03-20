@@ -6,8 +6,8 @@ if (!isset($_SESSION['token'])) {
 }
 
 $token = $_SESSION['token'];
-$api_url_verify = "http://127.0.0.1:8000/verify-token/";
-$api_url_reservations = "http://127.0.0.1:8000/reservations/";
+$api_url_verify = "http:/192.168.8.152:8000/verify-token/";
+$api_url_reservations = "http://192.168.8.152:8000/reservations/";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -25,13 +25,13 @@ curl_close($ch);
 if ($http_code != 200 || !$response) {
     error_log("Erreur de vérification du token : HTTP $http_code - $curl_error");
     session_destroy();
-    header("Location: PoleInfo/login.php?error=expired");
+    header("Location: http://192.168.8.152/PoleInfo/interface_login.php?error=expired");
     exit;
 }
 
 if ($http_code != 200) {
     session_destroy();
-    header("Location: PoleInfo/login.php?error=expired");
+    header("Location: http://192.168.8.152/PoleInfo/interface_login.php?error=expired");
     exit;
 }
 
