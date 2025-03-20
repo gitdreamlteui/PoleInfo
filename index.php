@@ -31,7 +31,7 @@ $data =json_decode($response_reservation);
     <!-- Barre de navigation -->
     <header class="bg-blue-600 text-white p-4 flex justify-between items-center w-full fixed top-0 left-0 right-0">
         <h1 class="text-xl font-bold">Réservation</h1>
-        <a href="interface_login.php">Date
+        <a href="interface_login.php">
             <button class="bg-white px-4 py-2 rounded-md text-black">Login</button>
         </a>
     </header>
@@ -42,7 +42,7 @@ $data =json_decode($response_reservation);
             Tableau Prévisionnel des séances à venir
         </div> 
 <?
-echo $data;
+echo '<h1>'.$data.'</h1>';
 ?>       
         <!-- Tableau -->
         <div class="space-y-4">
