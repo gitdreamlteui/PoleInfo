@@ -69,11 +69,11 @@ foreach($data as $data){
     $dt = new DateTime($date);
     $date = $dt->format("j/m");
     //affichage
-    if(compteur%2==1)
+    if($compteur%2==1)
     {
         echo <<<HTML
         <div class="space-y-4">
-            <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
+            <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails($compteur)">
                 <p><strong>$matiere | $classe | $salle</strong></p>
                 <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
                 <p class="flex justify-end"><strong>$date</strong></p>
@@ -85,12 +85,12 @@ foreach($data as $data){
         </div>
         HTML;
     }
-    elseif(compteur%2==0)
+    elseif($compteur%2==0)
     {
         echo <<<HTML
-        <div class="bg-blue-400 text-white p-4 rounded-md cursor-pointer" onclick="toggleDetails('details2')">
+        <div class="bg-blue-400 text-white p-4 rounded-md cursor-pointer" onclick="toggleDetails($compteur)">
                 <p><strong>$matiere | $classe | $salle</strong></p>
-                <p class="flex justify-end"><strong>$heureString-$heurefinString</strong></p>
+                <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
                 <p class="flex justify-end"><strong>$date</strong></p>
                 <p class="text-sm"><strong>$prenom - $nom</strong></p>
             </div>
