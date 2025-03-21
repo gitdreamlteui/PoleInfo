@@ -67,7 +67,7 @@
         </div>
         
         <div class="mt-6 text-center text-sm text-gray-500">
-            <p>© 2023 Système d'information BTS - Tous droits réservés</p>
+            <p>© 2025 Système d'information BTS - Tous droits réservés</p>
         </div>
     </div>
     
