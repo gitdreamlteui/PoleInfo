@@ -1,69 +1,77 @@
 <?php
 /**
- * Configuration du serveur PoleInfo
+ * Configuration du serveur et des services
  */
 
-// Configuration de base
+// Configuration des serveurs
 $config = [
-    // Informations du serveur
-    'server' => [
-        'ip' => $_SERVER['SERVER_ADDR'] ?? '192.168.8.152', // IP du serveur Apache
-        'hostname' => gethostname(),                    // Nom d'hôte du serveur
+    // Serveur d'API principal
+    'api_server' => [
+        'ip' => '192.168.8.152',
+        'port' => '8000',
+        'protocol' => 'http'
     ],
     
-    // Adresses base de donnée et API
-    'external_servers' => [
-        'database' => [
-            'ip' => '192.168.8.152',
-            'port' => 3306,
-        ],
-        'api' => [
-            'ip' => '192.168.8.152',
-            'port' => 8000,
-        ],
+    // Serveur web
+    'web_server' => [
+        'ip' => '192.168.8.152',
+        'port' => '80',
+        'protocol' => 'http',
+        'base_path' => '/PoleInfo'
     ],
     
-    'check_server_status' => function($ip, $port = 80, $timeout = 3) {
-        $fp = @fsockopen($ip, $port, $errno, $errstr, $timeout);
-        $status = !!$fp;
-        if($fp) fclose($fp);
-        return $status;
-    }
+    // Paramètres d'authentification
+    'auth' => [
+        'token_endpoint' => '/token',
+        'grant_type' => 'password'
+    ]
 ];
 
 /**
- * Fonction pour récupérer une IP de serveur spécifique
- * @param string $server_name Nom du serveur dans la configuration
- * @return string|null Adresse IP ou null si non trouvée
+ * Retourne l'URL complète du serveur API
+ * @param string $endpoint Point de terminaison API (optionnel)
+ * @return string URL complète
  */
-function getServerIP($server_name = null) {
+function getApiUrl($endpoint = '') {
     global $config;
-    
-    // Retourne l'IP du serveur courant si aucun nom spécifié
-    if ($server_name === null) {
-        return $config['server']['ip'];
-    }
-    
-    // Vérifie si le serveur externe demandé existe dans la configuration
-    if (isset($config['external_servers'][$server_name])) {
-        return $config['external_servers'][$server_name]['ip'];
-    }
-    
-    return null;
+    $server = $config['api_server'];
+    $base_url = "{$server['protocol']}://{$server['ip']}:{$server['port']}";
+    return $base_url . $endpoint;
 }
 
 /**
- * Fonction pour vérifier l'état d'un serveur
- * @param string $server_name Nom du serveur
- * @return bool État de la connexion
+ * Retourne l'URL complète du serveur Web
+ * @param string $path Chemin relatif (optionnel)
+ * @return string URL complète
  */
-function isServerAvailable($server_name) {
+function getWebUrl($path = '') {
     global $config;
+    $server = $config['web_server'];
+    $base_url = "{$server['protocol']}://{$server['ip']}";
     
-    if (isset($config['external_servers'][$server_name])) {
-        $server = $config['external_servers'][$server_name];
-        return $config['check_server_status']($server['ip'], $server['port']);
+    if (($server['protocol'] === 'http' && $server['port'] !== '80') || 
+        ($server['protocol'] === 'https' && $server['port'] !== '443')) {
+        $base_url .= ":{$server['port']}";
     }
     
-    return false;
+    $base_url .= $server['base_path'];
+    return $base_url . $path;
+}
+
+/**
+ * Retourne l'URL complète du point de terminaison de token
+ * @return string URL du point de terminaison de token
+ */
+function getTokenUrl() {
+    global $config;
+    return getApiUrl($config['auth']['token_endpoint']);
+}
+
+/**
+ * Retourne le type de grant pour l'authentification
+ * @return string Type de grant
+ */
+function getGrantType() {
+    global $config;
+    return $config['auth']['grant_type'];
 }
