@@ -38,7 +38,7 @@ $data=json_decode($response_reservation, true);
         </a>
     </header>
     
-    <div class="max-w-3xl mx-auto mt-20">
+    <div class="w-full px-4 mt-20">
         <!-- Titre -->
         <div class="bg-indigo-600 text-white text-xl font-bold p-4 rounded-lg mb-6 shadow-lg">
             Tableau Prévisionnel des séances à venir
@@ -76,7 +76,7 @@ foreach($data as $data){
     if($compteur%2==1)
     {
         echo <<<HTML
-        <div class="space-y-4 mb-4">
+        <div class="w-full space-y-4 mb-4">
             <div class="bg-white shadow-lg p-4 rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors" onclick="toggleDetails('$detailsID')">
                 <p><strong>$matiere | $classe | $salle</strong></p>
                 <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
@@ -92,7 +92,7 @@ foreach($data as $data){
     elseif($compteur%2==0)
     {
         echo <<<HTML
-        <div class="space-y-4 mb-4">
+        <div class="w-full space-y-4 mb-4">
             <div class="bg-indigo-500 text-white p-4 rounded-lg cursor-pointer hover:bg-indigo-600 transition-colors shadow-lg" onclick="toggleDetails('$detailsID')">
                 <p><strong>$matiere | $classe | $salle</strong></p>
                 <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
@@ -110,7 +110,7 @@ foreach($data as $data){
     </div>
     
     <div class="mt-6 text-center text-sm text-gray-500">
-        <p>© 2023 Système d'information BTS - Tous droits réservés</p>
+        <p>© 2025 Système d'information BTS - Tous droits réservés</p>
     </div>
 </body>
 </html>
