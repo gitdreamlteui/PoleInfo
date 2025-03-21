@@ -41,18 +41,36 @@ $data=json_decode($response_reservation, true);
         <div class="bg-blue-600 text-white text-xl font-bold p-4 rounded-md mb-4">
             Tableau Prévisionnel des séances à venir
         </div> 
-<h1>
 <?php
 $compteur=0;
 foreach($data as $data){
     $compteur=$compteur+1;
+    $matiere=$data['nom_matiere'];
     $salle=$data['numero_salle'];
-    echo $salle;
+    $date=$data['date'];
+    $info=$data['info'];
+    $classe=$data['noms_classes'];
+    $prenom=$data['prenom'];
+    $nom=$data['nom_user'];
+    $debut=$data['heure_debut'];
+    $duree=$data['duree'];
+    echo <<<HTML
+    <div class="space-y-4">
+        <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
+            <p><strong>$matiere | $classe | $salle</strong></p>
+            <p class="flex justify-end"><strong>$debut - $duree</strong></p>
+            <p class="flex justify-end"><strong>$date</strong></p>
+            <p class="text-sm text-gray-900"><strong>$prenom - $nom</strong></p>
+        </div>
+        <div id="details1" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+            <p>$details</p>
+        </div>
+    </div>
+    HTML;
+        
 }
-echo $compteur;
-?>  
-</h1>     
-        <!-- Tableau -->
+?>      
+        <!-- Tableau 
         <div class="space-y-4">
             <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
                 <p><strong>Matière | Classe concernée | Salle</strong></p>
@@ -94,7 +112,7 @@ echo $compteur;
                 <p>Informations générales sur la séance...</p>
             </div>
         </div>
-
+        -->
     </div>
 </body>
 </html>
