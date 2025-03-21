@@ -4,6 +4,6 @@ session_start();
 session_unset();
 session_destroy();
 
-header('Location: ' . getWebUrl('/index.php'));
+header('Location: ../index.php');
 exit;
 ?>
