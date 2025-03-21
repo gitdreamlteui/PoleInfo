@@ -69,19 +69,37 @@ foreach($data as $data){
     $dt = new DateTime($date);
     $date = $dt->format("j/m");
     //affichage
-    echo <<<HTML
-    <div class="space-y-4">
-        <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
-            <p><strong>$matiere | $classe | $salle</strong></p>
-            <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
-            <p class="flex justify-end"><strong>$date</strong></p>
-            <p class="text-sm text-gray-900"><strong>$prenom - $nom</strong></p>
+    if(compteur%2==1)
+    {
+        echo <<<HTML
+        <div class="space-y-4">
+            <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
+                <p><strong>$matiere | $classe | $salle</strong></p>
+                <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
+                <p class="flex justify-end"><strong>$date</strong></p>
+                <p class="text-sm text-gray-900"><strong>$prenom - $nom</strong></p>
+            </div>
+            <div id="details1" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+                <p>$info</p>
+            </div>
         </div>
-        <div id="details1" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
-            <p>$info</p>
-        </div>
-    </div>
-    HTML;
+        HTML;
+    }
+    elseif(compteur%2==0)
+    {
+        echo <<<HTML
+        <div class="bg-blue-400 text-white p-4 rounded-md cursor-pointer" onclick="toggleDetails('details2')">
+                <p><strong>$matiere | $classe | $salle</strong></p>
+                <p class="flex justify-end"><strong>$heureString-$heurefinString</strong></p>
+                <p class="flex justify-end"><strong>$date</strong></p>
+                <p class="text-sm"><strong>$prenom - $nom</strong></p>
+            </div>
+            <div id="details2" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+                <p>info</p>
+            </div>
+        HTML;
+
+    }
         
 }
 ?>      
