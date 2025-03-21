@@ -61,7 +61,8 @@ foreach($data as $data){
     $heureString = sprintf("%02d:%02d", $heures, $minutes);
     $heureFloat = $heures + ($minutes / 60);
     //traitemement heure fin
-    $heuresfin=floor($heureFloat+$duree);
+    $heuresfinFloat = $heureFloat+$duree;
+    $heuresfin = floor($heuresfinFloat);
     $minutesfin = round(($heuresfin - $heuresFloat) * 60); // Partie décimale convertie en minutes = 10
     $heurefinString = sprintf("%02d:%02d", $heuresfin, $minutesfin);
     //traitement de la date
