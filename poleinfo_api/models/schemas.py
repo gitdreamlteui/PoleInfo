@@ -12,12 +12,14 @@ class UserResponse(BaseModel):
     username: str
 
 class ReservationCreate(BaseModel):
-    id_salle: int
-    id_user:int
-    id_matiere: int
-    id_creneau: int
-    duree: int
+    duree: float
     date: date
+    numero_salle: str
+    nom_matiere: str
+    heure_debut: timedelta
+    nom_user: str
+    prenom: str
+    noms_classes: str
     info: Optional[str] = None
 
 class ReservationResponse(BaseModel):
