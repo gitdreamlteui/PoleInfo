@@ -68,18 +68,20 @@ foreach($data as $data){
     //traitement de la date
     $dt = new DateTime($date);
     $date = $dt->format("j/m");
+    //
+    $detailsID="details_$compteur";
     //affichage
     if($compteur%2==1)
     {
         echo <<<HTML
         <div class="space-y-4">
-            <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails($compteur)">
+            <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails($detailsID)">
                 <p><strong>$matiere | $classe | $salle</strong></p>
                 <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
                 <p class="flex justify-end"><strong>$date</strong></p>
                 <p class="text-sm text-gray-900"><strong>$prenom - $nom</strong></p>
             </div>
-            <div id="details1" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+            <div id="$detailsID" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>$info</p>
             </div>
         </div>
@@ -94,7 +96,7 @@ foreach($data as $data){
                 <p class="flex justify-end"><strong>$date</strong></p>
                 <p class="text-sm"><strong>$prenom - $nom</strong></p>
             </div>
-            <div id="details2" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
+            <div id="$detailsID" class="bg-gray-200 p-4 rounded-md overflow-hidden transition-all duration-300 ease-in-out opacity-0" style="height: 0px;">
                 <p>info</p>
             </div>
         HTML;
