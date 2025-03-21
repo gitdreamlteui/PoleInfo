@@ -55,16 +55,16 @@ foreach($data as $data){
     $debut=$data['heure_debut'];
     $duree=$data['duree'];
     //traitement de l'heure debut
-    $interval = new DateInterval($heureDebut);
+    $interval = new DateInterval($debut);
     $heures = $interval->h;
     $minutes = $interval->i;
     $heureString = sprintf("%02d:%02d", $heures, $minutes);
     $heureFloat = $heures + ($minutes / 60);
     //traitemement heure fin
-    $heurefin=floor($heureFloat+$duree);
+    $heuresfin=floor($heureFloat+$duree);
     $minutesfin = round(($heureFloat - $heuresfin) * 60); // Partie décimale convertie en minutes = 10
     // Formater en "HH:MM"
-    $heureFin = sprintf("%02d:%02d", $heuresfin, $minutesfin);
+    $heurefinString = sprintf("%02d:%02d", $heuresfin, $minutesfin);
     //traitement de la date
     $dt = new DateTime($date);
     $date = $dt->format("j/m");
@@ -73,7 +73,7 @@ foreach($data as $data){
     <div class="space-y-4">
         <div class="bg-white shadow-md p-4 rounded-md cursor-pointer" onclick="toggleDetails('details1')">
             <p><strong>$matiere | $classe | $salle</strong></p>
-            <p class="flex justify-end"><strong>$heureString - $heurefin</strong></p>
+            <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
             <p class="flex justify-end"><strong>$date</strong></p>
             <p class="text-sm text-gray-900"><strong>$prenom - $nom</strong></p>
         </div>
