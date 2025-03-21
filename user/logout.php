@@ -1,8 +1,10 @@
 <?php
-session_start(); // Il faut d'abord démarrer la session avant de la détruire
+require_once 'config.php';
+session_start();
 session_unset();
 session_destroy();
-echo "Vous êtes maintenant déconnecté"; // Ajout du point-virgule manquant
-header('Location: http://127.0.0.1/user/index.php');
+$web_url = getWebUrl();
+
+header('Location: ' . getWebUrl('/interface_login.php?error='));
 exit;
 ?>
