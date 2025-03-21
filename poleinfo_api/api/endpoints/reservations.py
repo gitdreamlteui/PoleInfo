@@ -31,7 +31,7 @@ def create_reservation(reservation: ReservationCreate, username: str = Depends(v
 ### GET RESERVATION
 
 @router.get("/", response_model=List[ReservationResponse])
-def get_reservations(salle: int = Query(None, description="Numéro de la salle")):
+def get_reservations(salle: str = Query(None, description="Numéro de la salle")):
     if salle is not None:
         reservations = get_reservations_by_salle(salle)
     else:

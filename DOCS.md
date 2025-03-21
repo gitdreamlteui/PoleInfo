@@ -97,6 +97,11 @@ jobs:
       - name: Déployer via Ansible
         run: ansible-playbook -i inventory.ini deploy.yml
 ```
-
+# Usage de l'API
+```
+curl -X 'GET' \
+  'http://192.168.8.152:8000/reservations/?salle=3C01' \
+  -H 'accept: application/json'
+```
 
 

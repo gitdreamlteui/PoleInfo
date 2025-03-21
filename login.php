@@ -1,10 +1,14 @@
 <?php
 session_start();
+// Inclure le fichier de configuration
+require_once 'config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $api_url_token = "http://192.168.8.152:8000/token";
+    
+    // Utiliser les fonctions de configuration pour récupérer l'URL
+    $api_url_token = getTokenUrl();
 
     // Utilisation de cURL pour une meilleure gestion des erreurs
     $ch = curl_init($api_url_token);
@@ -12,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query([
-        'grant_type' => 'password',
+        'grant_type' => getGrantType(),
         'username' => $username,
         'password' => $password
     ]));
@@ -31,11 +35,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['token'] = $token_data['access_token'];
             $_SESSION['username'] = $username;
             // Redirection après le stockage du token
-            header('Location: http://192.168.8.152/PoleInfo/user/dashboard.php');
+            header('Location: ' . getWebUrl('/user/dashboard.php'));
             exit();
         } else {
             // Si le token n'est pas présent dans la réponse
-            header('Location: http://192.168.8.152/PoleInfo/interface_login.php?error=no_token');
+            header('Location: ' . getWebUrl('/interface_login.php?error=no_token'));
             exit();
         }
     } else {
@@ -46,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif ($http_code === 401) {
             $error_message = "Non autorisé";
         }
-        header('Location: http://192.168.8.152/PoleInfo/interface_login.php?error=' . urlencode($error_message));
+        header('Location: ' . getWebUrl('/interface_login.php?error=' . urlencode($error_message)));
         exit();
     }
 }
