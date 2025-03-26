@@ -1,39 +1,35 @@
 """Routes pour la gestion des utilisateurs"""
-from fastapi import APIRouter, HTTPException, status
-from db.fake_db import fake_users_db
+from fastapi import APIRouter, HTTPException, status, Depends
+from typing import List, Optional
 from models.schemas import UserCreate, UserResponse
-from core.security import hash_password
+from models.user import create_user, get_user_by_login
+from core.auth import verify_token
 
-router = APIRouter()
+router = APIRouter(
+    tags=["utilisateurs"]
+)
 
-@router.post("/", response_model=UserResponse)
-def create_user(user: UserCreate):
-    """Créer un nouvel utilisateur"""
-    user_id = len(fake_users_db) + 1
-    hashed_password = hash_password(user.password)
+@router.post("/", response_model=dict)
+def add_user(user: UserCreate, admin_username: str = Depends(verify_token)):
+    """Créer un nouvel utilisateur (protégée par authentification admin)"""
+    # AJOUTER VERIFICATION ADMIN
     
-    fake_users_db[user_id] = {"username": user.username, "password": hashed_password}
-    return {"id": user_id, "username": user.username}
-
-@router.get("/", response_model=list[UserResponse])
-def get_users():
-    """Récupérer la liste des utilisateurs"""
-    if not fake_users_db:
+    # si le login existe déjà
+    existing_user = get_user_by_login(user.login)
+    if existing_user:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail="Aucun utilisateur"
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Un utilisateur avec ce login existe déjà"
         )
-    return [{"id": user_id, "username": data["username"]} for user_id, data in fake_users_db.items()]
-
-@router.get("/{user_id}", response_model=UserResponse)
-def get_user(user_id: int):
-    """Récupérer un utilisateur par son ID"""
-    user = fake_users_db.get(user_id)
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, 
-            detail="Utilisateur non trouvé"
-        )
+        
+    new_user = {
+        "login": user.login,
+        "passwd": user.password,
+        "type": user.type,
+        "nom": user.nom,
+        "prenom": user.prenom
+    }
     
-    return {"id": user_id, "username": user["username"]}
-
+    user_id = create_user(new_user)
+    
+    return {"message": "Utilisateur créé avec succès", "id": user_id}
