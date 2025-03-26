@@ -3,13 +3,18 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import date
 from datetime import timedelta
-class UserCreate(BaseModel):
-    username: str
+
+class UserBase(BaseModel):
+    login: str
+    type: int
+    nom: str
+    prenom: str
+
+class UserCreate(UserBase):
     password: str
 
-class UserResponse(BaseModel):
-    id: int
-    username: str
+class UserResponse(UserBase):
+    id_user: int
 
 class ReservationCreate(BaseModel):
     duree: float

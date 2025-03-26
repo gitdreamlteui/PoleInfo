@@ -29,8 +29,7 @@ def create_reservation(reservation: ReservationCreate, username: str = Depends(v
     post_reservation(reservation);
     return {"message": f"Réservation enregistrée par {username}.", "id": reservation_id}
 
-### GET RESERVATION
-
+### GET RESERVATION (pas fini)
 @router.get("/", response_model=List[ReservationResponse])
 def get_reservations(salle: str = Query(None, description="Numéro de la salle")):
     if salle is not None:
