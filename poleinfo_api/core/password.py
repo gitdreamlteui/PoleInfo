@@ -1,5 +1,4 @@
 """Fonctions de hachage et de vérification de mot de passe"""
-
 from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
