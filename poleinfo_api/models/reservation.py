@@ -58,3 +58,8 @@ def get_reservations_by_salle(numero_salle: str) -> List[Dict[str, Any]]:
         """
         cursor.execute(query, (numero_salle,))
         return cursor.fetchall()
+
+def post_reservation(reservation):
+    with get_db_cursor() as cursor:
+        query_ = """"""
+    return None
