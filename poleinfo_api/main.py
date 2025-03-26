@@ -5,7 +5,7 @@ Date : 07/02/2025
 """
 
 from fastapi import FastAPI
-from api.endpoints import auth, utilisateurs, reservations 
+from api.endpoints import auth, users, reservations 
 from datetime import datetime
 import locale
 
@@ -14,7 +14,7 @@ app = FastAPI(title="PoleInfo API", description="API de gestion des réservation
 
 # Inclusion des routeurs
 app.include_router(auth.router)
-app.include_router(utilisateurs.router, prefix="/utilisateurs", tags=["utilisateurs"])
+app.include_router(users.router, prefix="/utilisateurs", tags=["utilisateurs"])
 app.include_router(reservations.router, prefix="/reservations", tags=["reservations"])
 
 @app.get("/")
