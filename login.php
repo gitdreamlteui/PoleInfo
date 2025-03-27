@@ -35,6 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['token'] = $token_data['access_token'];
             $_SESSION['type_compte'] = $token_data['user_type'];
             $_SESSION['username'] = $username;
+            
             // Redirection après le stockage du token
             if ($_SESSION['type_compte'] == 1){
                 header('Location: ' . getWebUrl('/admin/interface_admin.php'));    

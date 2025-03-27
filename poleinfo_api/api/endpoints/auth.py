@@ -20,7 +20,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
         )
     type_user = user["type"]
     token = create_access_token(user["id_user"])
-    return {"access_token": token, "token_type": "bearer", "type": type_user}
+    return {"access_token": token, "token_type": "bearer", "user_type": type_user}
 
 @router.get("/verify-token")
 def verify_token_endpoint(user_id: int = Depends(verify_token)):
