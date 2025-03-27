@@ -33,9 +33,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if (isset($token_data['access_token'])) {
             $_SESSION['token'] = $token_data['access_token'];
+            $_SESSION['type_compte'] = $token_data['user_type'];
             $_SESSION['username'] = $username;
             // Redirection après le stockage du token
-            header('Location: ' . getWebUrl('/user/dashboard.php'));
+            if ($_SESSION['type_compte'] == 1){
+                header('Location: ' . getWebUrl('/admin/interface_admin.php'));    
+            }
+            else {
+                header('Location: ' . getWebUrl('/user/dashboard.php'));
+            }
             exit();
         } else {
             // Si le token n'est pas présent dans la réponse
