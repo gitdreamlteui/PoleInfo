@@ -92,7 +92,7 @@ foreach($data as $data){
     {
         echo <<<HTML
         <div class="w-full space-y-4 mb-4">
-            <div class="bg-grey-800 text-white p-4 rounded-lg cursor-pointer hover:bg-indigo-1000 transition-colors shadow-lg" onclick="toggleDetails('$detailsID')">
+            <div class="bg-indigo-600 text-white p-4 rounded-lg cursor-pointer hover:bg-indigo-400 transition-colors shadow-lg" onclick="toggleDetails('$detailsID')">
                 <p><strong>$matiere | $classe | $salle</strong></p>
                 <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
                 <p class="flex justify-end"><strong>$date</strong></p>
