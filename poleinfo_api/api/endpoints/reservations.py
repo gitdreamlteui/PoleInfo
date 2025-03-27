@@ -1,5 +1,4 @@
 """Routes pour la gestion des réservations"""
-from db.fake_db import fake_reservation_db
 from models.schemas import ReservationCreate, ReservationResponse
 from core.auth import verify_token
 
