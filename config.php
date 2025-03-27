@@ -17,7 +17,7 @@ $config = [
         'ip' => '192.168.8.152',
         'port' => '80',
         'protocol' => 'http',
-        'base_path' => '/PoleInfo'
+        'base_path' => '/'
     ],
     
     // Paramètres d'authentification
