@@ -7,7 +7,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
 from datetime import date
 
-from models.reservation import get_all_reservations, get_reservations_by_salle, post_reservation
+from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation
 
 router = APIRouter(
     tags=["reservations"]
@@ -29,11 +29,13 @@ def create_reservation(reservation: ReservationCreate, username: str = Depends(v
     post_reservation(reservation);
     return {"message": f"Réservation enregistrée par {username}.", "id": reservation_id}
 
-### GET RESERVATION (pas fini)
+### GET RESERVATION
 @router.get("/", response_model=List[ReservationResponse])
-def get_reservations(salle: str = Query(None, description="Numéro de la salle")):
-    if salle is not None:
-        reservations = get_reservations_by_salle(salle)
+def get_reservations(salle: str = Query(None, description="Numéro de la salle"),
+                     croissant: bool = Query(None, description="Retourne les reservations dans l'ordre croissant")):
+    
+    if salle is not None and croissant is not None:
+        reservations = get_reservations_by_salle_increase(salle)
     else:
         reservations = get_all_reservations()
     
@@ -42,5 +44,4 @@ def get_reservations(salle: str = Query(None, description="Numéro de la salle")
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Aucune réservation trouvée"
         )
-    
     return reservations
