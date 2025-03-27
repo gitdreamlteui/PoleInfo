@@ -8,7 +8,7 @@ def get_user_by_login(login):
         cursor.execute("SELECT * FROM user WHERE login = %s", (login,))
         user = cursor.fetchone()
         return user
-
+    
 def get_user_by_id(user_id):
     """Récupère un utilisateur par son ID"""
     with get_db_cursor() as cursor:

@@ -13,15 +13,14 @@ router = APIRouter(tags=["authentication"])
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     """Authentification des utilisateurs existants et génération de token JWT"""
     user = authenticate_user(form_data.username, form_data.password)
-    
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Identifiants incorrects"
         )
-    
+    type_user = user["type"]
     token = create_access_token(user["id_user"])
-    return {"access_token": token, "token_type": "bearer"}
+    return {"access_token": token, "token_type": "bearer", "type": type_user}
 
 @router.get("/verify-token")
 def verify_token_endpoint(user_id: int = Depends(verify_token)):
