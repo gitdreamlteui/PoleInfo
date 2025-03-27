@@ -4,13 +4,14 @@ from typing import List, Optional
 from models.schemas import UserCreate, UserResponse
 from models.user import create_user, get_user_by_login
 from core.auth import verify_token
+from core.security import verify_admin
 
 router = APIRouter(
     tags=["utilisateurs"]
 )
 
 @router.post("/", response_model=dict)
-def add_user(user: UserCreate, admin_username: str = Depends(verify_token)):
+def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
     """Créer un nouvel utilisateur (protégée par authentification admin)"""
     # AJOUTER VERIFICATION ADMIN
     

@@ -1,6 +1,6 @@
 """Fonctions d'accès aux données utilisateur"""
 from db.database import get_db_cursor
-from core.security import verify_password, hash_password
+from core.password import verify_password, hash_password
 
 def get_user_by_login(login):
     """Récupère un utilisateur par son login"""

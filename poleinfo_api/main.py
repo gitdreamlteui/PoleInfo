@@ -5,7 +5,7 @@ Date : 07/02/2025
 """
 
 from fastapi import FastAPI
-from api.endpoints import auth, users, reservations
+from api.endpoints import auth, users, reservations 
 from datetime import datetime
 import locale
 

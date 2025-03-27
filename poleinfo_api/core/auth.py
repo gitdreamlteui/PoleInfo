@@ -16,7 +16,6 @@ def verify_token(token: str = Depends(oauth2_scheme)) -> int:
         detail="Credentials invalides",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         user_id_str: str = payload.get("sub")
@@ -26,7 +25,7 @@ def verify_token(token: str = Depends(oauth2_scheme)) -> int:
             
         user_id = int(user_id_str)  # Convertir en entier
         
-        # Vérifier si l'utilisateur existe dans la base de données
+        # Vérifier si l'utilisateur exis te dans la base de données
         user = get_user_by_id(user_id)
         if user is None:
             raise credentials_exception
@@ -34,3 +33,4 @@ def verify_token(token: str = Depends(oauth2_scheme)) -> int:
         return user_id
     except (JWTError, ValueError):
         raise credentials_exception
+
