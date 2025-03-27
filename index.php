@@ -31,7 +31,7 @@ $data=json_decode($response_reservation, true);
     <!-- Barre de navigation -->
     <header class="bg-indigo-600 text-white p-4 flex justify-between items-center w-full fixed top-0 left-0 right-0 shadow-md">
         <h1 class="text-xl font-bold">Système d'information BTS - Réservation</h1>
-        <a href="/user/interface_login.php">
+        <a href="interface_login.php">
             <button class="bg-white px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-md font-semibold">
                 Se connecter
             </button>
