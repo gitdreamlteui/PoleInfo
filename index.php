@@ -14,8 +14,7 @@ $data=json_decode($response_reservation, true);
         function toggleDetails(id) {
             const details = document.getElementById(id);
             if (details.style.height === "" || details.style.height === "0px") {
-                details.style.heigh
-                t = details.scrollHeight + "px";
+                details.style.height = details.scrollHeight + "px";
                 details.classList.remove("opacity-0");
                 details.classList.add("opacity-100");
             }   
