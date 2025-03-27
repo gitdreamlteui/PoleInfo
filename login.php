@@ -34,6 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($token_data['access_token'])) {
             $_SESSION['token'] = $token_data['access_token'];
             $_SESSION['username'] = $username;
+            
             // Redirection après le stockage du token
             header('Location: ' . getWebUrl('/user/dashboard.php'));
             exit();
