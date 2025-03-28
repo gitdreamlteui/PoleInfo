@@ -34,7 +34,7 @@ if (!$data) {
     die("Erreur : Impossible de décoder le JSON.");
 }
 
-$username = $data["user"] ?? "Inconnu";
+$username = $data["user_name"] ?? "Inconnu";
 
 $success_message = "";
 if (isset($_SESSION['info_message'])) {

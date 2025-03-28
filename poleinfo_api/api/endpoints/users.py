@@ -13,9 +13,7 @@ router = APIRouter(
 @router.post("/", response_model=dict)
 def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
     """Créer un nouvel utilisateur (protégée par authentification admin)"""
-    # AJOUTER VERIFICATION ADMIN
     
-    # si le login existe déjà
     existing_user = get_user_by_login(user.login)
     if existing_user:
         raise HTTPException(
