@@ -1,15 +1,15 @@
 :root {
-    --primary: #4F46E5    ; /* indigo-600 */
+    --primary: #4f46e5; /* indigo-600 */
     --primary-dark: #4338ca; /* indigo-700 */
     --primary-light: #818cf8; /* indigo-400 */
     --primary-lighter: #e0e7ff; /* indigo-100 */
-    --secondary: #2b20c6; /* indigo-950 */
+    --secondary: #1e1b4b; /* indigo-950 */
     --success: #059669;
     --danger: #dc2626;
     --warning: #d97706;
     --light-bg: #f8fafc;
     --card-bg: #ffffff;
-    --text-dark: #1049a4;
+    --text-dark: #1e293b;
     --text-light: #64748b;
     --border-color: #e2e8f0;
     --radius: 0.5rem;
