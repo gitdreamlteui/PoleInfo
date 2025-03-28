@@ -1,442 +1,238 @@
 <?php
-$request_reservation = "http://192.168.8.152:8000/reservations/?croissant=true"; // Remplace par l'URL de l'API
+$request_reservation = "http://192.168.8.152:8000/reservations/?croissant=true";
 $response_reservation = file_get_contents($request_reservation);
 $data = json_decode($response_reservation, true);
+
+// Fonction pour formater l'heure à partir d'un intervalle
+function formaterHeure($interval, $duree = 0) {
+    $intervalObj = new DateInterval($interval);
+    $heures = $intervalObj->h;
+    $minutes = $intervalObj->i;
+    
+    $heureFloat = $heures + ($minutes / 60);
+    
+    if ($duree > 0) {
+        $heuresFin = floor($heureFloat + $duree);
+        $minutesFin = round(($heureFloat + $duree - $heuresFin) * 60);
+        return sprintf("%02d:%02d", $heuresFin, $minutesFin);
+    }
+    
+    return sprintf("%02d:%02d", $heures, $minutes);
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tableau des Réservations - Système d'information BTS</title>
+    <title>Réservations - Système d'information BTS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Polices plus lisibles pour l'affichage */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            --primary: #4f46e5;
-            --primary-light: #818cf8;
-            --primary-lighter: #e0e7ff;
-            --secondary: #1e1b4b;
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-        
-        /* Animation de mise à jour des informations */
-        @keyframes highlight {
-            0% { background-color: rgba(79, 70, 229, 0.2); }
-            100% { background-color: transparent; }
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.25);
         }
-        
-        .info-update {
-            animation: highlight 2s ease-out;
-        }
-        
-        /* Style pour l'horloge */
-        .time-display {
-            font-variant-numeric: tabular-nums;
-            letter-spacing: 0.05em;
-        }
-        
-        /* Entêtes de section avec dégradé */
-        .section-header {
-            background: linear-gradient(to right, var(--secondary), var(--primary));
-        }
-
-        /* Pour améliorer la lisibilité sur les grands écrans d'affichage */
-        .reservation-card {
-            transition: all 0.3s ease;
-        }
-        
-        .reservation-card:hover {
-            transform: scale(1.01);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Animation pour le chargement des réservations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .fade-in {
-            animation: fadeIn 0.5s ease forwards;
-        }
-
-        /* Animation pour les détails */
-        .details-container {
+        .card-details {
+            max-height: 0;
             overflow: hidden;
-            transition: height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+            transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+        }
+        .animate-pulse-light {
+            animation: pulse-light 2s infinite;
+        }
+        @keyframes pulse-light {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
     </style>
+    <script>
+        function toggleDetails(id) {
+            const details = document.getElementById(id);
+            const icon = document.getElementById(`icon-${id}`);
+            
+            if (details.style.maxHeight === "" || details.style.maxHeight === "0px") {
+                details.style.maxHeight = "200px"; // Hauteur maximale pour l'animation
+                details.classList.remove("opacity-0");
+                details.classList.add("opacity-100");
+                icon.classList.replace("fa-chevron-down", "fa-chevron-up");
+            } else {
+                details.style.maxHeight = "0px";
+                details.classList.remove("opacity-100");
+                details.classList.add("opacity-0");
+                icon.classList.replace("fa-chevron-up", "fa-chevron-down");
+            }
+        }
+    </script>
 </head>
-<body class="bg-indigo-50 min-h-screen flex flex-col">
-    <!-- Entête fixe -->
-    <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-10">
-        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-2">
-                <i class="fas fa-calendar-alt text-2xl text-indigo-300"></i>
-                <h1 class="text-xl lg:text-2xl font-bold tracking-wide">Système d'Information BTS</h1>
-            </div>
-            <div class="flex items-center gap-4">
-                <div class="time-display text-xl font-semibold hidden md:block" id="clock">00:00:00</div>
-                <a href="interface_login.php">
-                    <button class="bg-white px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-md font-semibold flex items-center">
-                        <i class="fas fa-sign-in-alt mr-2"></i>
-                        Se connecter
-                    </button>
-                </a>
-            </div>
+<body class="bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen">
+    
+    <!-- Barre de navigation -->
+    <header class="bg-gradient-to-r from-indigo-700 to-indigo-500 text-white p-4 flex justify-between items-center w-full fixed top-0 left-0 right-0 shadow-lg z-10">
+        <div class="flex items-center space-x-2">
+            <i class="fas fa-calendar-alt text-xl"></i>
+            <h1 class="text-xl font-bold">Système d'information BTS</h1>
         </div>
+        <a href="interface_login.php">
+            <button class="bg-white px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-400 transition-all shadow-md font-semibold flex items-center space-x-1">
+                <i class="fas fa-sign-in-alt"></i>
+                <span>Se connecter</span>
+            </button>
+        </a>
     </header>
-
-    <!-- Bannière d'information -->
-    <div class="bg-indigo-600 text-white px-4 py-3 text-center text-lg font-medium shadow">
-        <div class="container mx-auto">
-            <i class="fas fa-bullhorn mr-2"></i> 
-            <span id="announcement">Planning des réservations de salles</span>
+    
+    <div class="w-full max-w-6xl mx-auto px-4 pt-24 pb-10">
+        <!-- Titre principal -->
+        <div class="mb-6 text-center">
+            <h2 class="text-2xl font-bold text-indigo-800 mb-2">Tableau Prévisionnel des Séances</h2>
+            <div class="h-1 w-20 bg-indigo-500 mx-auto rounded-full"></div>
         </div>
-    </div>
-
-    <!-- Filtre rapide (jour actuel, semaine) -->
-    <div class="container mx-auto px-4 py-4 flex flex-wrap gap-2 items-center">
-        <div class="text-lg font-semibold text-indigo-800 mr-2">Filtre rapide :</div>
-        <button id="btn-today" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-4 py-2 rounded-lg font-medium transition-colors">
-            <i class="fas fa-calendar-day mr-1"></i> Aujourd'hui
-        </button>
-        <button id="btn-tomorrow" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-4 py-2 rounded-lg font-medium transition-colors">
-            <i class="fas fa-arrow-right mr-1"></i> Demain
-        </button>
-        <button id="btn-week" class="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 px-4 py-2 rounded-lg font-medium transition-colors">
-            <i class="fas fa-calendar-week mr-1"></i> Cette semaine
-        </button>
-        <button id="btn-all" class="bg-indigo-500 text-white px-4 py-2 rounded-lg font-medium transition-colors hover:bg-indigo-600">
-            <i class="fas fa-list mr-1"></i> Toutes
-        </button>
         
-        <div class="ml-auto mt-2 md:mt-0">
-            <span class="text-indigo-700 font-medium">Dernière mise à jour :</span> 
-            <span id="last-update" class="text-indigo-900 font-semibold"></span>
-        </div>
-    </div>
-
-    <!-- Titre et statistiques -->
-    <div class="container mx-auto px-4 py-4">
-        <div class="bg-gradient-to-r from-indigo-800 to-indigo-600 rounded-xl shadow-lg p-6 text-white mb-6">
-            <h2 class="text-2xl lg:text-3xl font-bold mb-2">Tableau des Réservations</h2>
-            <p class="opacity-90 mb-4">Consultez les réservations de salles à venir</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
-                <div class="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
-                    <div class="text-lg font-semibold"><i class="fas fa-calendar-check mr-2"></i> <span id="total-count"><?php echo count($data); ?></span></div>
-                    <div class="text-sm opacity-75">Réservations au total</div>
+        <!-- Carte d'information -->
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-lg shadow-md mb-6">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-info-circle text-blue-500"></i>
                 </div>
-                <div class="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
-                    <div class="text-lg font-semibold"><i class="fas fa-calendar-day mr-2"></i> <span id="today-count">0</span></div>
-                    <div class="text-sm opacity-75">Réservations aujourd'hui</div>
-                </div>
-                <div class="bg-white/20 rounded-lg p-3 backdrop-blur-sm">
-                    <div class="text-lg font-semibold"><i class="fas fa-door-open mr-2"></i> <span id="rooms-count">0</span></div>
-                    <div class="text-sm opacity-75">Salles différentes</div>
+                <div class="ml-3">
+                    <p class="text-sm text-blue-700">
+                        Cliquez sur une réservation pour afficher plus de détails. Mises à jour en temps réel.
+                    </p>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Grille des réservations -->
-    <div class="container mx-auto px-4 py-2 flex-1">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6" id="reservation-grid">
-            <?php
-            $compteur = 0;
-            $unique_rooms = [];
-            $today_count = 0;
-            $current_date = date("Y-m-d"); // Format de date pour comparaison
-            
-            foreach($data as $index => $reservation) {
-                $compteur++;
+        <!-- Container de réservations -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <?php foreach($data as $index => $reservation): 
+                // Formatage des données
                 $matiere = $reservation['nom_matiere'];
                 $salle = $reservation['numero_salle'];
-                $date = $reservation['date'];
-                $info = $reservation['info'] ?? 'Aucune information complémentaire';
                 $classe = $reservation['noms_classes'];
                 $prenom = $reservation['prenom'];
                 $nom = $reservation['nom_user'];
-                $debut = $reservation['heure_debut'];
-                $duree = $reservation['duree'];
+                $info = $reservation['info'] ?: "Aucune information complémentaire.";
                 
-                // Ajouter à la liste des salles uniques
-                if (!in_array($salle, $unique_rooms)) {
-                    $unique_rooms[] = $salle;
-                }
+                // Formatage de la date
+                $dt = new DateTime($reservation['date']);
+                $jour = $dt->format("d");
+                $mois = $dt->format("m");
+                $nomJour = $dt->format("D");
                 
-                // Traitement de l'heure debut
-                $interval = new DateInterval($debut);
-                $heures = $interval->h;
-                $minutes = $interval->i;
-                $heureString = sprintf("%02d:%02d", $heures, $minutes);
-                $heureFloat = $heures + ($minutes / 60);
-                
-                // Traitement heure fin
-                $heuresfin = floor($heureFloat + $duree);
-                $minutesfin = ($heureFloat + $duree - $heuresfin) * 60;  // Partie décimale convertie en minutes
-                $heurefinString = sprintf("%02d:%02d", $heuresfin, $minutesfin);
-                
-                // Traitement de la date pour l'affichage
-                $dt = new DateTime($date);
-                $date_display = $dt->format("j/m");
-                $date_full = $dt->format("j F Y");
-                $jour_semaine = $dt->format("l");
-                
-                // Traduction du jour de la semaine
-                $jours_fr = [
-                    'Monday' => 'Lundi',
-                    'Tuesday' => 'Mardi',
-                    'Wednesday' => 'Mercredi',
-                    'Thursday' => 'Jeudi',
-                    'Friday' => 'Vendredi',
-                    'Saturday' => 'Samedi',
-                    'Sunday' => 'Dimanche'
+                // Traduction du jour en français
+                $joursTraduction = [
+                    'Mon' => 'Lun',
+                    'Tue' => 'Mar',
+                    'Wed' => 'Mer',
+                    'Thu' => 'Jeu',
+                    'Fri' => 'Ven',
+                    'Sat' => 'Sam',
+                    'Sun' => 'Dim'
                 ];
-                $jour_fr = $jours_fr[$jour_semaine];
+                $jourFr = $joursTraduction[$nomJour] ?? $nomJour;
                 
-                // Format pour data-date pour le filtrage JavaScript
-                $date_filter = $dt->format("Y-m-d");
+                // Formatage des heures
+                $heureDebut = formaterHeure($reservation['heure_debut']);
+                $heureFin = formaterHeure($reservation['heure_debut'], $reservation['duree']);
                 
-                // Vérifier si la réservation est pour aujourd'hui
-                if ($date_filter === $current_date) {
-                    $today_count++;
-                }
+                // ID unique pour les détails
+                $detailsID = "details_" . ($index + 1);
                 
-                // ID pour les détails
-                $detailsID = "details_$compteur";
+                // Choix des couleurs (alternance)
+                $bgColor = $index % 2 == 0 
+                    ? "bg-white hover:bg-indigo-50" 
+                    : "bg-gradient-to-r from-indigo-600 to-indigo-500 text-white hover:from-indigo-500 hover:to-indigo-400";
                 
-                // Déterminer le style en fonction du compteur
-                $card_style = $compteur % 2 == 0 
-                    ? "bg-indigo-600 text-white hover:bg-indigo-700" 
-                    : "bg-white hover:bg-indigo-50 border border-indigo-100";
-                
-                $text_style = $compteur % 2 == 0 
-                    ? "text-white" 
-                    : "text-indigo-700";
-                
-                $delay = ($index % 10) * 0.05; // Animation staggerée pour les cartes
-                
-                echo <<<HTML
-                <div class="reservation-card fade-in $card_style rounded-xl shadow-lg overflow-hidden" 
-                     style="animation-delay: {$delay}s;" data-date="$date_filter">
-                    <div class="p-4 cursor-pointer" onclick="toggleDetails('$detailsID')">
-                        <div class="flex justify-between items-center mb-3">
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-800 text-white">$jour_fr $date_display</span>
-                            <span class="px-3 py-1 rounded-full text-xs font-semibold bg-indigo-800 text-white">$heureString - $heurefinString</span>
-                        </div>
-                        
-                        <h3 class="text-xl font-bold mb-1 flex items-center">
-                            <i class="fas fa-book-open mr-2"></i>$matiere
-                        </h3>
-                        
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 my-3">
-                            <div class="flex items-center $text_style">
-                                <i class="fas fa-users mr-2"></i>
-                                <span>$classe</span>
+                $textColor = $index % 2 == 0 ? "text-indigo-900" : "text-white";
+                $timeColor = $index % 2 == 0 ? "text-indigo-600" : "text-indigo-100";
+                $borderColor = $index % 2 == 0 ? "border-indigo-200" : "border-indigo-400";
+            ?>
+            
+            <div class="space-y-1">
+                <!-- Carte de réservation -->
+                <div class="card-hover <?= $bgColor ?> shadow-md rounded-lg overflow-hidden border <?= $borderColor ?>">
+                    <div class="p-4 cursor-pointer" onclick="toggleDetails('<?= $detailsID ?>')">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex items-center space-x-2">
+                                <span class="<?= $textColor ?> font-bold"><?= htmlspecialchars($matiere) ?></span>
+                                <span class="px-2 py-0.5 rounded text-xs bg-opacity-20 <?= $index % 2 == 0 ? 'bg-indigo-500 text-indigo-800' : 'bg-white text-indigo-800' ?>"><?= htmlspecialchars($classe) ?></span>
                             </div>
-                            <div class="flex items-center $text_style">
-                                <i class="fas fa-door-open mr-2"></i>
-                                <span>Salle $salle</span>
-                            </div>
-                            <div class="flex items-center $text_style">
-                                <i class="fas fa-chalkboard-teacher mr-2"></i>
-                                <span>$prenom $nom</span>
+                            <div class="<?= $timeColor ?> font-semibold text-right">
+                                <?= $heureDebut ?> - <?= $heureFin ?>
                             </div>
                         </div>
                         
-                        <div class="text-right">
-                            <button class="text-xs font-medium underline focus:outline-none">
-                                Détails <i class="fas fa-chevron-down ml-1"></i>
-                            </button>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-map-marker-alt <?= $index % 2 == 0 ? 'text-indigo-400' : 'text-indigo-200' ?>"></i>
+                                <span class="<?= $index % 2 == 0 ? 'text-indigo-600' : 'text-indigo-100' ?>"><?= htmlspecialchars($salle) ?></span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="flex flex-col items-center justify-center <?= $index % 2 == 0 ? 'bg-indigo-100' : 'bg-indigo-400' ?> rounded-md w-10 h-10">
+                                    <span class="text-xs <?= $index % 2 == 0 ? 'text-indigo-700' : 'text-white' ?>"><?= $jourFr ?></span>
+                                    <span class="text-sm font-bold <?= $index % 2 == 0 ? 'text-indigo-700' : 'text-white' ?>"><?= $jour ?>/<?= $mois ?></span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center mt-2">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-user <?= $index % 2 == 0 ? 'text-indigo-400' : 'text-indigo-200' ?>"></i>
+                                <span class="<?= $index % 2 == 0 ? 'text-gray-600' : 'text-indigo-100' ?> text-sm"><?= htmlspecialchars("$prenom $nom") ?></span>
+                            </div>
+                            <i id="icon-<?= $detailsID ?>" class="fas fa-chevron-down <?= $index % 2 == 0 ? 'text-indigo-400' : 'text-indigo-200' ?>"></i>
                         </div>
                     </div>
                     
-                    <div id="$detailsID" class="details-container bg-indigo-50 border-t border-indigo-200 p-0 opacity-0" style="height: 0px;">
-                        <div class="p-4">
-                            <h4 class="font-semibold text-indigo-800 mb-2">Informations complémentaires</h4>
-                            <p class="text-gray-700">$info</p>
+                    <!-- Section de détails cachée -->
+                    <div id="<?= $detailsID ?>" class="card-details opacity-0 bg-indigo-50 p-4 border-t border-indigo-200">
+                        <div class="flex items-start">
+                            <i class="fas fa-info-circle text-indigo-500 mt-1 mr-2"></i>
+                            <div class="text-gray-700 text-sm"><?= nl2br(htmlspecialchars($info)) ?></div>
                         </div>
                     </div>
                 </div>
-                HTML;
-            }
-            ?>
+            </div>
+            
+            <?php endforeach; ?>
+            
+            <?php if (empty($data)): ?>
+            <div class="col-span-2 text-center p-10">
+                <div class="text-gray-500">
+                    <i class="fas fa-calendar-times text-4xl mb-3"></i>
+                    <p>Aucune réservation à afficher pour le moment.</p>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
         
-        <!-- Message si aucune réservation -->
-        <div id="no-results" class="hidden bg-white rounded-lg shadow-lg p-8 text-center my-8">
-            <i class="fas fa-calendar-times text-indigo-300 text-5xl mb-4"></i>
-            <h3 class="text-xl font-semibold text-indigo-800 mb-2">Aucune réservation trouvée</h3>
-            <p class="text-gray-600">Il n'y a pas de réservation correspondant à vos critères de filtrage.</p>
-            <button id="reset-filter" class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors">
-                Afficher toutes les réservations
-            </button>
+        <!-- Indicateur de mise à jour -->
+        <div class="text-center mt-6">
+            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-indigo-100 text-indigo-800">
+                <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse-light mr-2"></span>
+                Dernière mise à jour: <?= date('d/m/Y à H:i') ?>
+            </span>
         </div>
     </div>
-
-    <!-- Pied de page -->
-    <footer class="bg-indigo-900 text-white py-4 mt-auto">
-        <div class="container mx-auto px-4 text-center">
-            <p>© 2025 Système d'information BTS - Tous droits réservés</p>
-            <p class="mt-1 text-indigo-300 text-sm">Pour signaler un problème avec le système de réservation, contactez l'administrateur</p>
+    
+    <footer class="bg-gradient-to-r from-indigo-800 to-indigo-700 text-white py-6 shadow-inner">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p class="font-semibold">© 2025 Système d'information BTS</p>
+                    <p class="text-xs text-indigo-200">Tous droits réservés</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="text-indigo-200 hover:text-white transition-colors">Mentions légales</a>
+                    <a href="#" class="text-indigo-200 hover:text-white transition-colors">Aide</a>
+                    <a href="#" class="text-indigo-200 hover:text-white transition-colors">Contact</a>
+                </div>
+            </div>
         </div>
     </footer>
-
-    <script>
-        // Initialisation des compteurs
-        document.getElementById('today-count').textContent = "<?php echo $today_count; ?>";
-        document.getElementById('rooms-count').textContent = "<?php echo count($unique_rooms); ?>";
-        
-        // Fonction pour basculer les détails
-        function toggleDetails(id) {
-            const details = document.getElementById(id);
-            if (details.style.height === "" || details.style.height === "0px") {
-                details.style.padding = "1rem 0";
-                details.style.height = details.scrollHeight + "px";
-                details.classList.remove("opacity-0");
-                details.classList.add("opacity-100");
-            } else {
-                details.style.height = "0px";
-                details.style.padding = "0";
-                details.classList.remove("opacity-100");
-                details.classList.add("opacity-0");
-            }
-        }
-        
-        // Mise à jour de l'horloge
-        function updateClock() {
-            const now = new Date();
-            const timeString = now.toLocaleTimeString('fr-FR', {
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            document.getElementById('clock').textContent = timeString;
-        }
-        
-        // Mise à jour de la date de dernière mise à jour
-        function updateLastUpdate() {
-            const now = new Date();
-            const options = { 
-                day: 'numeric', 
-                month: 'long', 
-                hour: '2-digit', 
-                minute: '2-digit' 
-            };
-            document.getElementById('last-update').textContent = now.toLocaleDateString('fr-FR', options);
-        }
-        
-        // Filtrage des réservations
-        function filterReservations(filter) {
-            const cards = document.querySelectorAll('.reservation-card');
-            let visibleCount = 0;
-            
-            cards.forEach(card => {
-                const date = card.getAttribute('data-date');
-                let shouldShow = false;
-                
-                if (filter === 'all') {
-                    shouldShow = true;
-                } else if (filter === 'today') {
-                    const today = new Date().toISOString().split('T')[0];
-                    shouldShow = date === today;
-                } else if (filter === 'tomorrow') {
-                    const tomorrow = new Date();
-                    tomorrow.setDate(tomorrow.getDate() + 1);
-                    const tomorrowStr = tomorrow.toISOString().split('T')[0];
-                    shouldShow = date === tomorrowStr;
-                } else if (filter === 'week') {
-                    const today = new Date();
-                    const nextWeek = new Date();
-                    nextWeek.setDate(today.getDate() + 7);
-                    
-                    const cardDate = new Date(date);
-                    shouldShow = cardDate >= today && cardDate <= nextWeek;
-                }
-                
-                if (shouldShow) {
-                    card.classList.remove('hidden');
-                    visibleCount++;
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
-            
-            // Afficher/masquer le message "aucun résultat"
-            const noResults = document.getElementById('no-results');
-            if (visibleCount === 0) {
-                noResults.classList.remove('hidden');
-            } else {
-                noResults.classList.add('hidden');
-            }
-            
-            return visibleCount;
-        }
-        
-        // Initialiser les filtres
-        document.getElementById('btn-today').addEventListener('click', () => {
-            const count = filterReservations('today');
-            updateActiveButton('btn-today');
-        });
-        
-        document.getElementById('btn-tomorrow').addEventListener('click', () => {
-            const count = filterReservations('tomorrow');
-            updateActiveButton('btn-tomorrow');
-        });
-        
-        document.getElementById('btn-week').addEventListener('click', () => {
-            const count = filterReservations('week');
-            updateActiveButton('btn-week');
-        });
-        
-        document.getElementById('btn-all').addEventListener('click', () => {
-            filterReservations('all');
-            updateActiveButton('btn-all');
-        });
-        
-        document.getElementById('reset-filter').addEventListener('click', () => {
-            filterReservations('all');
-            updateActiveButton('btn-all');
-        });
-        
-        function updateActiveButton(activeId) {
-            const buttons = ['btn-today', 'btn-tomorrow', 'btn-week', 'btn-all'];
-            buttons.forEach(id => {
-                const button = document.getElementById(id);
-                if (id === activeId) {
-                    button.classList.remove('bg-indigo-100', 'text-indigo-800', 'hover:bg-indigo-200');
-                    button.classList.add('bg-indigo-500', 'text-white', 'hover:bg-indigo-600');
-                } else {
-                    button.classList.remove('bg-indigo-500', 'text-white', 'hover:bg-indigo-600');
-                    button.classList.add('bg-indigo-100', 'text-indigo-800', 'hover:bg-indigo-200');
-                }
-            });
-        }
-        
-        // Rotation des annonces
-        const announcements = [
-            "Planning des réservations de salles",
-            "Consultez les disponibilités des salles",
-            "Réservations classées par ordre chronologique"
-        ];
-        let currentAnnouncement = 0;
-        
-        function rotateAnnouncements() {
-            document.getElementById('announcement').textContent = announcements[currentAnnouncement];
-            currentAnnouncement = (currentAnnouncement + 1) % announcements.length;
-        }
-        
-        // Initialisation et mise à jour périodique
-        updateClock();
-        updateLastUpdate();
-        setInterval(updateClock, 1000);
-        setInterval(rotateAnnouncements, 8000);
-    </script>
+    
 </body>
 </html>
