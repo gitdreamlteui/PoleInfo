@@ -34,7 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($token_data['access_token'])) {
             $_SESSION['token'] = $token_data['access_token'];
             $_SESSION['type_compte'] = $token_data['user_type'];
-            $_SESSION['username'] = $username;
+            $_SESSION['username'] = $token_data['user_name'];
+
             
             // Redirection après le stockage du token
             if ($_SESSION['type_compte'] == 1){

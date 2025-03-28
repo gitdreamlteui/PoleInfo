@@ -6,6 +6,7 @@ if (!isset($_SESSION['token'])) {
 }
 
 $token = $_SESSION['token'];
+$username = $_SESSION["user_name"];
 $api_url_verify = "http:/192.168.8.152:8000/verify-token/";
 $api_url_reservations = "http://192.168.8.152:8000/reservations/";
 
@@ -34,7 +35,7 @@ if (!$data) {
     die("Erreur : Impossible de décoder le JSON.");
 }
 
-$username = $data["user_name"] ?? "Inconnu";
+
 
 $success_message = "";
 if (isset($_SESSION['info_message'])) {
