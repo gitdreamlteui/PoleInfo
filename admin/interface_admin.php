@@ -83,7 +83,7 @@ if ($http_code != 200) {
             </div>
         </div>
         <div class="w-full px-4 my-10 flex justify-center">
-            <div class="bg-white shadow-lg p-6 rounded-lg w-1/2">
+            <div class="bg-white shadow-lg p-6 rounded-lg w-fit">
             <h2 class="text-2xl font-bold mb-4">Suppressions d'Utilisateurs</h2>
             <form class="space-y-4 flex flex-col justify-center">
                 <select name="sup_user" class="w-full p-2 border rounded-md">
