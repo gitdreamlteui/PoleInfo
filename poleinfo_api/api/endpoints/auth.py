@@ -19,7 +19,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
             detail="Identifiants incorrects"
         )
     type_user = user["type"]
-    user_name = user["name"]
+    user_name = user["nom"]
     token = create_access_token(user["id_user"])
     return {"access_token": token, "token_type": "bearer", "user_type": type_user, "user_name": user_name}
 
