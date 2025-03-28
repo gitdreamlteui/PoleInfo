@@ -9,40 +9,114 @@ $data=json_decode($response_reservation, true);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation - Système d'information BTS</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 800px;
+            margin: 60px auto 20px auto;
+            padding: 10px;
+        }
+        .header {
+            background-color: #003366;
+            color: white;
+            padding: 10px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            height: 40px;
+            z-index: 1000;
+        }
+        .header-content {
+            width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .login-btn {
+            background-color: #f0f0f0;
+            border: 1px solid #003366;
+            color: #003366;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .title-box {
+            background-color: #003366;
+            color: white;
+            padding: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            font-size: 16px;
+            border: 1px solid #001a33;
+        }
+        .reservation-item {
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .reservation-blue {
+            background-color: #e6eeff;
+            padding: 8px;
+            border-bottom: 1px solid #ccc;
+        }
+        .reservation-dark {
+            background-color: #003366;
+            color: white;
+            padding: 8px;
+            border-bottom: 1px solid #001a33;
+        }
+        .details {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-top: 1px dotted #ccc;
+            display: none;
+        }
+        .info-right {
+            text-align: right;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
     <script>
         function toggleDetails(id) {
-            const details = document.getElementById(id);
-            if (details.style.height === "" || details.style.height === "0px") {
-                details.style.height = details.scrollHeight + "px";
-                details.classList.remove("opacity-0");
-                details.classList.add("opacity-100");
-            }   
-            else {
-                details.style.height = "0px";
-                details.classList.remove("opacity-100");
-                details.classList.add("opacity-0");
+            var details = document.getElementById(id);
+            if (details.style.display === "none" || details.style.display === "") {
+                details.style.display = "block";
+            } else {
+                details.style.display = "none";
             }
         }
     </script>
 </head>
-<body class="bg-slate-50 p-10">
-    
+<body>
     <!-- Barre de navigation -->
-    <header class="bg-indigo-600 text-white p-4 flex justify-between items-center w-full fixed top-0 left-0 right-0 shadow-md">
-        <h1 class="text-xl font-bold">Système d'information BTS - Réservation</h1>
-        <a href="interface_login.php">
-            <button class="bg-white px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors shadow-md font-semibold">
-                Se connecter
-            </button>
-        </a>
-    </header>
+    <div class="header">
+        <div class="header-content">
+            <div><strong>Système d'information BTS - Réservation</strong></div>
+            <a href="interface_login.php">
+                <button class="login-btn">Se connecter</button>
+            </a>
+        </div>
+    </div>
     
-    <div class="w-full px-4 mt-20">
+    <div class="container">
         <!-- Titre -->
-        <div class="bg-indigo-600 text-white text-xl font-bold p-4 rounded-lg mb-6 shadow-lg">
+        <div class="title-box">
             Tableau Prévisionnel des séances à venir
         </div> 
+
 <?php
 $compteur=0;
 foreach($data as $data){
@@ -72,44 +146,26 @@ foreach($data as $data){
     //
     $detailsID="details_$compteur";
     //affichage
-    if($compteur%2==1)
-    {
-        echo <<<HTML
-        <div class="w-full space-y-4 mb-4">
-            <div class="bg-white shadow-lg p-4 rounded-lg cursor-pointer hover:bg-indigo-50 transition-colors" onclick="toggleDetails('$detailsID')">
-                <p><strong>$matiere | $classe | $salle</strong></p>
-                <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
-                <p class="flex justify-end"><strong>$date</strong></p>
-                <p class="text-sm text-gray-800"><strong>$prenom - $nom</strong></p>
-            </div>
-            <div id="$detailsID" class="bg-gray-100 p-4 rounded-lg overflow-hidden transition-all duration-300 ease-in-out opacity-0 shadow-inner" style="height: 0px;">
-                <p>$info</p>
-            </div>
+    $itemClass = ($compteur % 2 == 1) ? "reservation-blue" : "reservation-dark";
+    
+    echo <<<HTML
+    <div class="reservation-item">
+        <div class="$itemClass" onclick="toggleDetails('$detailsID')">
+            <div><strong>$matiere | $classe | $salle</strong></div>
+            <div class="info-right"><strong>$heureString - $heurefinString</strong></div>
+            <div class="info-right"><strong>$date</strong></div>
+            <div><strong>$prenom $nom</strong></div>
         </div>
-        HTML;
-    }
-    elseif($compteur%2==0)
-    {
-        echo <<<HTML
-        <div class="w-full space-y-4 mb-4">
-            <div class="bg-indigo-600 text-white p-4 rounded-lg cursor-pointer hover:bg-indigo-400 transition-colors shadow-lg" onclick="toggleDetails('$detailsID')">
-                <p><strong>$matiere | $classe | $salle</strong></p>
-                <p class="flex justify-end"><strong>$heureString - $heurefinString</strong></p>
-                <p class="flex justify-end"><strong>$date</strong></p>
-                <p class="text-sm"><strong>$prenom - $nom</strong></p>
-            </div>
-            <div id="$detailsID" class="bg-gray-100 p-4 rounded-lg overflow-hidden transition-all duration-300 ease-in-out opacity-0 shadow-inner" style="height: 0px;">
-                <p>$info</p>
-            </div>
+        <div id="$detailsID" class="details">
+            <p>$info</p>
         </div>
-        HTML;
-    }
+    </div>
+    HTML;
 }
 ?>      
-    </div>
-    
-    <div class="mt-6 text-center text-sm text-gray-500">
-        <p>© 2025 Système d'information BTS - Tous droits réservés</p>
+        <div class="footer">
+            © 2025 Système d'information BTS - Tous droits réservés
+        </div>
     </div>
 </body>
 </html>
