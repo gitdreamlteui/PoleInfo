@@ -9,84 +9,113 @@ $data=json_decode($response_reservation, true);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation - Système d'information BTS</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <style>
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f0f0f0;
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: #f5f7fa;
             margin: 0;
             padding: 0;
+            color: #333;
         }
         .container {
-            width: 800px;
-            margin: 60px auto 20px auto;
-            padding: 10px;
+            width: 900px;
+            margin: 80px auto 30px auto;
+            padding: 15px;
         }
         .header {
-            background-color: #003366;
+            background-color: #1a4d85;
             color: white;
-            padding: 10px;
+            padding: 15px;
             position: fixed;
             top: 0;
             width: 100%;
             height: 40px;
             z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         .header-content {
-            width: 800px;
+            width: 900px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .login-btn {
-            background-color: #f0f0f0;
-            border: 1px solid #003366;
-            color: #003366;
-            padding: 5px 10px;
+            background-color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            color: #1a4d85;
+            padding: 8px 15px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .login-btn:hover {
+            background-color: #f0f5ff;
         }
         .title-box {
-            background-color: #003366;
+            background-color: #1a4d85;
             color: white;
-            padding: 8px;
-            margin-bottom: 15px;
-            font-weight: bold;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            font-weight: 600;
             font-size: 16px;
-            border: 1px solid #001a33;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         .reservation-item {
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            cursor: pointer;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: transform 0.1s;
+        }
+        .reservation-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 5px rgba(0,0,0,0.15);
         }
         .reservation-blue {
-            background-color: #e6eeff;
-            padding: 8px;
-            border-bottom: 1px solid #ccc;
+            background-color: #e6f0ff;
+            padding: 12px 15px;
+            border-bottom: 1px solid #d5e4ff;
+            cursor: pointer;
         }
         .reservation-dark {
-            background-color: #003366;
+            background-color: #1a4d85;
             color: white;
-            padding: 8px;
-            border-bottom: 1px solid #001a33;
+            padding: 12px 15px;
+            cursor: pointer;
         }
         .details {
-            background-color: #f9f9f9;
-            padding: 10px;
-            border-top: 1px dotted #ccc;
+            background-color: #f9fbff;
+            padding: 15px;
+            border-top: 1px solid #eaeef5;
             display: none;
+            line-height: 1.5;
         }
         .info-right {
             text-align: right;
+            margin-top: 3px;
+            font-size: 0.95em;
         }
         .footer {
             text-align: center;
-            font-size: 12px;
-            color: #666;
-            margin-top: 20px;
-            border-top: 1px solid #ccc;
-            padding-top: 10px;
+            font-size: 13px;
+            color: #7a8999;
+            margin-top: 30px;
+            border-top: 1px solid #e5e9ef;
+            padding-top: 15px;
+        }
+        .reservation-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+        .text-sm {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-top: 5px;
         }
     </style>
     <script>
@@ -104,8 +133,8 @@ $data=json_decode($response_reservation, true);
     <!-- Barre de navigation -->
     <div class="header">
         <div class="header-content">
-            <div><strong>Système d'information BTS - Réservation</strong></div>
-            <a href="interface_login.php">
+            <div style="font-weight: 600;">Système d'information BTS - Réservation</div>
+            <a href="interface_login.php" style="text-decoration: none;">
                 <button class="login-btn">Se connecter</button>
             </a>
         </div>
@@ -151,10 +180,12 @@ foreach($data as $data){
     echo <<<HTML
     <div class="reservation-item">
         <div class="$itemClass" onclick="toggleDetails('$detailsID')">
-            <div><strong>$matiere | $classe | $salle</strong></div>
-            <div class="info-right"><strong>$heureString - $heurefinString</strong></div>
+            <div class="reservation-info">
+                <div><strong>$matiere | $classe | $salle</strong></div>
+                <div><strong>$heureString - $heurefinString</strong></div>
+            </div>
             <div class="info-right"><strong>$date</strong></div>
-            <div><strong>$prenom $nom</strong></div>
+            <div class="text-sm"><strong>$prenom $nom</strong></div>
         </div>
         <div id="$detailsID" class="details">
             <p>$info</p>
