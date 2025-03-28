@@ -46,3 +46,4 @@ class Token(BaseModel):
     access_token: str
     token_type: str
     user_type: int
+    user_name: str
