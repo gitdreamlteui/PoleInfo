@@ -103,12 +103,23 @@ if ($http_code != 200) {
             <div class="bg-white shadow-lg p-6 rounded-lg">
                 <h2 class="text-2xl font-bold mb-4">Gestion des Créneaux</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="Heure" class="w-full p-2 border rounded-md">
+                    <input type="text" placeholder="00:00" class="w-full p-2 border rounded-md">
                     <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Créneau</button>
                 </form>
                 <form class="mt-10 space-y-4">
                     <select name="creneau" class="w-full p-2 border rounded-md">
-                        <option value=""></option>
+                        <?php
+                        $get_creneau = "http://192.168.8.152:8000/creneaux/";
+                        $reponse_creneau = file_get_contents($get_creneau);
+                        $data_creneau = json_decode($reponse_creneau, true);
+                        
+                        if (is_array($data_creneau)) {
+                            foreach ($data_creneau as $item) {
+                                $creneau_value = htmlspecialchars($item['creneau']);
+                                echo "<option value='$creneau_value'>$creneau_value</option>";
+                            }
+                        }
+                        ?>
                     </select>
                     <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Créneau</button>
                 </form>
