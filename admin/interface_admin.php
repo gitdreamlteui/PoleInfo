@@ -115,7 +115,7 @@ if ($http_code != 200) {
                         
                         if (is_array($data_creneau)) {
                             foreach ($data_creneau as $item) {
-                                $interval = new DateInterval($item['creneau']);
+                                $interval = new DateInterval($item['heure_debut']);
                                 $heures = $interval->h;
                                 $minutes = $interval->i;
                                 $creneau = sprintf("%02d:%02d", $heures, $minutes);
