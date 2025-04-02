@@ -83,7 +83,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center">
                 <div class="bg-white p-2 rounded-lg mr-3">
-                    <img src="logo.png" alt="Logo Pole Info" class="h-9">
+                    <img src="../logo.png" alt="Logo Pole Info" class="h-9">
                 </div>
                 <div class="font-semibold text-white text-2xl">Système d'information BTS - Administration</div>
             </div>
