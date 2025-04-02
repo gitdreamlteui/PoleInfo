@@ -15,7 +15,7 @@ Dernière date de mise à jour : 28/03/2025
 
 from models.schemas import CreneauResponse
 from core.auth import verify_token
-from models.creneau import get_creneaux
+from models.creneau import get_all_creneaux
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -27,7 +27,7 @@ router = APIRouter(
 @router.get("/", response_model=List[CreneauResponse])
 def get_creneaux():
 
-    creneaux = get_creneaux()
+    creneaux = get_all_creneaux()
     
     if not creneaux:
         raise HTTPException(
