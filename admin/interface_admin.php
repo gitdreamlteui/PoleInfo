@@ -219,24 +219,21 @@ $date_jour = $date_actuelle->format('d/m/Y');
                     <input type="number" placeholder="Capacité de la salle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Salle</button>
                 </form>
-<<<<<<< HEAD
                 <form class="mt-10 space-y-4">
                     <select name="sup_salle" class="w-full p-2 border rounded-md">
                         <?
                         $get_salle = "http://192.168.8.152:8000/salles/";
                         $response_salle = file_get_contents($get_salle);
                         $data_salle = json_decode($response_salle, true);
+                        if(array($data_creneau))
+                        {
                         foreach($data_salle as $item)
                         {
                             $salle=$item['numero'];
                             echo "<option value='$salle'>$salle</option>";
                         }
+                        }
                         ?>
-=======
-                <form class="mt-6 space-y-4">
-                    <select name="sup_salle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                        <option value=""></option>
->>>>>>> 610ea0370b2d9e401845cacd3215779f900bfe4f
                     </select>
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Salle</button>
                 </form>
