@@ -10,6 +10,8 @@ Dernière date de mise à jour : 28/03/2025
     |----- auth.py <-- Vous êtes ici
     |------reservations.py
     |------users.py
+    |------creneaux.py
+
 
 Description : ce programme permet de créer toute les routes relatives aux authentifications 
 via un token. 
