@@ -19,7 +19,7 @@ $classes = isset($_POST['classe']) && is_array($_POST['classe']) ? $_POST['class
 $date = $_POST['date_reserv'] ?? '';
 $info = $_POST['message'] ?? '';
 $heure_debut = $_POST['startTime'] ?? '';
-$duree = floatval($_POST['duration'] ?? 0);
+$duree = number_format(floatval($_POST['duration'] ?? 0), 3, '.', '');
 
 $nom_classe = !empty($classes) ? implode(", ", $classes) : "";
 
@@ -61,7 +61,7 @@ if ($http_code === 201 || $http_code === 200) {
     $message = $response_data['message'] ?? "Réservation ajoutée avec succès!";
     
     $_SESSION['info_message'] = $message;
-    header("Location: user/dashboard.php");
+    header("Location: dashboard.php");
     exit;
 } else {
     $message = "Erreur lors de l'ajout de la réservation: ";
@@ -75,7 +75,7 @@ if ($http_code === 201 || $http_code === 200) {
     }
     
     $_SESSION['info_message'] = $message;
-    header("Location: user/dashboard.php");
+    header("Location: dashboard.php");
     exit;
 }
 ?>
