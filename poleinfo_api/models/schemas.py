@@ -40,6 +40,8 @@ class ReservationResponse(BaseModel):
     prenom: str
     noms_classes: str
 
+class ReservationDelete():
+    id_reservation: int
 
 class Token(BaseModel):
     access_token: str
