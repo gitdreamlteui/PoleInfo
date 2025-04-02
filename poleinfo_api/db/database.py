@@ -7,7 +7,7 @@ DB_CONFIG = {
     'host': '192.168.8.152',
     'database': 'poleinfo',
     'user': 'root',
-    'password': ''
+    'password': 'cielPOLEINFO25**'
 }
 
 @contextmanager
