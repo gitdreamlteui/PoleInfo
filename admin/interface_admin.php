@@ -227,10 +227,10 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         $data_salle = json_decode($response_salle, true);
                         if(array($data_salle))
                         {
-                        foreach($data_salle as $item)
+                            foreach($data_salle as $item)
                         {
-                            $salle=$item['numero'];
-                            echo "<option value='$salle'>$salle</option>";
+                                $salle=$item['numero'];
+                                echo "<option value='$salle'>$salle</option>";
                         }
                         }
                         ?>
