@@ -89,7 +89,7 @@ if ($http_code != 200) {
             <div class="bg-white shadow-lg p-6 rounded-lg">
                 <h2 class="text-2xl font-bold mb-4">Gestion des Matières</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="Nom de la matière" class="w-full p-2 border rounded-md">
+                    <input type="text" placeholder="Nom de la matière" class="w-full p-2 border rounded-md"require>
                     <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Matière</button>
                 </form>
                 <form class="mt-10 space-y-4">
@@ -103,7 +103,7 @@ if ($http_code != 200) {
             <div class="bg-white shadow-lg p-6 rounded-lg">
                 <h2 class="text-2xl font-bold mb-4">Gestion des Créneaux</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="00:00" class="w-full p-2 border rounded-md">
+                    <input type="text" placeholder="00:00" class="w-full p-2 border rounded-md" require>
                     <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Créneau</button>
                 </form>
                 <form class="mt-10 space-y-4">
@@ -131,7 +131,7 @@ if ($http_code != 200) {
             <div class="bg-white shadow-lg p-6 rounded-lg">
                 <h2 class="text-2xl font-bold mb-4">Gestion des Classes</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="Nom de la classe" class="w-full p-2 border rounded-md">
+                    <input type="text" placeholder="Nom de la classe" class="w-full p-2 border rounded-md" require>
                     <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Classe</button>
                 </form>
                 <form class="mt-10 space-y-4">
@@ -145,9 +145,9 @@ if ($http_code != 200) {
             <div class="bg-white shadow-lg p-6 rounded-lg">
                 <h2 class="text-2xl font-bold mb-4">Gestion des Salles</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="Nom ou numéro de la salle" class="w-full p-2 border rounded-md">
-                    <input type="text" placeholder="Type de salle (TP-info, Cours, etc.)" class="w-full p-2 border rounded-md">
-                    <input type="number" placeholder="Capacité de la salle" class="w-full p-2 border rounded-md">
+                    <input type="text" placeholder="Nom ou numéro de la salle" class="w-full p-2 border rounded-md"require>
+                    <input type="text" placeholder="Type de salle (TP-info, Cours, etc.)" class="w-full p-2 border rounded-md" require>
+                    <input type="number" placeholder="Capacité de la salle" class="w-full p-2 border rounded-md" require>
                     <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Salle</button>
                 </form>
                 <form class="mt-10 space-y-4">
