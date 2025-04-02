@@ -186,7 +186,16 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 </form>
                 <form class="mt-10 space-y-4">
                     <select name="sup_salle" class="w-full p-2 border rounded-md">
-                        <option value=""></option>
+                        <?
+                        $get_salle = "http://192.168.8.152:8000/salles/";
+                        $response_salle = file_get_contents($get_salle);
+                        $data_salle = json_decode($response_salle, true);
+                        foreach($data_salle as $item)
+                        {
+                            $salle=$item['numero'];
+                            echo "<option value='$salle'>$salle</option>";
+                        }
+                        ?>
                     </select>
                     <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Salle</button>
                 </form>
