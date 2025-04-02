@@ -4,7 +4,7 @@ from typing import List, Dict, Any
 
 def get_all_salles() -> List[Dict[int, Any]]:
     with get_db_cursor() as cursor:
-        query = "SELECT * FROM salles"
+        query = "SELECT * FROM salle"
         cursor.execute(query)
         results = cursor.fetchall()
     return results
