@@ -16,7 +16,7 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id_user: int
 
-class UserDelete():
+class UserDelete(BaseModel):
     id_user: int
     
 class SalleBase(BaseModel):
@@ -64,4 +64,4 @@ class Token(BaseModel):
     user_name: str
 
 class CreneauResponse(BaseModel):
-    creneau: int;
+    creneau: int
