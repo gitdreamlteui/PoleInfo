@@ -64,4 +64,4 @@ class Token(BaseModel):
     user_name: str
 
 class CreneauResponse(BaseModel):
-    creneau: int
+    heure_debut: timedelta
