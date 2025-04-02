@@ -1,5 +1,6 @@
 <?php
 // DASHBOARD.PHP
+require_once 'utils/recuperer_creaneaux.php';
 session_start();
 if (!isset($_SESSION['token'])) {
     header("Location: http://192.168.8.152/interface_login.php?error=expired");
@@ -8,8 +9,10 @@ if (!isset($_SESSION['token'])) {
 
 $token = $_SESSION['token'];
 $username = $_SESSION["username"];
+
 $api_url_verify = "http://192.168.8.152:8000/verify-token/";
 $api_url_reservations = "http://192.168.8.152:8000/reservations/";
+
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -61,6 +64,8 @@ $date_jour = $date_actuelle->format('d/m/Y');
 $request_reservation = "http://192.168.8.152:8000/reservations/?croissant=true";
 $response_reservation = file_get_contents($request_reservation);
 $data = json_decode($response_reservation, true);
+
+$creneaux = getCreneaux();
 ?>
 
 <!DOCTYPE html>
@@ -204,24 +209,17 @@ $data = json_decode($response_reservation, true);
                         <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Informations sur le cours/activité (optionnel)</label>
                         <textarea id="message" name="message" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Détails supplémentaires sur le cours ou l'activité..."></textarea>
                     </div>
-
                     <div class="col-span-1 md:col-span-2 mb-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label for="startTime" class="block text-sm font-medium text-gray-700 mb-1">Heure de début</label>
                                 <select id="startTime" name="startTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
                                     <option value="">Sélectionnez une heure</option>
-                                    <option value="08:10:00">08:10</option>
-                                    <option value="09:00:00">09:00</option>
-                                    <option value="10:05:00">10:05</option>
-                                    <option value="10:55:00">10:55</option>
-                                    <option value="11:45:00">11:45</option>
-                                    <option value="13:00:00">13:00</option>
-                                    <option value="13:25:00">13:25</option>
-                                    <option value="13:50:00">13:50</option>
-                                    <option value="14:40:00">14:40</option>
-                                    <option value="15:45:00">15:45</option>
-                                    <option value="16:35:00">16:35</option>
+                                    <?php 
+                                        foreach ($creneaux as $creneau) {
+                                            echo "<option value='$creneau'>$creneau</option>";
+                                        }
+                                    ?>
                                 </select>
                             </div>
 
