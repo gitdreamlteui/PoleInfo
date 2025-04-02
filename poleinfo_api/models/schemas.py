@@ -10,6 +10,13 @@ class UserBase(BaseModel):
     nom: str
     prenom: str
 
+class SalleBase(BaseModel):
+    numero: str
+    capacite: int
+    type: str
+
+#--------------------------------------------------#
+    
 class UserCreate(UserBase):
     password: str
 
@@ -18,11 +25,8 @@ class UserResponse(UserBase):
 
 class UserDelete(BaseModel):
     id_user: int
-    
-class SalleBase(BaseModel):
-    numero: str
-    capacite: int
-    type: str
+
+#--------------------------------------------------#
 
 class SalleCreate(SalleBase):
     id_salle: int
@@ -32,6 +36,8 @@ class SalleResponse(SalleBase):
     
 class SalleDelete():
     id_salle: int
+
+#--------------------------------------------------#
 
 class ReservationCreate(BaseModel):
     duree: float
@@ -57,11 +63,16 @@ class ReservationResponse(BaseModel):
     prenom: str
     noms_classes: str
 
+#--------------------------------------------------#
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
     user_type: int
     user_name: str
+
+#--------------------------------------------------#
 
 class CreneauResponse(BaseModel):
     heure_debut: timedelta
