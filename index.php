@@ -1,7 +1,12 @@
 <?php
-$request_reservation = "http://192.168.8.152:8000/reservations/?croissant=true"; // Remplace par l'URL de l'API
+// INDEX.PHP
+$request_reservation = "http://192.168.8.152:8000/reservations/?croissant=true";
 $response_reservation = file_get_contents($request_reservation);
-$data=json_decode($response_reservation, true);
+$data = json_decode($response_reservation, true);
+
+$date_actuelle = new DateTime();
+$heure_actuelle = $date_actuelle->format('H:i');
+$date_jour = $date_actuelle->format('d/m/Y');
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -10,193 +15,185 @@ $data=json_decode($response_reservation, true);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Réservation - Système d'information BTS</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: { DEFAULT: '#1a4d85', light: '#e6f0ff' } },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
     <style>
-        body {
-            font-family: 'Inter', Arial, sans-serif;
-            background-color: #f5f7fa;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
-        .container {
-            width: 900px;
-            margin: 80px auto 30px auto;
-            padding: 15px;
-        }
-        .header {
-            background-color: #1a4d85;
-            color: white;
-            padding: 15px;
-            position: fixed;
-            top: 0;
-            width: 100%;
-            height: 40px;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .header-content {
-            width: 900px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .login-btn {
-            background-color: #ffffff;
-            border: none;
-            border-radius: 5px;
-            color: #1a4d85;
-            padding: 8px 15px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: background-color 0.2s;
-        }
-        .login-btn:hover {
-            background-color: #f0f5ff;
-        }
-        .title-box {
-            background-color: #1a4d85;
-            color: white;
-            padding: 12px 15px;
-            margin-bottom: 20px;
-            font-weight: 600;
-            font-size: 16px;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .reservation-item {
-            margin-bottom: 15px;
-            border-radius: 6px;
-            overflow: hidden;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            transition: transform 0.1s;
-        }
-        .reservation-item:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 5px rgba(0,0,0,0.15);
-        }
-        .reservation-blue {
-            background-color: #e6f0ff;
-            padding: 12px 15px;
-            border-bottom: 1px solid #d5e4ff;
-            cursor: pointer;
-        }
-        .reservation-dark {
-            background-color: #1a4d85;
-            color: white;
-            padding: 12px 15px;
-            cursor: pointer;
-        }
-        .details {
-            background-color: #f9fbff;
-            padding: 15px;
-            border-top: 1px solid #eaeef5;
-            display: none;
-            line-height: 1.5;
-        }
-        .info-right {
-            text-align: right;
-            margin-top: 3px;
-            font-size: 0.95em;
-        }
-        .footer {
-            text-align: center;
-            font-size: 13px;
-            color: #7a8999;
-            margin-top: 30px;
-            border-top: 1px solid #e5e9ef;
-            padding-top: 15px;
-        }
-        .reservation-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 2px;
-        }
-        .text-sm {
-            font-size: 0.9em;
-            opacity: 0.9;
-            margin-top: 5px;
+        .clock-display {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.5px;
         }
     </style>
     <script>
         function toggleDetails(id) {
-            var details = document.getElementById(id);
-            if (details.style.display === "none" || details.style.display === "") {
-                details.style.display = "block";
-            } else {
-                details.style.display = "none";
-            }
+            document.getElementById(id).classList.toggle('hidden');
         }
+
+        function updateClock() {
+            const now = new Date();
+            const time = [now.getHours(), now.getMinutes(), now.getSeconds()]
+                .map(n => n.toString().padStart(2, '0'))
+                .join(':');
+            document.getElementById('clock').textContent = time;
+            setTimeout(updateClock, 1000);
+        }
+
+        window.onload = updateClock;
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function actualiserReservations() {
+            $.ajax({
+                url: window.location.href,
+                success: function(data) {
+                    var nouvellesDonnees = $(data).find('#reservations-container').html();
+                    $('#reservations-container').html(nouvellesDonnees);
+                },
+                complete: function() {
+                    setTimeout(actualiserReservations, 10000);
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            setTimeout(actualiserReservations, 10000);
+        });
     </script>
 </head>
-<body>
-    <!-- Barre de navigation -->
-    <div class="header">
-        <div class="header-content">
-            <div style="font-weight: 600;">Système d'information BTS - Réservation</div>
-            <a href="interface_login.php" style="text-decoration: none;">
-                <button class="login-btn">Se connecter</button>
+<body class="bg-gray-50 font-inter text-gray-800 m-0 p-0">
+    <header class="bg-primary fixed top-0 w-full py-3 px-4 shadow-md z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="bg-white p-2 rounded-lg mr-3">
+                    <img src="logo.png" alt="Logo Pole Info" class="h-9">
+                </div>
+                <div class="font-semibold text-white text-2xl">Système d'information BTS - Pôle Info</div>
+            </div>
+            <a href="interface_login.php" class="no-underline">
+                <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
+                    Se connecter
+                </button>
             </a>
         </div>
-    </div>
+    </header>
     
-    <div class="container">
-        <!-- Titre -->
-        <div class="title-box">
-            Tableau Prévisionnel des séances à venir
-        </div> 
-
-<?php
-$compteur=0;
-foreach($data as $data){
-    $compteur=$compteur+1;
-    $matiere=$data['nom_matiere'];
-    $salle=$data['numero_salle'];
-    $date=$data['date'];
-    $info=$data['info'];
-    $classe=$data['noms_classes'];
-    $prenom=$data['prenom'];
-    $nom=$data['nom_user'];
-    $debut=$data['heure_debut'];
-    $duree=$data['duree'];
-    //traitement de l'heure debut
-    $interval = new DateInterval($debut);
-    $heures = $interval->h;
-    $minutes = $interval->i;
-    $heureString = sprintf("%02d:%02d", $heures, $minutes);
-    $heureFloat = $heures + ($minutes / 60);
-    //traitemement heure fin
-    $heuresfin = floor($heureFloat+$duree);
-    $minutesfin = ($heureFloat+$duree-$heuresfin)*60;  // Partie décimale convertie en minutes
-    $heurefinString = sprintf("%02d:%02d", $heuresfin, $minutesfin);
-    //traitement de la date
-    $dt = new DateTime($date);
-    $date = $dt->format("j/m");
-    //
-    $detailsID="details_$compteur";
-    //affichage
-    $itemClass = ($compteur % 2 == 1) ? "reservation-blue" : "reservation-dark";
-    
-    echo <<<HTML
-    <div class="reservation-item">
-        <div class="$itemClass" onclick="toggleDetails('$detailsID')">
-            <div class="reservation-info">
-                <div><strong>$matiere | $classe | $salle</strong></div>
-                <div><strong>$heureString - $heurefinString</strong></div>
+    <main class="container mx-auto px-4 py-6 mt-16">
+        <div class="bg-white p-3 mb-6 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center">
+            <div class="text-gray-600">
+                <span class="font-medium">Aujourd'hui : </span>
+                <span><?php echo $date_jour; ?></span>
             </div>
-            <div class="info-right"><strong>$date</strong></div>
-            <div class="text-sm"><strong>$prenom $nom</strong></div>
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-medium text-primary mr-2">Heure actuelle :</span>
+                <span id="clock" class="clock-display font-medium bg-primary text-white px-3 py-1 rounded-md">
+                    <?php echo $heure_actuelle; ?>
+                </span>
+            </div>
         </div>
-        <div id="$detailsID" class="details">
-            <p>$info</p>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2">
+                <div class="bg-primary text-white p-3 mb-4 font-semibold text-lg rounded-lg shadow">
+                    Tableau Prévisionnel des séances à venir
+                </div>
+                
+                <div class="space-y-3" id="reservations-container">
+                    <?php
+                    $compteur = 0;
+                    foreach($data as $item){
+                        $compteur++;
+                        
+                        // Traitement de l'heure début
+                        $interval = new DateInterval($item['heure_debut']);
+                        $heures = $interval->h;
+                        $minutes = $interval->i;
+                        $heureString = sprintf("%02d:%02d", $heures, $minutes);
+                        $heureFloat = $heures + ($minutes / 60);
+                        
+                        // Traitement heure fin
+                        $heuresfin = floor($heureFloat + $item['duree']);
+                        $minutesfin = ($heureFloat + $item['duree'] - $heuresfin) * 60;
+                        $heurefinString = sprintf("%02d:%02d", $heuresfin, $minutesfin);
+                        
+                        // Traitement de la date
+                        $dt = new DateTime($item['date']);
+                        $date = $dt->format("j/m");
+                        
+                        $detailsID = "details_$compteur";
+                        $bgColor = ($compteur % 2 == 1) ? "bg-primary-light" : "bg-primary text-white";
+                        $badgeBg = ($compteur % 2 == 1) ? "bg-primary bg-opacity-10" : "bg-white bg-opacity-20";
+                        
+                        echo <<<HTML
+                        <div class="rounded-lg overflow-hidden shadow-sm hover:shadow-md transition-transform hover:-translate-y-0.5">
+                            <div class="$bgColor p-3 cursor-pointer" onclick="toggleDetails('$detailsID')">
+                                <div class="flex justify-between items-center">
+                                    <div class="font-semibold">
+                                        <span>{$item['nom_matiere']}</span>
+                                        <span class="opacity-70 mx-1.5">•</span>
+                                        <span>{$item['noms_classes']}</span>
+                                    </div>
+                                    <div class="font-semibold flex items-center">
+                                        $heureString - $heurefinString
+                                        <span class="$badgeBg ml-2 px-2 py-0.5 text-sm rounded">$date</span>
+                                    </div>
+                                </div>
+                                <div class="flex justify-between items-center mt-2">
+                                    <div class="text-sm font-medium opacity-90">{$item['prenom']} {$item['nom_user']}</div>
+                                    <div class="$badgeBg px-2 py-0.5 text-sm rounded font-medium">Salle {$item['numero_salle']}</div>
+                                </div>
+                            </div>
+                            <div id="$detailsID" class="bg-white p-4 border-t border-gray-200 hidden">
+                                <p class="leading-relaxed">{$item['info']}</p>
+                            </div>
+                        </div>
+                        HTML;
+                    }
+                    ?>
+                </div>
+
+            </div>
+            
+            <div class="lg:col-span-1">
+                <div class="bg-primary text-white p-3 mb-4 font-semibold text-lg rounded-lg shadow">
+                    Actualités & Messages
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500">
+                        <h3 class="font-semibold text-lg text-primary mb-2">Dead-line du projet</h3>
+                        <p class="text-gray-600 mb-2">Chers développeurs du Pôle Info, je tiens à vous rappeller que nous avons pour objectif de boucler ce projet le vendredi 18 avril avant les vacances.</p>
+                        <div class="flex justify-between items-center text-sm text-gray-500">
+                            <span>Direction</span>
+                            <span>28/03/2025</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-green-500">
+                        <h3 class="font-semibold text-lg text-primary mb-2">Le système d'information</h3>
+                        <p class="text-gray-600 mb-2">Ce système d'information est développé par les meilleurs étudiants du BTS CIEL du LP2I.</p>
+                        <div class="flex justify-between items-center text-sm text-gray-500">
+                            <span>Service développement</span>
+                            <span>28/03/2025</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    HTML;
-}
-?>      
-        <div class="footer">
+
+        <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
             © 2025 Système d'information BTS - Tous droits réservés
-        </div>
-    </div>
+        </footer>
+    </main>
 </body>
 </html>

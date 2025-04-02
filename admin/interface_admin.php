@@ -1,13 +1,13 @@
 <?php
 session_start();
 if (!isset($_SESSION['token']) and $_SESSION['type_compte']!=1) {
-    header("Location: http://192.168.8.152/interface_login.php?error=expired");
+    header("Location: http://127.0.0.1/interface_login.php?error=expired");
     exit;
 }
 
 $token = $_SESSION['token'];
-$api_url_verify = "http:/192.168.8.152:8000/verify-token/";
-$api_url_reservations = "http://192.168.8.152:8000/reservations/";
+$api_url_verify = "http:/127.0.0.1:8000/verify-token/";
+$api_url_reservations = "http://127.0.0.1:8000/reservations/";
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);

@@ -21,10 +21,9 @@ class ReservationCreate(BaseModel):
     date: date
     numero_salle: str
     nom_matiere: str
-    heure_debut: timedelta
-    nom_user: str
-    prenom: str
-    noms_classes: str
+    heure_debut_creneau: str
+    login_user: str
+    nom_classe: str
     info: Optional[str] = None
 
 class ReservationResponse(BaseModel):

@@ -1,13 +1,14 @@
 <?php
+// DASHBOARD.PHP
 session_start();
 if (!isset($_SESSION['token'])) {
-    header("Location: http://192.168.8.152/PoleInfo/interface_login.php?error=expired");
+    header("Location: http://192.168.8.152/interface_login.php?error=expired");
     exit;
 }
 
 $token = $_SESSION['token'];
-$username = $_SESSION["user_name"];
-$api_url_verify = "http:/192.168.8.152:8000/verify-token/";
+$username = $_SESSION["username"];
+$api_url_verify = "http://192.168.8.152:8000/verify-token/";
 $api_url_reservations = "http://192.168.8.152:8000/reservations/";
 
 $ch = curl_init();
@@ -26,7 +27,7 @@ curl_close($ch);
 if ($http_code != 200 || !$response) {
     error_log("Erreur de vérification du token : HTTP $http_code - $curl_error");
     session_destroy();
-    header("Location: http://192.168.8.152/PoleInfo/interface_login.php?error=expired");
+    header("Location: http://192.168.8.152/interface_login.php?error=expired");
     exit;
 }
 
@@ -35,15 +36,12 @@ if (!$data) {
     die("Erreur : Impossible de décoder le JSON.");
 }
 
-
-
 $success_message = "";
 if (isset($_SESSION['info_message'])) {
     $success_message = $_SESSION['info_message'];
     unset($_SESSION['info_message']);
 }
 
-// Récupérer les réservations
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url_reservations);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -55,6 +53,14 @@ $response = curl_exec($ch);
 curl_close($ch);
 
 $data_reservations = json_decode($response, true);
+
+$date_actuelle = new DateTime();
+$heure_actuelle = $date_actuelle->format('H:i');
+$date_jour = $date_actuelle->format('d/m/Y');
+
+$request_reservation = "http://192.168.8.152:8000/reservations/?croissant=true";
+$response_reservation = file_get_contents($request_reservation);
+$data = json_decode($response_reservation, true);
 ?>
 
 <!DOCTYPE html>
@@ -63,253 +69,190 @@ $data_reservations = json_decode($response, true);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pôle Info - Système de Réservation</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: { DEFAULT: '#1a4d85', light: '#e6f0ff' } },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .clock-display {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.5px;
+        }
+    </style>
 </head>
-<body>
+<body class="bg-gray-50 font-inter text-gray-800 m-0 p-0">
     <!-- Navigation Bar -->
-    <nav class="navbar">
-        <div class="container navbar-container">
-            <a href="#" class="navbar-logo">
-                <i class="fas fa-calendar-alt"></i>
-                Pôle Info - Réservations
-            </a>
-            <div class="user-nav">
-                <div class="user-greeting">
-                    <i class="fas fa-user-circle"></i>
-                    Bonjour, <?php echo htmlspecialchars($username); ?>
+    <header class="bg-primary fixed top-0 w-full py-3 px-4 shadow-md z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center text-white">
+                <span class="font-semibold text-2xl">Pôle Info - Réservations</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="text-white flex items-center">
+                    <i class="fas fa-user-circle mr-2"></i>
+                    <span>Bonjour, <?php echo htmlspecialchars($username); ?></span>
                 </div>
-                <a href="logout.php" class="btn btn-outline btn-sm">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Se déconnecter
+                <a href="logout.php" class="no-underline">
+                    <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors flex items-center">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Se déconnecter
+                    </button>
                 </a>
             </div>
         </div>
-    </nav>
+    </header>
 
     <!-- Main Content -->
-    <div class="main-content">
-        <div class="container">
-            <!-- Page Header -->
-            <header class="page-header">
-                <h1 class="page-title">Tableau de bord</h1>
-                <p class="page-subtitle">Gérez vos réservations de salles et consultez le planning.</p>
-            </header>
+    <main class="container mx-auto px-4 py-6 mt-16">
+        <!-- Page Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Tableau de bord</h1>
+            <p class="text-gray-600">Gérez vos réservations de salles et consultez le planning.</p>
+        </div>
 
-            <?php if ($success_message): ?>
-                <div class="alert alert-success">
-                    <i class="fas fa-check-circle"></i>
-                    <?php echo htmlspecialchars($success_message); ?>
-                </div>
-            <?php endif; ?>
-
-            <!-- Reservation Form Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-plus-circle"></i>
-                        Nouvelle réservation
-                    </h2>
-                </div>
-                <div class="card-body">
-                    <form action="/user/ajout_reservation.php" method="post">
-                        <div class="form-grid">
-                            <div class="form-group">
-                                <label for="salle" class="form-label">Salle</label>
-                                <input type="text" id="salle" name="salle" class="form-control" placeholder="Ex: A104" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="matiere" class="form-label">Matière</label>
-                                <input type="text" id="matiere" name="matiere" class="form-control" placeholder="Ex: Mathématiques" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="classe" class="form-label">Classe/groupe</label>
-                                <input type="text" id="classe" name="classe" class="form-control" placeholder="Ex: Terminale S1" required>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="date_reserv" class="form-label">Date de réservation</label>
-                                <input type="date" id="date_reserv" name="date_reserv" class="form-control" required>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <label for="message" class="form-label">Informations sur le cours/activité (optionnel)</label>
-                                <textarea id="message" name="message" class="form-control" placeholder="Détails supplémentaires sur le cours ou l'activité..."></textarea>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <div class="time-controls">
-                                    <div>
-                                        <label for="startTime" class="form-label">Heure de début</label>
-                                        <select id="startTime" name="startTime" class="form-control" required>
-                                            <option value="">Sélectionnez une heure</option>
-                                        </select>
-                                    </div>
-
-                                    <div>
-                                        <label for="duration" class="form-label">Durée</label>
-                                        <select id="duration" name="duration" class="form-control" required>
-                                            <option value="">Sélectionnez une durée</option>
-                                            <option value="50">50 minutes (1 heure)</option>
-                                            <option value="100">1 heure 40 (2 heures)</option>
-                                            <option value="150">2 heures 30 (3 heures)</option>
-                                            <option value="200">3 heures 20 (4 heures)</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group full-width">
-                                <div id="result" class="result">
-                                    Fin prévue à : <span id="endTime">--:--</span>
-                                </div>
-                            </div>
-
-                            <div class="form-group full-width text-right">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-save"></i>
-                                    Enregistrer la réservation
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+        <!-- Date and Time Display -->
+        <div class="bg-white p-3 mb-6 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center">
+            <div class="text-gray-600">
+                <span class="font-medium">Aujourd'hui : </span>
+                <span><?php echo $date_jour; ?></span>
             </div>
-
-            <!-- Reservations List Card -->
-            <div class="card">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <i class="fas fa-list"></i>
-                        Mes réservations
-                    </h2>
-                </div>
-                <div class="card-body">
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Salle</th>
-                                    <th>Matière</th>
-                                    <th>Professeur</th>
-                                    <th>Classe</th>
-                                    <th>Horaires</th>
-                                    <th>Date</th>
-                                    <th>Informations</th>
-                                    <th>Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($data_reservations)): ?>
-                                    <?php foreach ($data_reservations as $reservation): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($reservation['id']); ?></td>
-                                            <td><?php echo htmlspecialchars($reservation['salle']); ?></td>
-                                            <td><?php echo htmlspecialchars($reservation['matiere']); ?></td>
-                                            <td><?php echo htmlspecialchars($reservation['prof']); ?></td>
-                                            <td><?php echo htmlspecialchars($reservation['classe']); ?></td>
-                                            <td><?php echo htmlspecialchars($reservation['horaire_debut']) . ' - ' . htmlspecialchars($reservation['horaire_fin']); ?></td>
-                                            <td><?php echo htmlspecialchars($reservation['date']); ?></td>
-                                            <td>
-                                                <?php if (!empty($reservation['info'])): ?>
-                                                    <?php echo htmlspecialchars($reservation['info']); ?>
-                                                <?php else: ?>
-                                                    <em class="text-light">Aucune information</em>
-                                                <?php endif; ?>
-                                            </td>
-                                            <td>
-                                                <span class="badge badge-success">Confirmée</span>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="9" class="text-center">Aucune réservation trouvée. Créez votre première réservation à l'aide du formulaire ci-dessus.</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-medium text-primary mr-2">Heure actuelle :</span>
+                <span id="clock" class="clock-display font-medium bg-primary text-white px-3 py-1 rounded-md">
+                    <?php echo $heure_actuelle; ?>
+                </span>
             </div>
         </div>
-    </div>
 
-    <script>
-        const validTimeSlots = [
-            "08:10", "09:00", "09:50",
-            "10:05", "10:55", "11:45",
-            "13:00", "13:25", "13:50",
-            "14:40", "15:30",
-            "15:45", "16:35", "17:25"
-        ];
+        <?php if ($success_message): ?>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <p><?php echo htmlspecialchars($success_message); ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
 
-        function timeToMinutes(time) {
-            const [hours, minutes] = time.split(':').map(Number);
-            return hours * 60 + minutes;
-        }
+        <!-- Reservation Form Card -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 overflow-hidden">
+            <div class="bg-primary text-white p-3 font-semibold text-lg rounded-t-lg flex items-center">
+                <i class="fas fa-plus-circle mr-2"></i>
+                Nouvelle réservation
+            </div>
+            <div class="p-4">
+            <form action="ajout_reservation.php" method="post">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label for="salle" class="block text-sm font-medium text-gray-700 mb-1">Salle</label>
+                        <select name="salle" id="salle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                            <option value="">--Sélectionnez une salle--</option>
+                            <option value="3C01">3C01</option>
+                            <option value="3W03">3W03</option>
+                            <option value="3W04">3W04</option>
+                            <option value="3W05">3W05</option>
+                            <option value="3W06">3W06</option>
+                        </select>
+                    </div>
 
-        function minutesToTime(minutes) {
-            const hours = Math.floor(minutes / 60);
-            const mins = minutes % 60;
-            return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-        }
+                    <div class="mb-4">
+                        <label for="matiere" class="block text-sm font-medium text-gray-700 mb-1">Matière</label>
+                        <select name="matiere" id="matiere" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                            <option value="">--Sélectionnez une matière--</option>
+                            <option value="Informatique">Informatique</option>
+                            <option value="Culture Generale & Expression">Culture générale et expression</option>
+                            <option value="Mathematiques">Mathématiques</option>
+                            <option value="Physique">Physique</option>
+                            <option value="Anglais">Anglais</option>
+                            <option value="ESLA">ESLA</option>
+                            <option value="BAS">BAS</option>
+                            <option value="ACF">ACF</option>
+                            <option value="Co-Physique">Co-enseignement physique</option>
+                            <option value="Co-Maths">Co-enseignement mathématiques</option>
+                        </select>
+                    </div>
 
-        function findNextValidSlot(minutes) {
-            let nextSlot = validTimeSlots[0];
-            for (const slot of validTimeSlots) {
-                const slotMinutes = timeToMinutes(slot);
-                if (slotMinutes >= minutes) {
-                    nextSlot = slot;
-                    break;
-                }
-            }
-            return nextSlot;
-        }
+                    <div class="mb-4">
+                        <label for="classe" class="block text-sm font-medium text-gray-700 mb-1">Classe/groupe</label>
+                        <select name="classe[]" id="classe" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" multiple required>
+                            <option value="CIEL1">CIEL1</option>
+                            <option value="CIEL2">CIEL2</option>
+                            <option value="CIAP1">CIAP1</option>
+                            <option value="CIAP2">CIAP2</option>
+                            <option value="CIEL1_Grp1">CIEL1_Grp1</option>
+                            <option value="CIEL1_Grp2">CIEL1_Grp2</option>
+                        </select>
+                    </div>
 
-        const startTimeSelect = document.getElementById('startTime');
-        validTimeSlots.forEach(time => {
-            const option = new Option(time, time);
-            startTimeSelect.add(option);
-        });
+                    <div class="mb-4">
+                        <label for="date_reserv" class="block text-sm font-medium text-gray-700 mb-1">Date de réservation</label>
+                        <input type="date" id="date_reserv" name="date_reserv" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                    </div>
 
-        // Set default date value to today
-        document.getElementById('date_reserv').valueAsDate = new Date();
+                    <div class="col-span-1 md:col-span-2 mb-4">
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Informations sur le cours/activité (optionnel)</label>
+                        <textarea id="message" name="message" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Détails supplémentaires sur le cours ou l'activité..."></textarea>
+                    </div>
 
-        function calculateEndTime() {
-            const startTime = document.getElementById('startTime').value;
-            const duration = parseInt(document.getElementById('duration').value);
+                    <div class="col-span-1 md:col-span-2 mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="startTime" class="block text-sm font-medium text-gray-700 mb-1">Heure de début</label>
+                                <select id="startTime" name="startTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                    <option value="">Sélectionnez une heure</option>
+                                    <option value="08:10:00">08:10</option>
+                                    <option value="09:00:00">09:00</option>
+                                    <option value="10:05:00">10:05</option>
+                                    <option value="10:55:00">10:55</option>
+                                    <option value="11:45:00">11:45</option>
+                                    <option value="13:00:00">13:00</option>
+                                    <option value="13:25:00">13:25</option>
+                                    <option value="13:50:00">13:50</option>
+                                    <option value="14:40:00">14:40</option>
+                                    <option value="15:45:00">15:45</option>
+                                    <option value="16:35:00">16:35</option>
+                                </select>
+                            </div>
 
-            if (startTime && duration) {
-                let startMinutes = timeToMinutes(startTime);
-                let endMinutes = startMinutes + duration;
+                            <div>
+                                <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Durée</label>
+                                <select id="duration" name="duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                    <option value="">Sélectionnez une durée</option>
+                                    <option value="0.83">50 minutes (1 heure)</option>
+                                    <option value="1.67">1 heure 40 (2 heures)</option>
+                                    <option value="2.5">2 heures 30 (3 heures)</option>
+                                    <option value="3.33">3 heures 20 (4 heures)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-                // Adjust for breaks
-                if (startMinutes < timeToMinutes("09:50") && endMinutes > timeToMinutes("09:50")) {
-                    endMinutes += 15; // Morning break
-                }
+                    <div class="col-span-1 md:col-span-2 flex justify-end">
+                        <button type="submit" class="bg-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center">
+                            <i class="fas fa-save mr-2"></i>
+                            Enregistrer la réservation
+                        </button>
+                    </div>
+                </div>
+            </form>
 
-                if (startMinutes < timeToMinutes("15:30") && endMinutes > timeToMinutes("15:30")) {
-                    endMinutes += 15; // Afternoon break
-                }
-
-                const endTime = findNextValidSlot(endMinutes);
-                document.getElementById('endTime').textContent = endTime;
-                
-                // Visual feedback
-                const resultElement = document.getElementById('result');
-                resultElement.style.backgroundColor = 'rgba(79, 70, 229, 0.1)';
-                resultElement.style.borderLeft = '3px solid var(--primary)';
-            } else {
-                document.getElementById('endTime').textContent = '--:--';
-            }
-        }
-        
-        document.getElementById('startTime').addEventListener('change', calculateEndTime);
-        document.getElementById('duration').addEventListener('change', calculateEndTime);
-    </script>
+            </div>
+        </div>
+        <!-- Footer -->
+        <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
+            © 2025 Système d'information BTS - Tous droits réservés
+        </footer>
+    </main>
 </body>
 </html>

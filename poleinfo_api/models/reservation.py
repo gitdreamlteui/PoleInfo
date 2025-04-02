@@ -26,6 +26,7 @@ LEFT JOIN user u ON r.id_user = u.id_user
 LEFT JOIN classe_reservation cr ON r.id_reservation = cr.id_reservation
 LEFT JOIN classe cl ON cr.id_classe_grp = cl.id_classe_grp
 GROUP BY r.id_reservation, r.duree, r.date, r.info, s.numero, s.capacite, s.type, m.nom, c.heure_debut, u.nom, u.prenom
+ORDER BY r.date ASC, c.heure_debut ASC
         """
         cursor.execute(query)
         return cursor.fetchall()
@@ -89,9 +90,45 @@ def get_reservations_by_salle_increase(numero_salle: str) -> List[Dict[str, Any]
         cursor.execute(query, (numero_salle,))
         return cursor.fetchall()
     
-
-def post_reservation(reservation):
+def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_creneau, login_user, nom_classe):
     with get_db_cursor() as cursor:
-        query_ = """
-"""
-    return None
+        try:
+            query_reservation = """
+            INSERT INTO reservation (
+                duree, 
+                date, 
+                info, 
+                id_salle, 
+                id_matiere, 
+                id_creneau, 
+                id_user
+            ) VALUES (
+                %s,
+                %s,
+                %s,
+                (SELECT id_salle FROM salle WHERE numero = %s),
+                (SELECT id_matiere FROM matiere WHERE nom = %s),
+                (SELECT id_creneau FROM creneau WHERE heure_debut = %s),
+                (SELECT id_user FROM user WHERE login = %s)
+            )"""
+            
+            cursor.execute(query_reservation, (float(duree), date, info, numero_salle, nom_matiere, heure_debut_creneau, login_user))
+            reservation_id = cursor.lastrowid
+            
+            classes = [classe.strip() for classe in nom_classe.split(',')]
+            
+            for classe in classes:
+                cursor.execute("SELECT id_classe_grp FROM classe WHERE nom = %s", (classe,))
+                classe_result = cursor.fetchone()
+                if classe_result is None:
+                    raise Exception(f"Classe '{classe}' non trouvée")
+                    
+                id_classe = classe_result['id_classe_grp']
+                
+                cursor.execute("INSERT INTO classe_reservation (id_reservation, id_classe_grp) VALUES (%s, %s)", 
+                              (reservation_id, id_classe))
+            
+            return {"status": "success", "message": "Réservation créée avec succès", "id_reservation": reservation_id}
+        
+        except Exception as e:
+            return {"status": "error", "message": f"Erreur lors de la création de la réservation: {str(e)}"}

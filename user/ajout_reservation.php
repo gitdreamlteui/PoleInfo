@@ -11,32 +11,34 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 $token = $_SESSION['token'];
-$api_url = "http://127.0.0.1:8000/reservations/";
+$api_url = "http://192.168.8.152:8000/reservations/";
 
-$salle = $_POST['salle'] ?? '';
-$matiere = $_POST['matiere'] ?? '';
-$classe = $_POST['classe'] ?? '';
-$date_reserv = $_POST['date_reserv'] ?? '';
-$message = $_POST['message'] ?? '';
-$horaire_debut = $_POST['startTime'] ?? '';
-$duration = $_POST['duration'] ?? '';
+$numero_salle = $_POST['salle'] ?? '';
+$nom_matiere = $_POST['matiere'] ?? '';
+$classes = isset($_POST['classe']) && is_array($_POST['classe']) ? $_POST['classe'] : [];
+$date = $_POST['date_reserv'] ?? '';
+$info = $_POST['message'] ?? '';
+$heure_debut = $_POST['startTime'] ?? '';
+$duree = floatval($_POST['duration'] ?? 0);
 
-// Calcul de l'heure de fin
-if (!empty($horaire_debut) && !empty($duration)) {
-    $horaire_fin = date("H:i", strtotime($horaire_debut) + $duration * 60);
-} else {
-    die("Erreur : Heure de début et durée requises.");
+$nom_classe = !empty($classes) ? implode(", ", $classes) : "";
+
+if (empty($numero_salle) || empty($nom_matiere) || empty($nom_classe) || empty($date) || empty($heure_debut) || $duree <= 0) {
+    die("Erreur : Tous les champs obligatoires doivent être remplis.");
 }
-$username = $_SESSION['username'] ?? "Inconnu";
+$login_user = $_SESSION['username'] ?? "Inconnu";
+
+// Préparer les données pour l'API
 $data = [
-    "salle" => $salle,
-    "matiere" => $matiere,
-    "prof" => htmlspecialchars($username),
-    "classe" => $classe,
-    "horaire_debut" => $horaire_debut,
-    "horaire_fin" => $horaire_fin,
-    "date" => $date_reserv,
-    "info" => $message
+    "duree" => $duree,
+    "date" => $date,
+    "info" => $info,
+    "numero_salle" => $numero_salle,
+    "nom_matiere" => $nom_matiere,
+    "heure_debut_creneau" => $heure_debut,
+    "login_user" => $login_user,
+    "nom_classe" => $nom_classe,
+
 ];
 
 $ch = curl_init();
@@ -54,18 +56,26 @@ $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curl_error = curl_error($ch);
 curl_close($ch);
 
-// Vérification de la réponse
 if ($http_code === 201 || $http_code === 200) {
-    $_SESSION['info_message'] = "Réservation ajoutée avec succès!";
-    header("Location: /user/dashboard.php");
-    //?success=reservation_added
+    $response_data = json_decode($response, true);
+    $message = $response_data['message'] ?? "Réservation ajoutée avec succès!";
+    
+    $_SESSION['info_message'] = $message;
+    header("Location: user/dashboard.php");
     exit;
 } else {
-    echo "<pre>";
-    echo "Erreur lors de l'ajout de la réservation.\n";
-    echo "Réponse API : " . htmlspecialchars($response) . "\n";
-    echo "Code HTTP : $http_code\n";
-    echo "Erreur cURL : $curl_error\n";
-    echo "</pre>";
+    $message = "Erreur lors de l'ajout de la réservation: ";
+    if (!empty($response)) {
+        $error_data = json_decode($response, true);
+        $message .= isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code;
+    } elseif (!empty($curl_error)) {
+        $message .= $curl_error;
+    } else {
+        $message .= 'Code ' . $http_code;
+    }
+    
+    $_SESSION['info_message'] = $message;
+    header("Location: user/dashboard.php");
+    exit;
 }
 ?>
