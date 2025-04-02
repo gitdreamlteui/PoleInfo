@@ -116,6 +116,10 @@ if ($http_code != 200) {
                         if (is_array($data_creneau)) {
                             foreach ($data_creneau as $item) {
                                 $creneau_value = htmlspecialchars($item['creneau']);
+                                $interval = new DateInterval($creneau_value);
+                                $heures = $interval->h;
+                                $minutes = $interval->i;
+                                $creneau_value = sprintf("%02d:%02d", $heures, $minutes);
                                 echo "<option value='$creneau_value'>$creneau_value</option>";
                             }
                         }
