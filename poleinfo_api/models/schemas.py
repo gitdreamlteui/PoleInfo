@@ -57,11 +57,11 @@ class ReservationResponse(BaseModel):
     prenom: str
     noms_classes: str
 
-class ReservationDelete():
-    id_reservation: int
-
 class Token(BaseModel):
     access_token: str
     token_type: str
     user_type: int
     user_name: str
+
+class CreneauResponse(BaseModel):
+    creneau: int;

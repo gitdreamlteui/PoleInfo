@@ -10,6 +10,8 @@ Dernière date de mise à jour : 28/03/2025
     |----- auth.py
     |------reservations.py
     |------users.py <-- Vous êtes ici
+    |------creneaux.py
+
 
 Description : ce programme permet de créer toutes les routes relatives à la gestion
 des utilisateurs, notamment la création de nouveaux comptes utilisateurs avec vérification
@@ -56,7 +58,7 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
         "type": user.type,
         "nom": user.nom,
         "prenom": user.prenom
-    }
+         }
     
     # Création de l'utilisateur en base de données
     user_id = create_user(new_user)
