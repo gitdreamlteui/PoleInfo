@@ -255,15 +255,20 @@ $data = json_decode($response_reservation, true);
         </footer>
     </main>
     <script>
+        function toggleDetails(id) {
+            document.getElementById(id).classList.toggle('hidden');
+        }
+
         function updateClock() {
             const now = new Date();
-            let hours = now.getHours().toString().padStart(2, '0');
-            let minutes = now.getMinutes().toString().padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+            const time = [now.getHours(), now.getMinutes(), now.getSeconds()]
+                .map(n => n.toString().padStart(2, '0'))
+                .join(':');
+            document.getElementById('clock').textContent = time;
+            setTimeout(updateClock, 1000);
         }
-        
-        updateClock();
-        setInterval(updateClock, 1000);
+
+        window.onload = updateClock;
     </script>
 </body>
 </html>
