@@ -16,7 +16,7 @@ app = FastAPI(title="PoleInfo API", description="API de gestion des réservation
 app.include_router(auth.router)
 app.include_router(users.router, prefix="/utilisateurs", tags=["utilisateurs"])
 app.include_router(reservations.router, prefix="/reservations", tags=["reservations"])
-app.include_router(reservations.router, prefix="/creneaux", tags=["creneaux"])
+app.include_router(creneaux.router, prefix="/creneaux", tags=["creneaux"])
 
 @app.get("/")
 def read_root():
