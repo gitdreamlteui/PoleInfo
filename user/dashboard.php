@@ -1,6 +1,8 @@
 <?php
 // DASHBOARD.PHP
 require_once 'utils/recuperer_creneaux.php';
+require_once 'utils/recuperer_salles.php';
+
 session_start();
 if (!isset($_SESSION['token'])) {
     header("Location: http://192.168.8.152/interface_login.php?error=expired");
@@ -66,6 +68,7 @@ $response_reservation = file_get_contents($request_reservation);
 $data = json_decode($response_reservation, true);
 
 $creneaux = getCreneaux();
+$salles = getSalles();
 ?>
 
 <!DOCTYPE html>
@@ -163,14 +166,12 @@ $creneaux = getCreneaux();
                         <label for="salle" class="block text-sm font-medium text-gray-700 mb-1">Salle</label>
                         <select name="salle" id="salle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
                             <option value="">--Sélectionnez une salle--</option>
-                            <option value="3C01">3C01</option>
-                            <option value="3W03">3W03</option>
-                            <option value="3W04">3W04</option>
-                            <option value="3W05">3W05</option>
-                            <option value="3W06">3W06</option>
+                                <?php foreach ($salles as $salle) {
+                                    echo "<option value='{$salle['numero']}'>{$salle['numero']}</option>";
+                                    }
+                                ?>
                         </select>
                     </div>
-
                     <div class="mb-4">
                         <label for="matiere" class="block text-sm font-medium text-gray-700 mb-1">Matière</label>
                         <select name="matiere" id="matiere" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
@@ -222,7 +223,6 @@ $creneaux = getCreneaux();
                                     ?>
                                 </select>
                             </div>
-
                             <div>
                                 <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Durée</label>
                                 <select id="duration" name="duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
