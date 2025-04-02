@@ -16,6 +16,23 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id_user: int
 
+class UserDelete():
+    id_user: int
+    
+class SalleBase(BaseModel):
+    numero: str
+    capacite: int
+    type: str
+
+class SalleCreate(SalleBase):
+    id_salle: int
+    
+class SalleResponse(SalleBase):
+    id_salle: int
+    
+class SalleDelete():
+    id_salle: int
+
 class ReservationCreate(BaseModel):
     duree: float
     date: date
