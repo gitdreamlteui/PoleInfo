@@ -39,15 +39,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             // Redirection après le stockage du token
             if ($_SESSION['type_compte'] == 1){
-                header('Location: ' . getWebUrl('PoleInfo/admin/interface_admin.php'));    
+                header('Location: ' . getWebUrl('admin/interface_admin.php'));    
             }
             else {
-                header('Location: ' . getWebUrl('PoleInfo/user/dashboard.php'));
+                header('Location: ' . getWebUrl('user/dashboard.php'));
             }
             exit();
         } else {
             // Si le token n'est pas présent dans la réponse
-            header('Location: ' . getWebUrl('PoleInfo/interface_login.php?error=no_token'));
+            header('Location: ' . getWebUrl('interface_login.php?error=no_token'));
             exit();
         }
     } else {
@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } elseif ($http_code === 401) {
             $error_message = "Non autorisé";
         }
-        header('Location: ' . getWebUrl('PoleInfo/interface_login.php?error=' . urlencode($error_message)));
+        header('Location: ' . getWebUrl('interface_login.php?error=' . urlencode($error_message)));
         exit();
     }
 }
