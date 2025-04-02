@@ -43,71 +43,71 @@ if ($http_code != 200) {
     <title>Admin - Gestion</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body>
     
-    <header class="bg-indigo-600 text-white p-4 flex justify-between items-center w-full fixed top-0 left-0 right-0 shadow-md">
-        <h1 class="text-xl font-bold">Système d'information BTS - Administration</h1>
-        <div class="flex gap-4">
-            <a href="../index.php" class="bg-white px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 shadow-md font-semibold">Tableau d'accueil</a>
-            <a href="../user/dashboard.php" class="bg-white px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 shadow-md font-semibold">Ajout Réservation</a>
-            <a href="../user/logout.php" class="bg-white px-4 py-2 rounded-md text-red-600 hover:bg-red-50 shadow-md font-semibold">Déconnexion</a>
+    <header>
+        <h1>Système d'information BTS - Administration</h1>
+        <div>
+            <a href="../index.php">Tableau d'accueil</a>
+            <a href="../user/dashboard.php">Ajout Réservation</a>
+            <a href="../user/logout.php">Déconnexion</a>
         </div>
     </header>
     
-    <div class="container mx-auto px-4 mt-32">
-        <div class="grid grid-cols-2 gap-8">
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Ajouts d'Utilisateurs</h2>
-                <form class="space-y-4">
-                    <input type="text" placeholder="Prénom" class="w-full p-2 border rounded-md">
-                    <input type="text" placeholder="Nom" class="w-full p-2 border rounded-md">
-                    <input type="password" placeholder="Mot de passe" class="w-full p-2 border rounded-md">
-                    <select name="choix_droit" class="w-full p-2 border rounded-md">
+    <div>
+        <div>
+            <div>
+                <h2>Ajouts d'Utilisateurs</h2>
+                <form>
+                    <input type="text" placeholder="Prénom">
+                    <input type="text" placeholder="Nom">
+                    <input type="password" placeholder="Mot de passe">
+                    <select name="choix_droit">
                         <option value="Administrateur">Administrateur</option>
                         <option value="Utilisateur">Utilisateur</option>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Créer Utilisateur</button>
+                    <button type="submit">Créer Utilisateur</button>
                 </form>
             </div>
             
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Suppressions d'Utilisateurs</h2>
-                <form class="space-y-4">
-                    <select name="sup_user" class="w-full p-2 border rounded-md">
+            <div>
+                <h2>Suppressions d'Utilisateurs</h2>
+                <form>
+                    <select name="sup_user">
                         <option value=""></option>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Utilisateur</button>
+                    <button type="submit">Supprimer Utilisateur</button>
                 </form>
             </div>
         </div>
         
-        <div class="bg-indigo-600 text-white text-xl font-bold p-4 rounded-lg my-6 shadow-lg">
+        <div>
             Gestion des ressources
         </div>
         
-        <div class="grid grid-cols-4 gap-4">
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Gestion des Matières</h2>
-                <form class="space-y-4">
-                    <input type="text" placeholder="Nom de la matière" class="w-full p-2 border rounded-md"require>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Matière</button>
+        <div>
+            <div>
+                <h2>Gestion des Matières</h2>
+                <form>
+                    <input type="text" placeholder="Nom de la matière"require>
+                    <button type="submit" >Ajouter Matière</button>
                 </form>
                 <form class="mt-10 space-y-4">
-                    <select name="sup_matiere" class="w-full p-2 border rounded-md">
+                    <select name="sup_matiere">
                         <option value=""></option>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Matière</button>
+                    <button type="submit">Supprimer Matière</button>
                 </form>
             </div>
             
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Gestion des Créneaux</h2>
-                <form class="space-y-4">
-                    <input type="text" placeholder="00:00" class="w-full p-2 border rounded-md" require>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Créneau</button>
+            <div>
+                <h2>Gestion des Créneaux</h2>
+                <form>
+                    <input type="text" placeholder="00:00" require>
+                    <button type="submit">Ajouter Créneau</button>
                 </form>
-                <form class="mt-10 space-y-4">
-                    <select name="creneau" class="w-full p-2 border rounded-md">
+                <form>
+                    <select name="creneau">
                         <?php
                         $get_creneau = "http://192.168.8.152:8000/creneaux/";
                         $reponse_creneau = file_get_contents($get_creneau);
@@ -124,43 +124,43 @@ if ($http_code != 200) {
                         }
                         ?>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Créneau</button>
+                    <button type="submit">Supprimer Créneau</button>
                 </form>
             </div>
             
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Gestion des Classes</h2>
-                <form class="space-y-4">
-                    <input type="text" placeholder="Nom de la classe" class="w-full p-2 border rounded-md" require>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Classe</button>
+            <div>
+                <h2>Gestion des Classes</h2>
+                <form>
+                    <input type="text" placeholder="Nom de la classe" require>
+                    <button type="submit">Ajouter Classe</button>
                 </form>
-                <form class="mt-10 space-y-4">
-                    <select name="sup_classe" class="w-full p-2 border rounded-md">
+                <form>
+                    <select name="sup_classe">
                         <option value=""></option>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Classe</button>
+                    <button type="submit" >Supprimer Classe</button>
                 </form>
             </div>
             
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Gestion des Salles</h2>
-                <form class="space-y-4">
-                    <input type="text" placeholder="Nom ou numéro de la salle" class="w-full p-2 border rounded-md"require>
-                    <input type="text" placeholder="Type de salle (TP-info, Cours, etc.)" class="w-full p-2 border rounded-md" require>
-                    <input type="number" placeholder="Capacité de la salle" class="w-full p-2 border rounded-md" require>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Salle</button>
+            <div>
+                <h2>Gestion des Salles</h2>
+                <form>
+                    <input type="text" placeholder="Nom ou numéro de la salle"require>
+                    <input type="text" placeholder="Type de salle (TP-info, Cours, etc.)" require>
+                    <input type="number" placeholder="Capacité de la salle"  require>
+                    <button type="submit" >Ajouter Salle</button>
                 </form>
-                <form class="mt-10 space-y-4">
-                    <select name="sup_salle" class="w-full p-2 border rounded-md">
+                <form>
+                    <select name="sup_salle">
                         <option value=""></option>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Salle</button>
+                    <button type="submit">Supprimer Salle</button>
                 </form>
             </div>
         </div>
     </div>
     
-    <footer class="mt-6 text-center text-sm text-gray-500">
+    <footer >
         <p>© 2025 Système d'information BTS - Tous droits réservés</p>
     </footer>
 </body>
