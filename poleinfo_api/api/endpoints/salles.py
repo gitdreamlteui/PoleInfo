@@ -10,8 +10,8 @@ Dernière date de mise à jour : 02/04/2025
     |----- auth.py
     |------reservations.py
     |------users.py
-    |------creneaux.py  <-- Vous êtes ici
-    |------salles.py 
+    |------creneaux.py 
+    |------salles.py  <-- Vous êtes ici
 """
 
 from models.schemas import SalleResponse
@@ -22,7 +22,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
 
 router = APIRouter(
-    tags=["creneaux"]
+    tags=["salles"]
 )
 
 @router.get("/", response_model=List[SalleResponse])
