@@ -77,71 +77,106 @@ $date_jour = $date_actuelle->format('d/m/Y');
     </script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-50 font-inter text-gray-800 m-0 p-0">
     
-    <header class="bg-indigo-600 text-white p-4 flex justify-between items-center w-full fixed top-0 left-0 right-0 shadow-md">
-        <h1 class="text-xl font-bold">Système d'information BTS - Administration</h1>
-        <div class="flex gap-4">
-            <a href="../index.php" class="bg-white px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 shadow-md font-semibold">Tableau d'accueil</a>
-            <a href="../user/dashboard.php" class="bg-white px-4 py-2 rounded-md text-indigo-600 hover:bg-indigo-50 shadow-md font-semibold">Ajout Réservation</a>
-            <a href="../user/logout.php" class="bg-white px-4 py-2 rounded-md text-red-600 hover:bg-red-50 shadow-md font-semibold">Déconnexion</a>
+    <header class="bg-primary fixed top-0 w-full py-3 px-4 shadow-md z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="bg-white p-2 rounded-lg mr-3">
+                    <img src="logo.png" alt="Logo Pole Info" class="h-9">
+                </div>
+                <div class="font-semibold text-white text-2xl">Système d'information BTS - Administration</div>
+            </div>
+            <div class="flex gap-3">
+                <a href="../index.php" class="no-underline">
+                    <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
+                        Tableau d'accueil
+                    </button>
+                </a>
+                <a href="../user/dashboard.php" class="no-underline">
+                    <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
+                        Ajout Réservation
+                    </button>
+                </a>
+                <a href="../user/logout.php" class="no-underline">
+                    <button class="bg-white text-red-600 font-semibold py-2 px-4 rounded hover:bg-red-50 transition-colors">
+                        Déconnexion
+                    </button>
+                </a>
+            </div>
         </div>
     </header>
     
-    <div class="container mx-auto px-4 mt-32">
-        <div class="grid grid-cols-2 gap-8">
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Ajouts d'Utilisateurs</h2>
+    <main class="container mx-auto px-4 py-6 mt-24">
+        <div class="bg-white p-3 mb-6 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center">
+            <div class="text-gray-600">
+                <span class="font-medium">Aujourd'hui : </span>
+                <span><?php echo $date_jour; ?></span>
+            </div>
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-medium text-primary mr-2">Heure actuelle :</span>
+                <span id="clock" class="clock-display font-medium bg-primary text-white px-3 py-1 rounded-md">
+                    <?php echo $heure_actuelle; ?>
+                </span>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Ajouts d'Utilisateurs</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="Prénom" class="w-full p-2 border rounded-md">
-                    <input type="text" placeholder="Nom" class="w-full p-2 border rounded-md">
-                    <input type="password" placeholder="Mot de passe" class="w-full p-2 border rounded-md">
-                    <select name="choix_droit" class="w-full p-2 border rounded-md">
+                    <input type="text" placeholder="Prénom" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                    <input type="text" placeholder="Nom" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                    <input type="password" placeholder="Mot de passe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                    <select name="choix_droit" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         <option value="Administrateur">Administrateur</option>
                         <option value="Utilisateur">Utilisateur</option>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Créer Utilisateur</button>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors w-full font-medium">Créer Utilisateur</button>
                 </form>
             </div>
             
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Suppressions d'Utilisateurs</h2>
+            <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Suppressions d'Utilisateurs</h2>
                 <form class="space-y-4">
-                    <select name="sup_user" class="w-full p-2 border rounded-md">
+                    <select name="sup_user" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         <option value=""></option>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Utilisateur</button>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Utilisateur</button>
                 </form>
             </div>
         </div>
         
-        <div class="bg-indigo-600 text-white text-xl font-bold p-4 rounded-lg my-6 shadow-lg">
+        <div class="bg-primary text-white p-3 mb-4 font-semibold text-lg rounded-lg shadow">
             Gestion des ressources
         </div>
         
-        <div class="grid grid-cols-4 gap-4">
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Gestion des Matières</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Gestion des Matières</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="Nom de la matière" class="w-full p-2 border rounded-md"require>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Matière</button>
+                    <input type="text" placeholder="Nom de la matière" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Matière</button>
                 </form>
-                <form class="mt-10 space-y-4">
-                    <select name="sup_matiere" class="w-full p-2 border rounded-md">
+                <form class="mt-6 space-y-4">
+                    <select name="sup_matiere" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         <option value=""></option>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Matière</button>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Matière</button>
                 </form>
             </div>
             
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Gestion des Créneaux</h2>
+            <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Gestion des Créneaux</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="00:00" class="w-full p-2 border rounded-md" require>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Créneau</button>
+                    <input type="text" placeholder="00:00" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Créneau</button>
                 </form>
-                <form class="mt-10 space-y-4">
-                    <select name="creneau" class="w-full p-2 border rounded-md">
+                <form class="mt-6 space-y-4">
+                    <select name="creneau" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         <?php
                         $get_creneau = "http://192.168.8.152:8000/creneaux/";
                         $reponse_creneau = file_get_contents($get_creneau);
@@ -158,32 +193,33 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         }
                         ?>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Créneau</button>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Créneau</button>
                 </form>
             </div>
             
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Gestion des Classes</h2>
+            <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Gestion des Classes</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="Nom de la classe" class="w-full p-2 border rounded-md" require>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Classe</button>
+                    <input type="text" placeholder="Nom de la classe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Classe</button>
                 </form>
-                <form class="mt-10 space-y-4">
-                    <select name="sup_classe" class="w-full p-2 border rounded-md">
+                <form class="mt-6 space-y-4">
+                    <select name="sup_classe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         <option value=""></option>
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Classe</button>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Classe</button>
                 </form>
             </div>
             
-            <div class="bg-white shadow-lg p-6 rounded-lg">
-                <h2 class="text-2xl font-bold mb-4">Gestion des Salles</h2>
+            <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+                <h2 class="text-xl font-semibold mb-4 text-primary">Gestion des Salles</h2>
                 <form class="space-y-4">
-                    <input type="text" placeholder="Nom ou numéro de la salle" class="w-full p-2 border rounded-md"require>
-                    <input type="text" placeholder="Type de salle (TP-info, Cours, etc.)" class="w-full p-2 border rounded-md" require>
-                    <input type="number" placeholder="Capacité de la salle" class="w-full p-2 border rounded-md" require>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-green-600 w-full">Ajouter Salle</button>
+                    <input type="text" placeholder="Nom ou numéro de la salle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <input type="text" placeholder="Type de salle (TP-info, Cours, etc.)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <input type="number" placeholder="Capacité de la salle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Salle</button>
                 </form>
+<<<<<<< HEAD
                 <form class="mt-10 space-y-4">
                     <select name="sup_salle" class="w-full p-2 border rounded-md">
                         <?
@@ -196,15 +232,20 @@ $date_jour = $date_actuelle->format('d/m/Y');
                             echo "<option value='$salle'>$salle</option>";
                         }
                         ?>
+=======
+                <form class="mt-6 space-y-4">
+                    <select name="sup_salle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                        <option value=""></option>
+>>>>>>> 610ea0370b2d9e401845cacd3215779f900bfe4f
                     </select>
-                    <button type="submit" class="bg-indigo-500 text-white px-4 py-2 rounded-md hover:bg-red-600 w-full">Supprimer Salle</button>
+                    <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Salle</button>
                 </form>
             </div>
         </div>
-    </div>
-    
-    <footer class="mt-6 text-center text-sm text-gray-500">
-        <p>© 2025 Système d'information BTS - Tous droits réservés</p>
-    </footer>
+
+        <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
+            © 2025 Système d'information BTS - Tous droits réservés
+        </footer>
+    </main>
 </body>
 </html>
