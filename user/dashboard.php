@@ -1,6 +1,6 @@
 <?php
 // DASHBOARD.PHP
-require_once 'utils/recuperer_creaneaux.php';
+require_once 'utils/recuperer_creneaux.php';
 session_start();
 if (!isset($_SESSION['token'])) {
     header("Location: http://192.168.8.152/interface_login.php?error=expired");
