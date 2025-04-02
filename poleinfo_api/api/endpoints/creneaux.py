@@ -21,7 +21,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
 
 router = APIRouter(
-    tags=["creneau"]
+    tags=["creneaux"]
 )
 
 @router.get("/", response_model=List[CreneauResponse])
