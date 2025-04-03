@@ -17,7 +17,6 @@ function getSalles() {
             $salles[] = $salle;
         }
     }
-    
     return $salles;
 }
 ?>

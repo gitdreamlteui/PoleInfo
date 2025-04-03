@@ -70,7 +70,7 @@ def get_reservations(salle: str = Query(None, description="Numéro de la salle")
     
     if not reservations:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
+            status_code=status.HTTP_410_GONE,
             detail="Aucune réservation trouvée"
         )
     return reservations
