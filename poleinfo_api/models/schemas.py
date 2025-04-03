@@ -33,6 +33,7 @@ class MatiereCreate(BaseModel):
 
 class MatiereResponse(BaseModel):
     nom: str
+    
 class MatiereDelete(BaseModel):
     id_matiere: int
 
