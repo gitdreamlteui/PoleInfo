@@ -2,7 +2,7 @@
 // DASHBOARD.PHP
 require_once 'utils/recuperer_creneaux.php';
 require_once 'utils/recuperer_salles.php';
-require_once 'utils/recuperer_matieres.php';
+//require_once 'utils/recuperer_matieres.php';
 
 
 session_start();
