@@ -1,3 +1,76 @@
+<?php
+// DASHBOARD.PHP
+require_once 'utils/recuperer_creneaux.php';
+require_once 'utils/recuperer_salles.php';
+
+session_start();
+if (!isset($_SESSION['token'])) {
+    header("Location: http://192.168.8.152/interface_login.php?error=expired");
+    exit;
+}
+
+$token = $_SESSION['token'];
+$username = $_SESSION["username"];
+
+$api_url_verify = "http://192.168.8.152:8000/verify-token/";
+$api_url_reservations = "http://192.168.8.152:8000/reservations/";
+
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+curl_setopt($ch, CURLOPT_URL, $api_url_verify);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Authorization: Bearer $token",
+]);
+
+$response = curl_exec($ch);
+$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+$curl_error = curl_error($ch);
+curl_close($ch);
+
+if ($http_code != 200 || !$response) {
+    error_log("Erreur de vérification du token : HTTP $http_code - $curl_error");
+    session_destroy();
+    header("Location: http://192.168.8.152/interface_login.php?error=expired");
+    exit;
+}
+
+$data = json_decode($response, true);
+if (!$data) {
+    die("Erreur : Impossible de décoder le JSON.");
+}
+
+$success_message = "";
+if (isset($_SESSION['info_message'])) {
+    $success_message = $_SESSION['info_message'];
+    unset($_SESSION['info_message']);
+}
+
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $api_url_reservations);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+curl_setopt($ch, CURLOPT_HTTPHEADER, [
+    "Authorization: Bearer $token",
+]);
+
+$response = curl_exec($ch);
+curl_close($ch);
+
+$data_reservations = json_decode($response, true);
+
+$date_actuelle = new DateTime();
+$heure_actuelle = $date_actuelle->format('H:i');
+$date_jour = $date_actuelle->format('d/m/Y');
+
+$request_reservation = "http://192.168.8.152:8000/reservations/?croissant=true";
+$response_reservation = file_get_contents($request_reservation);
+$data = json_decode($response_reservation, true);
+
+$creneaux = getCreneaux();
+$salles = getSalles();
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -22,69 +95,57 @@
             font-variant-numeric: tabular-nums;
             letter-spacing: 0.5px;
         }
-        /* Ajout de styles pour réduire l'espace */
-        .compact-form .form-group {
-            margin-bottom: 0.5rem;
-        }
-        .compact-form label {
-            margin-bottom: 0.25rem;
-        }
-        .compact-form select, .compact-form input, .compact-form textarea {
-            padding-top: 0.375rem;
-            padding-bottom: 0.375rem;
-        }
     </style>
 </head>
 <body class="bg-gray-50 font-inter text-gray-800 m-0 p-0">
-    <!-- Navigation Bar - plus compacte -->
-    <header class="bg-primary fixed top-0 w-full py-2 px-3 shadow-md z-10">
+    <!-- Navigation Bar -->
+    <header class="bg-primary fixed top-0 w-full py-3 px-4 shadow-md z-10">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center text-white">
-                <span class="font-semibold text-xl">Pôle Info - Réservations</span>
+                <span class="font-semibold text-2xl">Pôle Info - Réservations</span>
             </div>
-            <div class="flex items-center space-x-3">
-                <div class="text-white flex items-center text-sm">
-                    <i class="fas fa-user-circle mr-1"></i>
+            <div class="flex items-center space-x-4">
+                <div class="text-white flex items-center">
+                    <i class="fas fa-user-circle mr-2"></i>
                     <span>Bonjour, <?php echo htmlspecialchars($username); ?></span>
                 </div>
                 <a href="logout.php" class="no-underline">
-                    <button class="bg-white text-primary font-medium text-sm py-1 px-3 rounded hover:bg-blue-50 transition-colors flex items-center">
-                        <i class="fas fa-sign-out-alt mr-1"></i>
-                        Déconnexion
+                    <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors flex items-center">
+                        <i class="fas fa-sign-out-alt mr-2"></i>
+                        Se déconnecter
                     </button>
                 </a>
             </div>
         </div>
     </header>
 
-    <!-- Main Content - marges réduites -->
-    <main class="container mx-auto px-3 py-3 mt-12">
-        <!-- Page Header - plus compact -->
-        <div class="mb-3 flex justify-between items-center">
-            <div>
-                <h1 class="text-xl font-bold text-gray-800">Tableau de bord</h1>
-                <p class="text-gray-600 text-sm">Gestion des réservations de salles</p>
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-6 mt-16">
+        <!-- Page Header -->
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-800">Tableau de bord</h1>
+            <p class="text-gray-600">Gérez vos réservations de salles et consultez le planning.</p>
+        </div>
+
+        <!-- Date and Time Display -->
+        <div class="bg-white p-3 mb-6 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center">
+            <div class="text-gray-600">
+                <span class="font-medium">Aujourd'hui : </span>
+                <span><?php echo $date_jour; ?></span>
             </div>
-            <!-- Date and Time Display - déplacé à droite -->
-            <div class="bg-white p-2 rounded shadow-sm border border-gray-200 flex items-center text-sm">
-                <div class="text-gray-600 mr-3">
-                    <span class="font-medium">Aujourd'hui : </span>
-                    <span><?php echo $date_jour; ?></span>
-                </div>
-                <div class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    <span class="font-medium text-primary mr-1">Heure :</span>
-                    <span id="clock" class="clock-display font-medium bg-primary text-white px-2 py-0.5 rounded">
-                        <?php echo $heure_actuelle; ?>
-                    </span>
-                </div>
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-medium text-primary mr-2">Heure actuelle :</span>
+                <span id="clock" class="clock-display font-medium bg-primary text-white px-3 py-1 rounded-md">
+                    <?php echo $heure_actuelle; ?>
+                </span>
             </div>
         </div>
 
         <?php if ($success_message): ?>
-            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-2 mb-3 rounded shadow-sm text-sm">
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm">
                 <div class="flex items-center">
                     <i class="fas fa-check-circle mr-2"></i>
                     <p><?php echo htmlspecialchars($success_message); ?></p>
@@ -92,94 +153,102 @@
             </div>
         <?php endif; ?>
 
-        <!-- Reservation Form Card - plus compact -->
-        <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-4 overflow-hidden">
-            <div class="bg-primary text-white p-2 font-semibold text-base rounded-t-lg flex items-center">
+        <!-- Reservation Form Card -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 overflow-hidden">
+            <div class="bg-primary text-white p-3 font-semibold text-lg rounded-t-lg flex items-center">
                 <i class="fas fa-plus-circle mr-2"></i>
                 Nouvelle réservation
             </div>
-            <div class="p-3">
-                <form action="ajout_reservation.php" method="post" class="compact-form">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
-                        <div class="form-group">
-                            <label for="salle" class="block text-xs font-medium text-gray-700">Salle</label>
-                            <select name="salle" id="salle" class="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" required>
-                                <option value="">--Sélectionnez--</option>
+            <div class="p-4">
+            <form action="ajout_reservation.php" method="post">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label for="salle" class="block text-sm font-medium text-gray-700 mb-1">Salle</label>
+                        <select name="salle" id="salle" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                            <option value="">--Sélectionnez une salle--</option>
                                 <?php foreach ($salles as $salle) {
                                     echo "<option value='{$salle['numero']}'>{$salle['numero']}</option>";
                                     }
                                 ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="matiere" class="block text-xs font-medium text-gray-700">Matière</label>
-                            <select name="matiere" id="matiere" class="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" required>
-                                <option value="">--Sélectionnez--</option>
-                                <option value="Informatique">Informatique</option>
-                                <option value="Culture Generale & Expression">Culture générale</option>
-                                <option value="Mathematiques">Mathématiques</option>
-                                <option value="Physique">Physique</option>
-                                <option value="Anglais">Anglais</option>
-                                <option value="ESLA">ESLA</option>
-                                <option value="BAS">BAS</option>
-                                <option value="ACF">ACF</option>
-                                <option value="Co-Physique">Co-enseignement physique</option>
-                                <option value="Co-Maths">Co-enseignement maths</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="classe" class="block text-xs font-medium text-gray-700">Classe/groupe</label>
-                            <select name="classe[]" id="classe" class="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" multiple required>
-                                <option value="CIEL1">CIEL1</option>
-                                <option value="CIEL2">CIEL2</option>
-                                <option value="CIAP1">CIAP1</option>
-                                <option value="CIAP2">CIAP2</option>
-                                <option value="CIEL1_Grp1">CIEL1_Grp1</option>
-                                <option value="CIEL1_Grp2">CIEL1_Grp2</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="date_reserv" class="block text-xs font-medium text-gray-700">Date</label>
-                            <input type="date" id="date_reserv" name="date_reserv" class="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" required>
-                        </div>
-                        <div class="form-group md:col-span-2">
-                            <label for="startTime" class="block text-xs font-medium text-gray-700">Heure de début</label>
-                            <select id="startTime" name="startTime" class="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" required>
-                                <option value="">Sélectionnez</option>
-                                <?php 
-                                    foreach ($creneaux as $creneau) {
-                                        echo "<option value='$creneau'>$creneau</option>";
-                                    }
-                                ?>
-                            </select>
-                        </div>
-                        <div class="form-group md:col-span-2">
-                            <label for="duration" class="block text-xs font-medium text-gray-700">Durée</label>
-                            <select id="duration" name="duration" class="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent" required>
-                                <option value="">Sélectionnez</option>
-                                <option value="0.83">50 min (1h)</option>
-                                <option value="1.67">1h40 (2h)</option>
-                                <option value="2.5">2h30 (3h)</option>
-                                <option value="3.33">3h20 (4h)</option>
-                            </select>
-                        </div>
-                        <div class="form-group md:col-span-4">
-                            <label for="message" class="block text-xs font-medium text-gray-700">Informations (optionnel)</label>
-                            <textarea id="message" name="message" class="w-full px-2 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-primary focus:border-transparent h-16" placeholder="Détails supplémentaires sur le cours ou l'activité..."></textarea>
-                        </div>
-                        <div class="md:col-span-4 flex justify-end mt-2">
-                            <button type="submit" class="bg-primary text-white font-medium text-sm py-1.5 px-3 rounded-md hover:bg-blue-700 transition-colors flex items-center">
-                                <i class="fas fa-save mr-1"></i>
-                                Enregistrer
-                            </button>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label for="matiere" class="block text-sm font-medium text-gray-700 mb-1">Matière</label>
+                        <select name="matiere" id="matiere" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                            <option value="">--Sélectionnez une matière--</option>
+                            <option value="Informatique">Informatique</option>
+                            <option value="Culture Generale & Expression">Culture générale et expression</option>
+                            <option value="Mathematiques">Mathématiques</option>
+                            <option value="Physique">Physique</option>
+                            <option value="Anglais">Anglais</option>
+                            <option value="ESLA">ESLA</option>
+                            <option value="BAS">BAS</option>
+                            <option value="ACF">ACF</option>
+                            <option value="Co-Physique">Co-enseignement physique</option>
+                            <option value="Co-Maths">Co-enseignement mathématiques</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="classe" class="block text-sm font-medium text-gray-700 mb-1">Classe/groupe</label>
+                        <select name="classe[]" id="classe" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" multiple required>
+                            <option value="CIEL1">CIEL1</option>
+                            <option value="CIEL2">CIEL2</option>
+                            <option value="CIAP1">CIAP1</option>
+                            <option value="CIAP2">CIAP2</option>
+                            <option value="CIEL1_Grp1">CIEL1_Grp1</option>
+                            <option value="CIEL1_Grp2">CIEL1_Grp2</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="date_reserv" class="block text-sm font-medium text-gray-700 mb-1">Date de réservation</label>
+                        <input type="date" id="date_reserv" name="date_reserv" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                    </div>
+
+                    <div class="col-span-1 md:col-span-2 mb-4">
+                        <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Informations sur le cours/activité (optionnel)</label>
+                        <textarea id="message" name="message" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" placeholder="Détails supplémentaires sur le cours ou l'activité..."></textarea>
+                    </div>
+                    <div class="col-span-1 md:col-span-2 mb-4">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label for="startTime" class="block text-sm font-medium text-gray-700 mb-1">Heure de début</label>
+                                <select id="startTime" name="startTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                    <option value="">Sélectionnez une heure</option>
+                                    <?php 
+                                        foreach ($creneaux as $creneau) {
+                                            echo "<option value='$creneau'>$creneau</option>";
+                                        }
+                                    ?>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Durée</label>
+                                <select id="duration" name="duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                    <option value="">Sélectionnez une durée</option>
+                                    <option value="0.83">50 minutes (1 heure)</option>
+                                    <option value="1.67">1 heure 40 (2 heures)</option>
+                                    <option value="2.5">2 heures 30 (3 heures)</option>
+                                    <option value="3.33">3 heures 20 (4 heures)</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
-                </form>
+
+                    <div class="col-span-1 md:col-span-2 flex justify-end">
+                        <button type="submit" class="bg-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center">
+                            <i class="fas fa-save mr-2"></i>
+                            Enregistrer la réservation
+                        </button>
+                    </div>
+                </div>
+            </form>
+
             </div>
         </div>
-
-        <!-- Footer - plus compact -->
-        <footer class="text-center text-xs text-gray-500 mt-4 border-t border-gray-200 pt-2">
+        <!-- Footer -->
+        <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
             © 2025 Système d'information BTS - Tous droits réservés
         </footer>
     </main>
