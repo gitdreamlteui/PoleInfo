@@ -163,7 +163,19 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 </form>
                 <form class="mt-6 space-y-4">
                     <select name="sup_matiere" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                        <option value=""></option>
+                    <?
+                        $get_matiere = "http://192.168.8.152:8000/matieres/";
+                        $response_matiere = file_get_contents($get_matiere);
+                        $data_matiere = json_decode($response_matiere, true);
+                        if(array($data_matiere))
+                        {
+                            foreach($data_matiere as $item)
+                        {
+                                $matiere=$item['nom'];
+                                echo "<option value='$matiere'>$matiere</option>";
+                        }
+                        }
+                        ?>
                     </select>
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Matière</button>
                 </form>
