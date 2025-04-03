@@ -81,3 +81,16 @@ class Token(BaseModel):
 
 class CreneauResponse(BaseModel):
     heure_debut: timedelta
+    
+#--------------------------------------------------#
+
+class ClasseCreate(BaseModel):
+    nom: str
+
+class ClasseResponse(BaseModel):
+    nom: str
+    
+class ClasseDelete(BaseModel):
+    id_classe_grp: int
+
+#--------------------------------------------------#
