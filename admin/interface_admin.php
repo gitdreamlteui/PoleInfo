@@ -167,13 +167,10 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         $get_matiere = "http://192.168.8.152:8000/matieres/";
                         $response_matiere = file_get_contents($get_matiere);
                         $data_matiere = json_decode($response_matiere, true);
-                        if(is_array($data_matiere))
+                        foreach($data_matiere as $item)
                         {
-                            foreach($data_matiere as $item)
-                        {
-                                $matiere=$item['nom'];
-                                echo "<option value='$matiere'>$matiere</option>";
-                        }
+                            $matiere=$item['nom'];
+                            echo "<option value='$matiere'>$matiere</option>";
                         }
                         ?>
                     </select>
@@ -237,13 +234,10 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         $get_salle = "http://192.168.8.152:8000/salles/";
                         $response_salle = file_get_contents($get_salle);
                         $data_salle = json_decode($response_salle, true);
-                        if(is_array($data_salle))
+                        foreach($data_salle as $item)
                         {
-                            foreach($data_salle as $item)
-                        {
-                                $salle=$item['numero'];
-                                echo "<option value='$salle'>$salle</option>";
-                        }
+                            $salle=$item['numero'];
+                            echo "<option value='$salle'>$salle</option>";
                         }
                         ?>
                     </select>
