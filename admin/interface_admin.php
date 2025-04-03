@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['token']) or $_SESSION['type_compte']!=1) {
+if (!isset($_SESSION['token']) and $_SESSION['type_compte']!=1) {
     header("Location: http://192.168.8.152/interface_login.php?error=expired");
     exit;
 }
@@ -230,7 +230,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                             foreach($data_salle as $item)
                         {
                                 $salle=$item['numero'];
-                                echo "<option value='$item'>$item</option>";
+                                echo "<option value='$salle'>$salle</option>";
                         }
                         }
                         ?>
