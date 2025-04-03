@@ -14,9 +14,9 @@ Dernière date de mise à jour : 28/03/2025
     |------matieres.py  <-- Vous êtes ici
 """
 
-from models.schemas import MatiereResponse
+from models.schemas import MatiereResponse, MatiereDelete
 from core.auth import verify_token
-from models.matiere import get_all_matieres
+from models.matiere import get_all_matieres, delete_matiere, get_matiere_by_nom
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -27,7 +27,6 @@ router = APIRouter(
 
 @router.get("/", response_model=List[MatiereResponse])
 def get_matieres():
-
     matieres = get_all_matieres()
     
     if not matieres:
@@ -36,3 +35,24 @@ def get_matieres():
             detail="Aucune matière trouvée"
         )
     return matieres
+
+@router.delete("/", response_model=dict)
+def delete_matieres(matiere: MatiereDelete, user_id: int = Depends(verify_token)):
+    
+    existing_matiere = get_matiere_by_nom(matiere.nom)
+    
+    if not existing_matiere:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Matière non trouvée"
+        )
+    
+    result = delete_matiere(matiere.nom)
+    
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de la suppression de la matière"
+        )
+    
+    return {"message": f"Matière '{matiere.nom}' supprimée avec succès"}

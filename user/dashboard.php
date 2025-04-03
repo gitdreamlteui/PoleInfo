@@ -2,6 +2,8 @@
 // DASHBOARD.PHP
 require_once 'utils/recuperer_creneaux.php';
 require_once 'utils/recuperer_salles.php';
+require_once 'utils/recuperer_matieres.php';
+
 
 session_start();
 if (!isset($_SESSION['token'])) {
@@ -69,6 +71,8 @@ $data = json_decode($response_reservation, true);
 
 $creneaux = getCreneaux();
 $salles = getSalles();
+$classes = getClasse();;
+
 ?>
 
 <!DOCTYPE html>
