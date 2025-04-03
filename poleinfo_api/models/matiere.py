@@ -4,7 +4,7 @@ from typing import List, Dict, Any
 
 def get_all_matieres() -> List[Dict[str, Any]]:
     with get_db_cursor() as cursor:
-        query = "SELECT id, nom FROM matiere"
+        query = "SELECT id_matiere, nom FROM matiere"
         cursor.execute(query)
         results = cursor.fetchall()
     return results
@@ -18,7 +18,7 @@ def get_matiere_by_nom(nom: str) -> Dict[str, Any]:
 
 def delete_matiere(nom: str) -> bool:
     with get_db_cursor() as cursor:
-        
+
         check_query = "SELECT id FROM matiere WHERE nom = %s"
         cursor.execute(check_query, (nom,))
         matiere = cursor.fetchone()
