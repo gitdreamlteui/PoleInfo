@@ -28,8 +28,13 @@ class UserDelete(BaseModel):
 
 #--------------------------------------------------#
 
+class MatiereCreate(BaseModel):
+    nom: str
+
 class MatiereResponse(BaseModel):
     nom: str
+class MatiereDelete(BaseModel):
+    id_matiere: int
 
 #--------------------------------------------------#
 
@@ -67,9 +72,11 @@ class ReservationResponse(BaseModel):
     nom_user: str
     prenom: str
     noms_classes: str
+    
+class ReservationDelete(BaseModel):
+    id_reservation: int
 
 #--------------------------------------------------#
-
 
 class Token(BaseModel):
     access_token: str
@@ -79,8 +86,14 @@ class Token(BaseModel):
 
 #--------------------------------------------------#
 
+class CreneauCreate(BaseModel):
+    heure_debut: timedelta
+
 class CreneauResponse(BaseModel):
     heure_debut: timedelta
+    
+class CreneauDelete(BaseModel):
+    id_creneau: int
     
 #--------------------------------------------------#
 
