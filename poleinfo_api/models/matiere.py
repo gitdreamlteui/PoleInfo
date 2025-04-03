@@ -2,21 +2,31 @@
 from db.database import get_db_cursor
 from typing import List, Dict, Any
 
-def get_all_matieres() -> List[Dict[int, Any]]:
+def get_all_matieres() -> List[Dict[str, Any]]:
     with get_db_cursor() as cursor:
-        query = "SELECT nom FROM matiere"
+        query = "SELECT id, nom FROM matiere"
         cursor.execute(query)
         results = cursor.fetchall()
     return results
 
-def delete_matieres(nom: str) -> None:
+def get_matiere_by_nom(nom: str) -> Dict[str, Any]:
     with get_db_cursor() as cursor:
-        query = "DELETE FROM matiere WHERE nom = %s"
+        query = "SELECT id, nom FROM matiere WHERE nom = %s"
         cursor.execute(query, (nom,))
+        result = cursor.fetchone()
+    return result
 
-def create_matiere(nom: str) -> None:
+def delete_matiere(nom: str) -> bool:
     with get_db_cursor() as cursor:
-        query = "INSERT INTO matiere (nom) VALUES (%s)"
-        cursor.execute(query, (nom,))
-
-
+        
+        check_query = "SELECT id FROM matiere WHERE nom = %s"
+        cursor.execute(check_query, (nom,))
+        matiere = cursor.fetchone()
+        
+        if not matiere:
+            return False
+            
+        delete_query = "DELETE FROM matiere WHERE nom = %s"
+        cursor.execute(delete_query, (nom,))
+        
+        return cursor.rowcount > 0

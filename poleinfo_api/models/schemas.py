@@ -35,8 +35,7 @@ class MatiereResponse(BaseModel):
     nom: str
     
 class MatiereDelete(BaseModel):
-    id_matiere: int
-
+    nom: str
 #--------------------------------------------------#
 
 class SalleCreate(SalleBase):
