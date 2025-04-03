@@ -21,14 +21,13 @@ des privilèges administrateur.
 from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List, Optional
 from models.schemas import UserCreate, UserResponse
-from models.user import create_user, get_user_by_login, get_all_users
+from models.user import create_user, get_user_by_login
 from core.auth import verify_token
 from core.security import verify_admin
 
 router = APIRouter(
     tags=["utilisateurs"]
 )
-
 
 """
 Fonction qui permet d'ajouter un nouvel utilisateur dans le système.
@@ -64,15 +63,3 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
     user_id = create_user(new_user)
     
     return {"message": "Utilisateur créé avec succès", "id": user_id}
-
-@router.get("/", response_model=List[UserResponse])
-def get_users():
-
-    user = get_all_users()
-    
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Aucune users trouvée"
-        )
-    return user
