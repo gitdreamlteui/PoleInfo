@@ -16,7 +16,7 @@ Dernière date de mise à jour : 3/04/2025
 
 from models.schemas import ClasseResponse
 from core.auth import verify_token
-from models.classe import get_all_classes
+from models.classes import get_all_classes
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -35,4 +35,4 @@ def get_classes():
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Aucune classe trouvée"
         )
-    return matieres
+    return classes
