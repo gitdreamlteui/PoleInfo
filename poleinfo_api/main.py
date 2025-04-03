@@ -19,6 +19,7 @@ app.include_router(reservations.router, prefix="/reservations", tags=["reservati
 app.include_router(creneaux.router, prefix="/creneaux", tags=["creneaux"])
 app.include_router(salles.router, prefix="/salles", tags=["salles"])
 app.include_router(matieres.router, prefix="/matieres", tags=["matieres"])
+app.include_router(classes.router, prefix="/classes", tags=["classes"])
 
 
 @app.get("/")
