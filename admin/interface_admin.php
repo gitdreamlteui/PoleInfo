@@ -163,7 +163,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 </form>
                 <form class="mt-6 space-y-4">
                     <select name="sup_matiere" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                    <?
+                    <?php
                         $get_matiere = "http://192.168.8.152:8000/matieres/";
                         $response_matiere = file_get_contents($get_matiere);
                         $data_matiere = json_decode($response_matiere, true);
@@ -230,7 +230,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 </form>
                 <form class="mt-10 space-y-4">
                     <select name="sup_salle" class="w-full p-2 border rounded-md">
-                        <?
+                        <?php
                         $get_salle = "http://192.168.8.152:8000/salles/";
                         $response_salle = file_get_contents($get_salle);
                         $data_salle = json_decode($response_salle, true);
