@@ -214,7 +214,16 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 </form>
                 <form class="mt-6 space-y-4">
                     <select name="sup_classe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                        <option value=""></option>
+                    <?php
+                        $get_classe = "http://192.168.8.152:8000/classes/";
+                        $response_classe = file_get_contents($get_classe);
+                        $data_classe = json_decode($response_classe, true);
+                        foreach($data_classe as $item)
+                        {
+                            $classe=$item['nom'];
+                            echo "<option value='$classe'>$classe</option>";
+                        }
+                        ?>
                     </select>
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Classe</button>
                 </form>
