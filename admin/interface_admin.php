@@ -167,7 +167,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         $get_matiere = "http://192.168.8.152:8000/matieres/";
                         $response_matiere = file_get_contents($get_matiere);
                         $data_matiere = json_decode($response_matiere, true);
-                        if(array($data_matiere))
+                        if(is_array($data_matiere))
                         {
                             foreach($data_matiere as $item)
                         {
@@ -237,7 +237,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         $get_salle = "http://192.168.8.152:8000/salles/";
                         $response_salle = file_get_contents($get_salle);
                         $data_salle = json_decode($response_salle, true);
-                        if(array($data_salle))
+                        if(is_array($data_salle))
                         {
                             foreach($data_salle as $item)
                         {
