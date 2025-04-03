@@ -5,7 +5,7 @@ Date : 07/02/2025
 """
 
 from fastapi import FastAPI
-from api.endpoints import auth, users, reservations, creneaux, salles
+from api.endpoints import auth, users, reservations, creneaux, salles, matieres
 from datetime import datetime
 import locale
 
@@ -18,6 +18,8 @@ app.include_router(users.router, prefix="/utilisateurs", tags=["utilisateurs"])
 app.include_router(reservations.router, prefix="/reservations", tags=["reservations"])
 app.include_router(creneaux.router, prefix="/creneaux", tags=["creneaux"])
 app.include_router(salles.router, prefix="/salles", tags=["salles"])
+app.include_router(matieres.router, prefix="/matieres", tags=["matieres"])
+
 
 @app.get("/")
 def read_root():

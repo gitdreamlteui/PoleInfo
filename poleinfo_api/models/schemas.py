@@ -28,6 +28,11 @@ class UserDelete(BaseModel):
 
 #--------------------------------------------------#
 
+class MatiereResponse(BaseModel):
+    nom: str
+
+#--------------------------------------------------#
+
 class SalleCreate(SalleBase):
     id_salle: int
     
