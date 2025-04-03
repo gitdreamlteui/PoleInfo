@@ -2,13 +2,6 @@
 from db.database import get_db_cursor
 from core.password import verify_password, hash_password
 
-def get_all_users() -> List[Dict[int, Any]]:
-    with get_db_cursor() as cursor:
-        query = "SELECT nom,prenom,login FROM user"
-        cursor.execute(query)
-        results = cursor.fetchall()
-    return results
-
 def get_user_by_login(login):
     """Récupère un utilisateur par son login"""
     with get_db_cursor() as cursor:
