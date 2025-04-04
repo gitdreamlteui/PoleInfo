@@ -35,23 +35,19 @@ def create_user(login, password, type, nom, prenom):
     hashed_password = hash_password(password)
     
     with get_db_cursor() as cursor:
-        try:
-            query = """
-                INSERT INTO user (login, passwd, type, nom, prenom)
-                VALUES (%s, %s, %s, %s, %s)
-                RETURNING id_user
-            """
-            values = (login, hashed_password, type, nom, prenom)
-            
-            cursor.execute(query, values)
-            result = cursor.fetchone()
-            
-            if result is None:
-                raise ValueError("L'insertion a été effectuée mais aucun ID n'a été retourné")
-                
-            user_id = result[0]
+        query = """
+            INSERT INTO user (login, passwd, type, nom, prenom)
+            VALUES (%s, %s, %s, %s, %s)
+        """
+        values = (login, hashed_password, type, nom, prenom)
+        
+        cursor.execute(query, values)
+        
+        cursor.execute("SELECT LAST_INSERT_ID() as id_user")
+        result = cursor.fetchone()
+        
+        if result and 'id_user' in result:
+            user_id = result['id_user']
             return user_id
-            
-        except Exception as e:
-            print(f"Erreur lors de la création de l'utilisateur: {str(e)}")
-            raise
+        else:
+            raise ValueError("Impossible de récupérer l'ID de l'utilisateur créé")
