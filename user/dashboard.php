@@ -181,10 +181,10 @@ $classes = getClasses();
                         <label for="matiere" class="block text-sm font-medium text-gray-700 mb-1">Matière</label>
                         <select name="matiere" id="matiere" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
                             <option value="">--Sélectionnez une matière--</option>
-                            <?php foreach ($matieres as $matiere) {
+                                <?php foreach ($matieres as $matiere) {
                                     echo "<option value='{$matiere['nom']}'>{$matiere['nom']}</option>";
                                     }
-                            ?>
+                                ?>
                         </select>
                     </div>
 
