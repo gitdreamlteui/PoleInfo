@@ -2,7 +2,7 @@
 // DASHBOARD.PHP
 require_once 'utils/recuperer_creneaux.php';
 require_once 'utils/recuperer_salles.php';
-//require_once 'utils/recuperer_matieres.php';
+require_once 'utils/recuperer_matieres.php';
 
 
 session_start();
@@ -180,16 +180,10 @@ $salles = getSalles();
                         <label for="matiere" class="block text-sm font-medium text-gray-700 mb-1">Matière</label>
                         <select name="matiere" id="matiere" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
                             <option value="">--Sélectionnez une matière--</option>
-                            <option value="Informatique">Informatique</option>
-                            <option value="Culture Generale & Expression">Culture générale et expression</option>
-                            <option value="Mathematiques">Mathématiques</option>
-                            <option value="Physique">Physique</option>
-                            <option value="Anglais">Anglais</option>
-                            <option value="ESLA">ESLA</option>
-                            <option value="BAS">BAS</option>
-                            <option value="ACF">ACF</option>
-                            <option value="Co-Physique">Co-enseignement physique</option>
-                            <option value="Co-Maths">Co-enseignement mathématiques</option>
+                            <?php foreach ($matieres as $matiere) {
+                                    echo "<option value='{$matiere['nom']}'>{$matiere['nom']}</option>";
+                                    }
+                            ?>
                         </select>
                     </div>
 
