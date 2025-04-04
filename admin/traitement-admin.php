@@ -56,13 +56,13 @@ function ajouterUtilisateur($data) {
 
     if ($http_code === 201 || $http_code === 200) {
         $response_data = json_decode($response, true);
-        $message = $response_data['message'] ?? "Réservation ajoutée avec succès!";
+        $message = $response_data['message'] ?? "Utilisateur ajoutée avec succès!";
         
         $_SESSION['info_message'] = $message;
         header("Location: dashboard.php");
         exit;
     } else {
-        $message = "Erreur lors de l'ajout de la réservation: ";
+        $message = "Erreur lors de l'ajout de l'utilisateur : ";
         if (!empty($response)) {
             $error_data = json_decode($response, true);
             $message .= isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code;
