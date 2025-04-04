@@ -17,6 +17,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 function ajouterUtilisateur($data) {
 
+    global $api_url_user;
+
     $nom=htmlspecialchars($data['nom']);
     $prenom=htmlspecialchars($data['prenom']);
     $type=htmlspecialchars($data['type']);
@@ -59,7 +61,7 @@ function ajouterUtilisateur($data) {
         $message = $response_data['message'] ?? "Utilisateur ajoutée avec succès!";
         
         $_SESSION['info_message'] = $message;
-        header("Location: dashboard.php");
+        header("Location: interface_admin.php");
         exit;
     } else {
         $message = "Erreur lors de l'ajout de l'utilisateur : ";
@@ -73,7 +75,7 @@ function ajouterUtilisateur($data) {
         }
         
         $_SESSION['info_message'] = $message;
-        header("Location: dashboard.php");
+        header("Location: interface_admin.php");
         exit;
     }
 }
