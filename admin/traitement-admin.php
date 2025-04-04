@@ -50,16 +50,31 @@ function ajouterUtilisateur($data) {
     
     // Exécuter la requête
     $response = curl_exec($ch);
-    
-    // Vérifier s'il y a une erreur
-    if (curl_errno($ch)) {
-        echo "Erreur cURL : " . curl_error($ch);
-    } else {
-        // Afficher la réponse de l'API
-        echo "Réponse de l'API : " . $response;
-    }
-    
-    // Fermer cURL
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
     curl_close($ch);
+
+    if ($http_code === 201 || $http_code === 200) {
+        $response_data = json_decode($response, true);
+        $message = $response_data['message'] ?? "Réservation ajoutée avec succès!";
+        
+        $_SESSION['info_message'] = $message;
+        header("Location: dashboard.php");
+        exit;
+    } else {
+        $message = "Erreur lors de l'ajout de la réservation: ";
+        if (!empty($response)) {
+            $error_data = json_decode($response, true);
+            $message .= isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code;
+        } elseif (!empty($curl_error)) {
+            $message .= $curl_error;
+        } else {
+            $message .= 'Code ' . $http_code;
+        }
+        
+        $_SESSION['info_message'] = $message;
+        header("Location: dashboard.php");
+        exit;
+    }
 }
 ?>
