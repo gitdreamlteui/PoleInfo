@@ -4,34 +4,60 @@ if (!isset($_SESSION['token']) and $_SESSION['type_compte']!=1) {
     header("Location: http://192.168.8.152/interface_login.php?error=expired");
     exit;
 }
-
 $token = $_SESSION['token'];
-$api_url_verify = "http://192.168.8.152:8000/verify-token/";
-$api_url_reservations = "http://192.168.8.152:8000/reservations/";
+$api_url_user = "http://192.168.8.152:8000/users/";
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-curl_setopt($ch, CURLOPT_URL, $api_url_verify);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    "Authorization: Bearer $token",
-]);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $action = $_POST["action"] ?? '';
 
-$response = curl_exec($ch);
-$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-$curl_error = curl_error($ch);
-curl_close($ch);
-
-if ($http_code != 200 || !$response) {
-    error_log("Erreur de vérification du token : HTTP $http_code - $curl_error");
-    session_destroy();
-    header("Location: http://192.168.8.152/interface_login.php?error=expired");
-    exit;
+    if ($action == "ajouter_utilisateur") {
+        ajouterUtilisateur($_POST);
+    }
 }
 
-if ($http_code != 200) {
-    session_destroy();
-    header("Location: http://192.168.8.152/interface_login.php?error=expired");
-    exit;
+function ajouterUtilisateur($data) {
+
+    $nom=htmlspecialchars($data['nom']);
+    $prenom=htmlspecialchars($data['prenom']);
+    $type=htmlspecialchars($data['type']);
+    $password=htmlspecialchars($data['password']);
+    $login=mb_strtolower(mb_substr($prenom, 0, 1) . $nom, 'UTF-8');
+    
+    $user = [
+        "login" => $login,
+        "type" => $type,
+        "nom" => $nom,
+        "prenom" => $prenom,
+        "password" => $password
+    ];
+    
+    // Convertir les données en JSON
+    $jsonData = json_encode($user);
+    
+    // Initialiser cURL
+    $ch = curl_init($api_url_user);
+    
+    // Configuration de la requête cURL
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Content-Type: application/json",
+        "Content-Length: " . strlen($jsonData)
+    ]);
+    
+    // Exécuter la requête
+    $response = curl_exec($ch);
+    
+    // Vérifier s'il y a une erreur
+    if (curl_errno($ch)) {
+        echo "Erreur cURL : " . curl_error($ch);
+    } else {
+        // Afficher la réponse de l'API
+        echo "Réponse de l'API : " . $response;
+    }
+    
+    // Fermer cURL
+    curl_close($ch);
 }
 ?>
