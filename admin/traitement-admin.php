@@ -16,6 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 function ajouterUtilisateur($data) {
+    
     global $api_url_user, $token;
 
     $nom = htmlspecialchars($data['nom']);
@@ -45,7 +46,6 @@ function ajouterUtilisateur($data) {
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Authorization: Bearer " . $token,
         "Content-Type: application/json",
-        "Content-Length: " . strlen($jsonData)
     ]);
     
     // Exécuter la requête
