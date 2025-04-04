@@ -23,7 +23,7 @@ function ajouterUtilisateur($data) {
     $password=htmlspecialchars($data['password']);
     $login=mb_strtolower(mb_substr($prenom, 0, 1) . $nom, 'UTF-8');
     
-    $user = [
+    $user = [    
         "login" => $login,
         "type" => $type,
         "nom" => $nom,
@@ -43,6 +43,7 @@ function ajouterUtilisateur($data) {
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer $token",
         "Content-Type: application/json",
         "Content-Length: " . strlen($jsonData)
     ]);
