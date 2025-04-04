@@ -71,8 +71,7 @@ $data = json_decode($response_reservation, true);
 
 $creneaux = getCreneaux();
 $salles = getSalles();
-//$classes = getClasse();;
-
+$matieres = getMatieres();
 ?>
 
 <!DOCTYPE html>
