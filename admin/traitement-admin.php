@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['token']) and $_SESSION['type_compte']!=1) {
+if (!isset($_SESSION['token']) || $_SESSION['type_compte'] != 1) {
     header("Location: http://192.168.8.152/interface_login.php?error=expired");
     exit;
 }
@@ -16,18 +16,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 function ajouterUtilisateur($data) {
+    global $api_url_user, $token;
 
-    global $api_url_user;
-
-    $nom=htmlspecialchars($data['nom']);
-    $prenom=htmlspecialchars($data['prenom']);
-    $type=htmlspecialchars($data['type']);
-    $password=htmlspecialchars($data['password']);
-    $login=mb_strtolower(mb_substr($prenom, 0, 1) . $nom, 'UTF-8');
+    $nom = htmlspecialchars($data['nom']);
+    $prenom = htmlspecialchars($data['prenom']);
+    $type = htmlspecialchars($data['type']);
+    $password = htmlspecialchars($data['password']);
+    $login = mb_strtolower(mb_substr($prenom, 0, 1) . $nom, 'UTF-8');
     
     $user = [    
         "login" => $login,
-        "type" => $type,
+        "type" => intval($type),
         "nom" => $nom,
         "prenom" => $prenom,
         "password" => $password
@@ -41,11 +40,10 @@ function ajouterUtilisateur($data) {
     
     // Configuration de la requête cURL
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);
     curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        "Authorization: Bearer $token",
+        "Authorization: Bearer " . $token,
         "Content-Type: application/json",
         "Content-Length: " . strlen($jsonData)
     ]);
@@ -58,7 +56,7 @@ function ajouterUtilisateur($data) {
 
     if ($http_code === 201 || $http_code === 200) {
         $response_data = json_decode($response, true);
-        $message = $response_data['message'] ?? "Utilisateur ajoutée avec succès!";
+        $message = $response_data['message'] ?? "Utilisateur ajouté avec succès!";
         
         $_SESSION['info_message'] = $message;
         header("Location: interface_admin.php");
@@ -67,7 +65,7 @@ function ajouterUtilisateur($data) {
         $message = "Erreur lors de l'ajout de l'utilisateur : ";
         if (!empty($response)) {
             $error_data = json_decode($response, true);
-            $message .= isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code;
+            $message .= isset($error_data['detail']) ? $error_data['detail'] : (isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code);
         } elseif (!empty($curl_error)) {
             $message .= $curl_error;
         } else {
