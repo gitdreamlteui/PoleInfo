@@ -5,7 +5,7 @@ if (!isset($_SESSION['token']) and $_SESSION['type_compte']!=1) {
     exit;
 }
 $token = $_SESSION['token'];
-$api_url_user = "http://192.168.8.152:8000/users/";
+$api_url_user = "http://192.168.8.152:8000/utilisateurs/";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $action = $_POST["action"] ?? '';
