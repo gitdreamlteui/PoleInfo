@@ -3,7 +3,7 @@
 require_once 'utils/recuperer_creneaux.php';
 require_once 'utils/recuperer_salles.php';
 require_once 'utils/recuperer_matieres.php';
-
+require_once 'utils/recuperer_classes.php';
 
 session_start();
 if (!isset($_SESSION['token'])) {
@@ -72,6 +72,8 @@ $data = json_decode($response_reservation, true);
 $creneaux = getCreneaux();
 $salles = getSalles();
 $matieres = getMatieres();
+$classes = getClasses();
+
 ?>
 
 <!DOCTYPE html>
@@ -189,12 +191,10 @@ $matieres = getMatieres();
                     <div class="mb-4">
                         <label for="classe" class="block text-sm font-medium text-gray-700 mb-1">Classe/groupe</label>
                         <select name="classe[]" id="classe" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" multiple required>
-                            <option value="CIEL1">CIEL1</option>
-                            <option value="CIEL2">CIEL2</option>
-                            <option value="CIAP1">CIAP1</option>
-                            <option value="CIAP2">CIAP2</option>
-                            <option value="CIEL1_Grp1">CIEL1_Grp1</option>
-                            <option value="CIEL1_Grp2">CIEL1_Grp2</option>
+                            <?php foreach ($classes as $classe) {
+                                    echo "<option value='{$classe['nom']}'>{$classe['nom']}</option>";
+                                    }
+                            ?>
                         </select>
                     </div>
 
