@@ -51,7 +51,7 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Un utilisateur avec ce login existe déjà"
         )
-        new_user = {
+    new_user = {
         "login": user.login,
         "passwd": user.password,
         "type": user.type,
