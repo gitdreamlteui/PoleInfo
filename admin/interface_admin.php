@@ -132,8 +132,8 @@ $date_jour = $date_actuelle->format('d/m/Y');
                     <input type="text" name="nom" placeholder="Nom" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" require>
                     <input type="password" name="password" placeholder="Mot de passe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" require>
                     <select name="choix_droit"  name="type" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                        <option value=1 >Administrateur</option>
-                        <option value=0 >Utilisateur</option>
+                        <option value="1" >Administrateur</option>
+                        <option value="0" >Utilisateur</option>
                     </select>
                     <input type="hidden" name="action" value="ajouter_utilisateur">
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors w-full font-medium">Créer Utilisateur</button>
