@@ -9,10 +9,10 @@ def get_all_salles() -> List[Dict[int, Any]]:
         results = cursor.fetchall()
     return results
 
-def get_salle_by_nom(nom: str) -> Dict[str, Any]:
+def get_salle_by_nom(numero: str) -> Dict[str, Any]:
     with get_db_cursor() as cursor:
-        query = "SELECT id_salle, nom FROM salle WHERE numero = %s"
-        cursor.execute(query, (nom,))
+        query = "SELECT id_salle, numero FROM salle WHERE numero = %s"
+        cursor.execute(query, (numero,))
         result = cursor.fetchone()
     return result
 

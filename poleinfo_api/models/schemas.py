@@ -93,7 +93,7 @@ class CreneauResponse(BaseModel):
     heure_debut: timedelta
     
 class CreneauDelete(BaseModel):
-    id_creneau: int
+    heure_debut: timedelta
     
 #--------------------------------------------------#
 

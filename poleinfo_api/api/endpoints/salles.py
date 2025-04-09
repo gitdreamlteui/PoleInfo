@@ -4,19 +4,11 @@ API Pôle Info
 
 Auteur : Elias GAUTHIER
 Dernière date de mise à jour : 02/04/2025
-
-/api/
-    /endpoints
-    |----- auth.py
-    |------reservations.py
-    |------users.py
-    |------creneaux.py 
-    |------salles.py  <-- Vous êtes ici
 """
 
 from models.schemas import SalleResponse, SalleDelete
 from core.auth import verify_token
-from models.salle import get_all_salles, get_salle_by_nom
+from models.salle import get_all_salles, get_salle_by_nom, delete_salle
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
