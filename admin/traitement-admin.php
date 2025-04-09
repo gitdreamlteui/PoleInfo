@@ -86,7 +86,7 @@ function supprimerMatiere($data){
     
     global $api_url_matiere, $token;
 
-    $nom = htmlspecialchars($data['nom']);
+    $nom = htmlspecialchars($data['sup_matiere']);
     $matiere=[
         "nom"=>$nom
     ];
