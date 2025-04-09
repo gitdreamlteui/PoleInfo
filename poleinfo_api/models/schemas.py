@@ -104,6 +104,6 @@ class ClasseResponse(BaseModel):
     nom: str
     
 class ClasseDelete(BaseModel):
-    id_classe_grp: int
+    nom: str
 
 #--------------------------------------------------#
