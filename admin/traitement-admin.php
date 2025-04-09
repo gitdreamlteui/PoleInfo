@@ -99,7 +99,7 @@ function supprimerMatiere($data){
        
        // Configuration de la requête cURL
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-       curl_setopt($ch, CURLOPT_CUSTOMREQEST, "DELETE");
+       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
        curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
        curl_setopt($ch, CURLOPT_HTTPHEADER, [
            "Authorization: Bearer " . $token,
