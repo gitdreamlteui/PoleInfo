@@ -55,7 +55,7 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
     
     return {"message": "Utilisateur créé avec succès", "id": user_id}
 
-@router.post("/", response_model=List[UserResponse])
+@router.get("/", response_model=List[UserResponse])
 def get_users(): #admin_id: int = Depends(verify_admin)
 
     users = get_all_users()
