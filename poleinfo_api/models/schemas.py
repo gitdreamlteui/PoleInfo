@@ -44,8 +44,8 @@ class SalleCreate(SalleBase):
 class SalleResponse(SalleBase):
     id_salle: int
     
-class SalleDelete():
-    id_salle: int
+class SalleDelete(BaseModel):
+    numero: str
 
 #--------------------------------------------------#
 
