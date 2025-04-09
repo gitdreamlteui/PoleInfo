@@ -25,7 +25,7 @@ from core.auth import verify_token
 from models.schemas import Token
 from models.user import authenticate_user
 
-router = APIRouter(tags=["authentication"])
+router = APIRouter(tags=["authentification"])
 
 
 """

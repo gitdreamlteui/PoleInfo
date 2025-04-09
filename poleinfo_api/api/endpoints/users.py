@@ -53,6 +53,7 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
         )
     
     user_id = create_user(
+        
         login=user.login,
         password=user.password,
         type=user.type,

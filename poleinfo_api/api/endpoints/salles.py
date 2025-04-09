@@ -14,9 +14,9 @@ Dernière date de mise à jour : 02/04/2025
     |------salles.py  <-- Vous êtes ici
 """
 
-from models.schemas import SalleResponse
+from models.schemas import SalleResponse, SalleDelete
 from core.auth import verify_token
-from models.salle import get_all_salles
+from models.salle import get_all_salles, get_salle_by_nom
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -36,3 +36,25 @@ def get_salles():
             detail="Aucune salles trouvée"
         )
     return salles
+
+
+@router.delete("/", response_model=dict)
+def delete_salle(salle: SalleDelete, user_id: int = Depends(verify_token)):
+    
+    existing_salle = get_salle_by_nom(salle.numero)
+    
+    if not existing_salle:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Salle non trouvée"
+        )
+    
+    result = delete_salle(salle.numero)
+    
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de la suppression de la salle"
+        )
+    
+    return {"message": f"Salle '{salle.numero}' supprimée avec succès"}
