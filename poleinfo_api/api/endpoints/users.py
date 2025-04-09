@@ -57,12 +57,11 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
 
 @router.get("/", response_model=List[UserResponse])
 def get_users(): #admin_id: int = Depends(verify_admin)
-
     users = get_all_users()
         
-    if not users:
+    if len(users) == 0:
         raise HTTPException(
-            status_code=status.HTTP_410_GONE,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Aucun utilisateur trouvé"
         )
     
