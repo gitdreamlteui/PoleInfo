@@ -162,7 +162,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                     <input type="text" placeholder="Nom de la matière" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Matière</button>
                 </form>
-                <form class="mt-6 space-y-4">
+                <form class="mt-6 space-y-4" action="traitement-admin.php" method="POST">
                     <select name="sup_matiere" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                     <?php
                         $get_matiere = "http://192.168.8.152:8000/matieres/";
@@ -175,6 +175,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         }
                         ?>
                     </select>
+                    <input type="hidden" name="action" value="supprimer_matiere">
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Matière</button>
                 </form>
             </div>
