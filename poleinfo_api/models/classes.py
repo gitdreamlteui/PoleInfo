@@ -11,7 +11,7 @@ def get_all_classes() -> List[Dict[int, Any]]:
 
 def get_classe_by_nom(nom: str) -> Dict[str, Any]:
     with get_db_cursor() as cursor:
-        query = "SELECT id_creneau, heure_debut FROM creneau WHERE heure_debut = %s"
+        query = "SELECT id_classe_grp, nom FROM classe WHERE nom = %s"
         cursor.execute(query, (nom,))
         result = cursor.fetchone()
     return result
