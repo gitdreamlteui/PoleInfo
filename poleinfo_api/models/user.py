@@ -53,9 +53,13 @@ def create_user(login, password, type, nom, prenom):
         else:
             raise ValueError("Impossible de récupérer l'ID de l'utilisateur créé")
 
-def get_all_users() -> List[Dict[int, Any]]:
-    """Récupère tout les utilisateurs"""
+def get_all_users() -> List[Dict[str, Any]]:
+    """Récupère tous les utilisateurs"""
     with get_db_cursor() as cursor:
         cursor.execute("SELECT * FROM user")
-        results = cursor.fetchone()
+        results = list(cursor.fetchall())
+        
+        while cursor.nextset():
+            pass
+            
     return results
