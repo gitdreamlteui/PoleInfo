@@ -13,7 +13,7 @@ des privilèges administrateur.
 from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List, Optional
 from models.schemas import UserCreate, UserResponse
-from models.user import create_user, get_user_by_login
+from models.user import create_user, get_user_by_login, get_all_users
 from core.auth import verify_token
 from core.security import verify_admin
 
@@ -54,3 +54,16 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
     )
     
     return {"message": "Utilisateur créé avec succès", "id": user_id}
+
+@router.post("/", response_model=List[UserResponse])
+def get_users(): #admin_id: int = Depends(verify_admin)
+
+    users = get_all_users()
+        
+    if not users:
+        raise HTTPException(
+            status_code=status.HTTP_410_GONE,
+            detail="Aucun utilisateur trouvé"
+        )
+    
+    return users

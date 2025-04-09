@@ -1,6 +1,7 @@
 """Fonctions d'accès aux données utilisateur"""
 from db.database import get_db_cursor
 from core.password import verify_password, hash_password
+from typing import List, Dict, Any
 
 def get_user_by_login(login):
     """Récupère un utilisateur par son login"""
@@ -51,3 +52,10 @@ def create_user(login, password, type, nom, prenom):
             return user_id
         else:
             raise ValueError("Impossible de récupérer l'ID de l'utilisateur créé")
+
+def get_all_users() -> List[Dict[int, Any]]:
+    """Récupère tout les utilisateurs"""
+    with get_db_cursor() as cursor:
+        cursor.execute("SELECT * FROM user")
+        results = cursor.fetchone()
+    return results
