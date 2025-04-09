@@ -171,7 +171,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         foreach($data_matiere as $item)
                         {
                             $matiere=$item['nom'];
-                            echo "<option value='$matiere'>$matiere</option>";
+                            echo "<option name='nom' value='$matiere'>$matiere</option>";
                         }
                         ?>
                     </select>
