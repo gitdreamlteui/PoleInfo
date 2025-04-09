@@ -5,14 +5,6 @@ API Pôle Info
 Auteur : Elias GAUTHIER
 Dernière date de mise à jour : 28/03/2025
 
-/api/
-    /endpoints
-    |----- auth.py
-    |------reservations.py
-    |------users.py <-- Vous êtes ici
-    |------creneaux.py
-
-
 Description : ce programme permet de créer toutes les routes relatives à la gestion
 des utilisateurs, notamment la création de nouveaux comptes utilisateurs avec vérification
 des privilèges administrateur.

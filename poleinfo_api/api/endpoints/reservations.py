@@ -5,13 +5,6 @@ API Pôle Info
 Auteur : Elias GAUTHIER
 Dernière date de mise à jour : 28/03/2025
 
-/api/
-    /endpoints
-    |----- auth.py
-    |------reservations.py <-- Vous êtes ici
-    |------users.py
-    |------creneaux.py
-
 Description : ce programme permet de créer toutes les routes relatives à la gestion
 des réservations de salles, avec des fonctions pour créer et consulter les réservations.
 """

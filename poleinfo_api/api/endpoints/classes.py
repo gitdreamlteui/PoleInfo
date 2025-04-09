@@ -2,16 +2,8 @@
 API Pôle Info
 --------------
 
-Auteur : Ethan CLEMENT
-Dernière date de mise à jour : 3/04/2025
-
-/api/
-    /endpoints
-    |----- auth.py
-    |------reservations.py
-    |------users.py
-    |------creneaux.py
-    |------matieres.py  <-- Vous êtes ici
+Auteur : Elias GAUTHIER
+Dernière date de mise à jour : 09/04/2025
 """
 
 from models.schemas import ClasseResponse
