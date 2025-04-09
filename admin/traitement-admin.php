@@ -45,8 +45,8 @@ function ajouterUtilisateur($data) {
     
     // Configuration de la requête cURL
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+    curl_setopt($ch, CURLOPT_DELETE, true);
+    curl_setopt($ch, CURLOPT_DELETEFIELDS, $jsonData);
     curl_setopt($ch, CURLOPT_HTTPHEADER, [
         "Authorization: Bearer " . $token,
         "Content-Type: application/json",
