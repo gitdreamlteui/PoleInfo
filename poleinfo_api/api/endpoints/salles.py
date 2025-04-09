@@ -31,7 +31,7 @@ def get_salles():
 
 
 @router.delete("/", response_model=dict)
-def delete_salle(salle: SalleDelete, user_id: int = Depends(verify_token)):
+def delete_salle_endpoint(salle: SalleDelete, user_id: int = Depends(verify_token)):
     
     existing_salle = get_salle_by_nom(salle.numero)
     
