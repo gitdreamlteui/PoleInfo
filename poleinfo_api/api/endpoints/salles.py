@@ -6,9 +6,9 @@ Auteur : Elias GAUTHIER
 Dernière date de mise à jour : 02/04/2025
 """
 
-from models.schemas import SalleResponse, SalleDelete
+from models.schemas import SalleResponse, SalleDelete, SalleCreate
 from core.auth import verify_token
-from models.salle import get_all_salles, get_salle_by_nom, delete_salle
+from models.salle import get_all_salles, get_salle_by_numero, delete_salle, create_salle
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -33,7 +33,7 @@ def get_salles():
 @router.delete("/", response_model=dict)
 def delete_salle_endpoint(salle: SalleDelete, user_id: int = Depends(verify_token)):
     
-    existing_salle = get_salle_by_nom(salle.numero)
+    existing_salle = get_salle_by_numero(salle.numero)
     
     if not existing_salle:
         raise HTTPException(
@@ -50,3 +50,20 @@ def delete_salle_endpoint(salle: SalleDelete, user_id: int = Depends(verify_toke
         )
     
     return {"message": f"Salle '{salle.numero}' supprimée avec succès"}
+
+@router.post("/", response_model=dict)
+def add_salle(salle: SalleCreate, user_id: int = Depends(verify_token)):
+    existing_salle = get_salle_by_numero(salle.numero)
+    if existing_salle:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Une salle avec ce numéro existe déjà"
+        )
+    
+    salle_id = create_salle(
+        numero=salle.numero,
+        capacite=salle.capacite,
+        type=salle.type
+    )
+    
+    return {"message": "Salle créé avec succès", "id": salle_id}
