@@ -40,7 +40,7 @@ def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_token))
             detail="Créneau non trouvé"
         )
     
-    result = delete_creneau(creneau.nom)
+    result = delete_creneau(creneau.heure_debut)
     
     if not result:
         raise HTTPException(
