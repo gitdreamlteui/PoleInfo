@@ -163,6 +163,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                             }
                         ?>
                     </select>
+                    <input type="hidden" name="action" value="supprimer_utilisateur">
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Utilisateur</button>
                 </form>
             </div>
