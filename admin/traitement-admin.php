@@ -28,6 +28,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
+function verif_HTTP($code){
+    if ($code === 201 || $code === 200) {
+        $response_data = json_decode($response, true);
+        $message = $response_data['message'] ?? "Utilisateur ajouté avec succès!";
+        
+        $_SESSION['info_message'] = $message;
+        header("Location: interface_admin.php");
+        exit;
+    } else {
+        $message = "Erreur lors de l'ajout de l'utilisateur : ";
+        if (!empty($response)) {
+            $error_data = json_decode($response, true);
+            $message .= isset($error_data['detail']) ? $error_data['detail'] : (isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code);
+        } elseif (!empty($curl_error)) {
+            $message .= $curl_error;
+        } else {
+            $message .= 'Code ' . $code;
+        }
+        
+        $_SESSION['info_message'] = $message;
+
+        }
+    }
+
 function ajouterUtilisateur($data) {
     
     global $api_url_user, $token;
@@ -67,29 +91,11 @@ function ajouterUtilisateur($data) {
     $curl_error = curl_error($ch);
     curl_close($ch);
 
-    if ($http_code === 201 || $http_code === 200) {
-        $response_data = json_decode($response, true);
-        $message = $response_data['message'] ?? "Utilisateur ajouté avec succès!";
-        
-        $_SESSION['info_message'] = $message;
-        header("Location: interface_admin.php");
-        exit;
-    } else {
-        $message = "Erreur lors de l'ajout de l'utilisateur : ";
-        if (!empty($response)) {
-            $error_data = json_decode($response, true);
-            $message .= isset($error_data['detail']) ? $error_data['detail'] : (isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code);
-        } elseif (!empty($curl_error)) {
-            $message .= $curl_error;
-        } else {
-            $message .= 'Code ' . $http_code;
-        }
-        
-        $_SESSION['info_message'] = $message;
+    verif_HTTP($http_code);
         header("Location: interface_admin.php");
         exit;
     }
-}
+
 
 function supprimerMatiere($data){
     
@@ -121,29 +127,11 @@ function supprimerMatiere($data){
        $curl_error = curl_error($ch);
        curl_close($ch);
    
-       if ($http_code === 201 || $http_code === 200) {
-           $response_data = json_decode($response, true);
-           $message = $response_data['message'] ?? "Utilisateur ajouté avec succès!";
-           
-           $_SESSION['info_message'] = $message;
-           header("Location: interface_admin.php");
-           exit;
-       } else {
-           $message = "Erreur lors de l'ajout de l'utilisateur : ";
-           if (!empty($response)) {
-               $error_data = json_decode($response, true);
-               $message .= isset($error_data['detail']) ? $error_data['detail'] : (isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code);
-           } elseif (!empty($curl_error)) {
-               $message .= $curl_error;
-           } else {
-               $message .= 'Code ' . $http_code;
-           }
-           
-           $_SESSION['info_message'] = $message;
+       verif_HTTP($http_code);
            header("Location: interface_admin.php");
            exit;
        }
-}
+
 
 function supprimerSalle($data){
     global $api_url_salle, $token;
@@ -173,46 +161,21 @@ function supprimerSalle($data){
        $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
        $curl_error = curl_error($ch);
        curl_close($ch);
-   
-       if ($http_code === 201 || $http_code === 200) {
-           $response_data = json_decode($response, true);
-           $message = $response_data['message'] ?? "Utilisateur ajouté avec succès!";
-           
-           $_SESSION['info_message'] = $message;
-           header("Location: interface_admin.php");
-           exit;
-       } else {
-           $message = "Erreur lors de l'ajout de l'utilisateur : ";
-           if (!empty($response)) {
-               $error_data = json_decode($response, true);
-               $message .= isset($error_data['detail']) ? $error_data['detail'] : (isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code);
-           } elseif (!empty($curl_error)) {
-               $message .= $curl_error;
-           } else {
-               $message .= 'Code ' . $http_code;
-           }
-           
-           $_SESSION['info_message'] = $message;
+       verif_HTTP($http_code);
            header("Location: interface_admin.php");
            exit;
        }
-}
+
 
 function supprimerCreneau($data){
     global $api_url_creneau, $token;
 
     $heure_debut = htmlspecialchars($data['sup_creneau']);
-    echo $heure_debut;
     $time = explode(':', $heure_debut);
-    echo $time[0];
-    echo $time[1];
     $intervalSpec = sprintf('PT%dH%dM', $time[0], $time[1]);
-    echo $intervalSpec;
     $creneau=[
         "heure_debut"=>$intervalSpec
     ];
-    echo $creneau["heure_debut"];
-
        // Convertir les données en JSON
        $jsonData = json_encode($creneau);
     
@@ -234,27 +197,8 @@ function supprimerCreneau($data){
        $curl_error = curl_error($ch);
        curl_close($ch);
    
-       if ($http_code === 201 || $http_code === 200) {
-           $response_data = json_decode($response, true);
-           $message = $response_data['message'] ?? "Utilisateur ajouté avec succès!";
-           
-           $_SESSION['info_message'] = $message;
-           //header("Location: interface_admin.php");
-           exit;
-       } else {
-           $message = "Erreur lors de l'ajout de l'utilisateur : ";
-           if (!empty($response)) {
-               $error_data = json_decode($response, true);
-               $message .= isset($error_data['detail']) ? $error_data['detail'] : (isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code);
-           } elseif (!empty($curl_error)) {
-               $message .= $curl_error;
-           } else {
-               $message .= 'Code ' . $http_code;
-           }
-           
-           $_SESSION['info_message'] = $message;
-           //header("Location: interface_admin.php");
-           exit;
+       verif_HTTP($http_code);
+        header("Location: interface_admin.php");
+        exit;
        }
-}
 ?>
