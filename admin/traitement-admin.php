@@ -202,8 +202,8 @@ function supprimerCreneau($data){
     global $api_url_creneau, $token;
 
     $heure_debut = htmlspecialchars($data['sup_creneau']);
-    list($h, $m) = explode(':', $item['heure_debut']);
-    $heure_debut = sprintf("%02d:%02d:%02d", $h, $m, 0); // Ajout de 0 pour les secondes
+    list($heures, $minutes) = explode(':', $item['heure_debut']);
+    $intervalSpec = sprintf('PT%dH%dM', (int)$heures, (int)$minutes);
     $creneau=[
         "heure_debut"=>$heure_debut
     ];
