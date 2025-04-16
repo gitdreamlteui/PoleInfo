@@ -237,7 +237,7 @@ function supprimerCreneau($data){
            $message = $response_data['message'] ?? "Utilisateur ajouté avec succès!";
            
            $_SESSION['info_message'] = $message;
-           header("Location: interface_admin.php");
+           //header("Location: interface_admin.php");
            exit;
        } else {
            $message = "Erreur lors de l'ajout de l'utilisateur : ";
@@ -251,7 +251,7 @@ function supprimerCreneau($data){
            }
            
            $_SESSION['info_message'] = $message;
-           header("Location: interface_admin.php");
+           //header("Location: interface_admin.php");
            exit;
        }
 }
