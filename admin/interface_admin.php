@@ -150,7 +150,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
             
             <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
                 <h2 class="text-xl font-semibold mb-4 text-primary">Suppressions d'Utilisateurs</h2>
-                <form class="space-y-4">
+                <form class="space-y-4" action="traitement-admin.php" method="POST">
                     <select name="sup_user" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         <?php
                             $get_user = "http://192.168.8.152:8000/utilisateurs/";
