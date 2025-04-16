@@ -56,7 +56,7 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
     return {"message": "Utilisateur créé avec succès", "id": user_id}
 
 @router.delete("/", response_model=dict)
-def delete_matieres(user: UserDelete, user_id: int = Depends(verify_token)):
+def delete_users(user: UserDelete, user_id: int = Depends(verify_token)):
     
     existing_user = get_user_by_login(user.login)
     
