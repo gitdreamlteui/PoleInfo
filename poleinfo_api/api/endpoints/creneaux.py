@@ -64,6 +64,7 @@ def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_admin))
     print(f"Créneau récupéré : {creneau.heure_debut}")
 
     existing_creneau = get_creneau_by_heure(creneau.heure_debut)
+    print(f"Créneau récupéré : {existing_creneau}")
     
     if not existing_creneau:
         raise HTTPException(
