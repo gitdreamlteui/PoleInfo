@@ -62,4 +62,5 @@ def get_all_users() -> List[Dict[str, Any]]:
         while cursor.nextset():
             pass
             
+            
     return results
