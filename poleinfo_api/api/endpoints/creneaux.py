@@ -53,7 +53,7 @@ def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_token))
     return {"message": "Créneau supprimé avec succès"}
 
 @router.post("/", response_model=dict)
-def add_user(creneau: CreneauCreate, user_id: int = Depends(verify_token)):
+def add_creneau(creneau: CreneauCreate, user_id: int = Depends(verify_token)):
     existing_creneau = get_creneau_by_heure(creneau.heure_debut)
     if existing_creneau:
         raise HTTPException(
