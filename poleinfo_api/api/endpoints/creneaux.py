@@ -31,7 +31,7 @@ def get_creneaux():
     return creneaux
 
 @router.delete("/", response_model=dict)
-def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_token)):
+def delete_creneau_endpoint(creneau: CreneauDelete, user_id: int = Depends(verify_token)):
     print(f"Créneau récupéré : {creneau.heure_debut}")
 
     existing_creneau = get_creneau_by_heure(creneau.heure_debut)
