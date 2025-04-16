@@ -32,6 +32,7 @@ def get_creneaux():
 @router.delete("/", response_model=dict)
 def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_token)):
     existing_creneau = get_creneau_by_heure(creneau.heure_debut)
+    print(f"Créneau récupéré : {existing_creneau}")
     
     if not existing_creneau:
         raise HTTPException(
