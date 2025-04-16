@@ -202,11 +202,14 @@ function supprimerCreneau($data){
     global $api_url_creneau, $token;
 
     $heure_debut = htmlspecialchars($data['sup_creneau']);
+    echo $heure_debut;
     list($heures, $minutes) = explode(':', $item['heure_debut']);
     $intervalSpec = sprintf('PT%dH%dM', (int)$heures, (int)$minutes);
+    echo $intervalSpec;
     $creneau=[
         "heure_debut"=>$intervalSpec
     ];
+    echo $creneau;
 
        // Convertir les données en JSON
        $jsonData = json_encode($creneau);
