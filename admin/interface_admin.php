@@ -233,7 +233,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                     <input type="text" placeholder="Nom de la classe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Classe</button>
                 </form>
-                <form class="mt-6 space-y-4">
+                <form class="mt-6 space-y-4" action="traitement-admin.php" method="POST">
                     <select name="sup_classe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                     <?php
                         $get_classe = "http://192.168.8.152:8000/classes/";
@@ -246,6 +246,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         }
                         ?>
                     </select>
+                    <input type="hidden" action="supprimer_classe">
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Classe</button>
                 </form>
             </div>
