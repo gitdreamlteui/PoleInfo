@@ -32,3 +32,28 @@ def delete_creneau(heure_debut: timedelta) -> bool:
         cursor.execute(delete_query, (creneau_id,))
         
         return cursor.rowcount > 0
+    
+
+def create_creneau(heure_debut):
+    """Crée un nouveau créneau dans la base de données  
+    Returns:
+        int: ID du créneau créé
+    """
+    
+    with get_db_cursor() as cursor:
+        query = """
+            INSERT INTO creneau (heure_debut)
+            VALUES (%s)
+        """
+        values = (heure_debut)
+        
+        cursor.execute(query, values)
+        
+        cursor.execute("SELECT LAST_INSERT_ID() as id_creneau")
+        result = cursor.fetchone()
+        
+        if result and 'id_creneau' in result:
+            user_id = result['id_creneau']
+            return user_id
+        else:
+            raise ValueError("Impossible de récupérer l'ID du créneau créé")
