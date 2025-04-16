@@ -24,7 +24,7 @@ class UserResponse(UserBase):
     id_user: int
 
 class UserDelete(BaseModel):
-    id_user: int
+    login: str
 
 #--------------------------------------------------#
 
