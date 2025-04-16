@@ -61,6 +61,17 @@ def get_all_users() -> List[Dict[str, Any]]:
         
         while cursor.nextset():
             pass
-            
-            
     return results
+
+def delete_user_by_login(login):
+    """Supprime un utilisateur"""
+    with get_db_cursor() as cursor:
+        cursor.execute("SELECT id_user FROM user WHERE login = %s", (login,))
+        user = cursor.fetchone()
+
+        user_id = user['id_user']
+            
+        delete_query = "DELETE FROM user WHERE id_login = %s"
+        cursor.execute(delete_query, (user_id,))
+        
+        return cursor.rowcount > 0
