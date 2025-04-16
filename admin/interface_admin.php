@@ -144,7 +144,16 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 <h2 class="text-xl font-semibold mb-4 text-primary">Suppressions d'Utilisateurs</h2>
                 <form class="space-y-4">
                     <select name="sup_user" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
-                        <option value=""></option>
+                        <?php
+                            $get_user = "http://192.168.8.152:8000/utilisateurs/";
+                            $response_user = file_get_contents($get_user);
+                            $data_user = json_decode($response_user, true);
+                            foreach($data_user as $item)
+                            {
+                                $user=$item['login'];
+                                echo "<option value='$user'>$user</option>";
+                            }
+                        ?>
                     </select>
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Utilisateur</button>
                 </form>
