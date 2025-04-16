@@ -12,8 +12,8 @@ des privilèges administrateur.
 
 from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List, Optional
-from models.schemas import UserCreate, UserResponse
-from models.user import create_user, get_user_by_login, get_all_users
+from models.schemas import UserCreate, UserResponse, UserDelete
+from models.user import create_user, get_user_by_login, get_all_users, delete_user_by_login
 from core.auth import verify_token
 from core.security import verify_admin
 
@@ -54,6 +54,28 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
     )
     
     return {"message": "Utilisateur créé avec succès", "id": user_id}
+
+@router.delete("/", response_model=dict)
+def delete_users(user: UserDelete, user_id: int = Depends(verify_token)):
+    
+    existing_user = get_user_by_login(user.login)
+    
+    if not existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Utilisateur non trouvé"
+        )
+    
+    result = delete_user_by_login(user.login)
+    
+    if not result:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Erreur lors de la suppression de l'utilisateur"
+        )
+    
+    return {"message": f"Utilisateur '{user.nom}' supprimé avec succès"}
+
 
 @router.get("/", response_model=List[UserResponse])
 def get_users(): #admin_id: int = Depends(verify_admin)
