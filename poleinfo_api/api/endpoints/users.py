@@ -45,7 +45,6 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
         )
     
     user_id = create_user(
-        
         login=user.login,
         password=user.password,
         type=user.type,
@@ -78,7 +77,7 @@ def delete_users(user: UserDelete, user_id: int = Depends(verify_token)):
 
 
 @router.get("/", response_model=List[UserResponse])
-def get_users(): #admin_id: int = Depends(verify_admin)
+def get_users():
     users = get_all_users()
         
     if len(users) == 0:
