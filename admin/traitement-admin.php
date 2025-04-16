@@ -9,6 +9,7 @@ $api_url_user = "http://192.168.8.152:8000/utilisateurs/";
 $api_url_matiere = "http://192.168.8.152:8000/matieres/";
 $api_url_salle = "http://192.168.8.152:8000/salles/";
 $api_url_creneau ="http://192.168.8.152:8000/creneaux/";
+$api_url_classe ="http://192.168.8.152:8000/classes/";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
@@ -28,6 +29,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     else if ($action == "supprimer_creneau"){
         supprimerCreneau($_POST);
+    }
+    else if ($action == "supprimer_classe"){
+        supprimerClasse($_POST);
     }
 }
 
@@ -112,6 +116,40 @@ function supprimerUtilisateur($data){
     
        // Initialiser cURL
        $ch = curl_init($api_url_user);
+       
+       // Configuration de la requête cURL
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+       curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+       curl_setopt($ch, CURLOPT_HTTPHEADER, [
+           "Authorization: Bearer " . $token,
+           "Content-Type: application/json",
+       ]);
+       
+       // Exécuter la requête
+       $response = curl_exec($ch);
+       $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+       $curl_error = curl_error($ch);
+       curl_close($ch);
+   
+       verif_HTTP($http_code);
+           header("Location: interface_admin.php");
+           exit;
+}
+
+function supprimerClasse($data){
+    global $api_url_classe, $token;
+
+    $nom = htmlspecialchars($data['sup_classe']);
+    $classe=[
+        "nom"=>$nom
+    ];
+
+       // Convertir les données en JSON
+       $jsonData = json_encode($classe);
+    
+       // Initialiser cURL
+       $ch = curl_init($api_url_classe);
        
        // Configuration de la requête cURL
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
