@@ -8,6 +8,7 @@ $token = $_SESSION['token'];
 $api_url_user = "http://192.168.8.152:8000/utilisateurs/";
 $api_url_matiere = "http://192.168.8.152:8000/matieres/";
 $api_url_salle = "http://192.168.8.152:8000/salles/";
+$api_url_creneau ="http://192.168.8.152:8000/creneaux/";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
@@ -21,6 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
     else if ($action == "supprimer_salle"){
         supprimerSalle($_POST);
+    }
+    else if ($action == "supprimer_creneau"){
+        supprimerCreneau($_POST);
     }
 }
 
@@ -154,6 +158,61 @@ function supprimerSalle($data){
     
        // Initialiser cURL
        $ch = curl_init($api_url_salle);
+       
+       // Configuration de la requête cURL
+       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "DELETE");
+       curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+       curl_setopt($ch, CURLOPT_HTTPHEADER, [
+           "Authorization: Bearer " . $token,
+           "Content-Type: application/json",
+       ]);
+       
+       // Exécuter la requête
+       $response = curl_exec($ch);
+       $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+       $curl_error = curl_error($ch);
+       curl_close($ch);
+   
+       if ($http_code === 201 || $http_code === 200) {
+           $response_data = json_decode($response, true);
+           $message = $response_data['message'] ?? "Utilisateur ajouté avec succès!";
+           
+           $_SESSION['info_message'] = $message;
+           header("Location: interface_admin.php");
+           exit;
+       } else {
+           $message = "Erreur lors de l'ajout de l'utilisateur : ";
+           if (!empty($response)) {
+               $error_data = json_decode($response, true);
+               $message .= isset($error_data['detail']) ? $error_data['detail'] : (isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code);
+           } elseif (!empty($curl_error)) {
+               $message .= $curl_error;
+           } else {
+               $message .= 'Code ' . $http_code;
+           }
+           
+           $_SESSION['info_message'] = $message;
+           header("Location: interface_admin.php");
+           exit;
+       }
+}
+
+function supprimerCreneau($data){
+    global $api_url_creneau, $token;
+
+    $heure_debut = htmlspecialchars($data['sup_creneau']);
+    list($h, $m) = explode(':', $item['heure_debut']);
+    $heure_debut = sprintf("%02d:%02d:%02d", $h, $m, 0); // Ajout de 0 pour les secondes
+    $creneau=[
+        "heure_debut"=>$heure_debut
+    ];
+
+       // Convertir les données en JSON
+       $jsonData = json_encode($creneau);
+    
+       // Initialiser cURL
+       $ch = curl_init($api_url_creneau);
        
        // Configuration de la requête cURL
        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

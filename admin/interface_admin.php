@@ -195,8 +195,8 @@ $date_jour = $date_actuelle->format('d/m/Y');
                     <input type="text" placeholder="00:00" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Créneau</button>
                 </form>
-                <form class="mt-6 space-y-4">
-                    <select name="creneau" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
+                <form class="mt-6 space-y-4" action="traitement-admin.php" method="POST">
+                    <select name="sup_creneau" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         <?php
                         $get_creneau = "http://192.168.8.152:8000/creneaux/";
                         $reponse_creneau = file_get_contents($get_creneau);
@@ -213,6 +213,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         }
                         ?>
                     </select>
+                    <input type="hidden" name="action" value="supprimer_creneau">
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-red-600 transition-colors w-full font-medium">Supprimer Créneau</button>
                 </form>
             </div>
