@@ -203,9 +203,9 @@ function supprimerCreneau($data){
 
     $heure_debut = htmlspecialchars($data['sup_creneau']);
     echo $heure_debut;
-    $time = explode(':', $item['heure_debut']);
+    $time = explode(':', $heure_debut);
     echo $time[0];
-    echo $time[1]; 
+    echo $time[1];
     $intervalSpec = sprintf('PT%dH%dM', $time[0], $time[1]);
     echo $intervalSpec;
     $creneau=[
