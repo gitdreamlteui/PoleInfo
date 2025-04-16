@@ -31,16 +31,15 @@ def get_creneaux():
 
 @router.delete("/", response_model=dict)
 def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_token)):
+    existing_creneau = get_creneau_by_heure(creneau.heure_debut)
     
-    existing_matiere = get_creneau_by_heure(creneau.heure_debut)
-    
-    if not existing_matiere:
+    if not existing_creneau:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Créneau non trouvé"
         )
     
-    result = delete_creneau(creneau.nom)
+    result = delete_creneau(creneau.heure_debut)
     
     if not result:
         raise HTTPException(
@@ -48,4 +47,4 @@ def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_token))
             detail="Erreur lors de la suppression du créneau"
         )
     
-    return {"message": f"Créneau '{creneau.heure_debut}' supprimé avec succès"}
+    return {"message": "Créneau supprimé avec succès"}
