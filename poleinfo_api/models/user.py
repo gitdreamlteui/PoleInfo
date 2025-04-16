@@ -71,7 +71,7 @@ def delete_user_by_login(login):
 
         user_id = user['id_user']
             
-        delete_query = "DELETE FROM user WHERE id_login = %s"
+        delete_query = "DELETE FROM user WHERE id_user = %s"
         cursor.execute(delete_query, (user_id,))
         
         return cursor.rowcount > 0
