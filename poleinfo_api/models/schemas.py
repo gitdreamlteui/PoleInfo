@@ -11,7 +11,6 @@ class UserBase(BaseModel):
     prenom: str
 
 class SalleBase(BaseModel):
-    numero: str
     capacite: int
     type: str
 
@@ -39,7 +38,7 @@ class MatiereDelete(BaseModel):
 #--------------------------------------------------#
 
 class SalleCreate(SalleBase):
-    id_salle: int
+    numero: str
     
 class SalleResponse(SalleBase):
     id_salle: int

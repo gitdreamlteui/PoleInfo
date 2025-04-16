@@ -9,7 +9,7 @@ def get_all_salles() -> List[Dict[int, Any]]:
         results = cursor.fetchall()
     return results
 
-def get_salle_by_nom(numero: str) -> Dict[str, Any]:
+def get_salle_by_numero(numero: str) -> Dict[str, Any]:
     with get_db_cursor() as cursor:
         query = "SELECT id_salle, numero FROM salle WHERE numero = %s"
         cursor.execute(query, (numero,))
@@ -31,3 +31,28 @@ def delete_salle(numero: str) -> bool:
         cursor.execute(delete_query, (salle_id,))
         
         return cursor.rowcount > 0
+    
+
+def create_salle(numero, capacite, type):
+    """Crée une nouvelle salle dans la base de données  
+    Returns:
+        int: ID de la salle crée
+    """
+    
+    with get_db_cursor() as cursor:
+        query = """
+            INSERT INTO salle (numero, capacite, type)
+            VALUES (%s, %s, %s)
+        """
+        values = (numero, capacite, type)
+        
+        cursor.execute(query, values)
+        
+        cursor.execute("SELECT LAST_INSERT_ID() as id_salle")
+        result = cursor.fetchone()
+        
+        if result and 'id_salle' in result:
+            user_id = result['id_salle']
+            return user_id
+        else:
+            raise ValueError("Impossible de récupérer l'ID de la salle crée")
