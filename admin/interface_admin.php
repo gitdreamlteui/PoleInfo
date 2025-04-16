@@ -123,6 +123,14 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 </span>
             </div>
         </div>
+        <?php if ($success_message): ?>
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    <p><?php echo htmlspecialchars($success_message); ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
