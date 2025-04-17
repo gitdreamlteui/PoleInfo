@@ -102,7 +102,7 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/lucas/.gradle/caches
 	android:supportsRtl
 		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:20:9-35
 	android:label
-		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:19:9-33
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:19:9-34
 	android:allowBackup
 		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:17:9-35
 	android:theme

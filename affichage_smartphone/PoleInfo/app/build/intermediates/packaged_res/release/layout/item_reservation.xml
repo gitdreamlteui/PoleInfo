@@ -43,6 +43,12 @@
             android:text="Salle" />
 
         <TextView
+            android:id="@+id/tvProfesseur"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Professeur" />
+
+        <TextView
             android:id="@+id/tvInfo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

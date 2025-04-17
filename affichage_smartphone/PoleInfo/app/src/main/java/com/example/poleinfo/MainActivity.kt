@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), OnReservationClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        
         // Supprimer l'ombre de l'ActionBar pour réduire l'espace visuel
         supportActionBar?. elevation = 0f
 

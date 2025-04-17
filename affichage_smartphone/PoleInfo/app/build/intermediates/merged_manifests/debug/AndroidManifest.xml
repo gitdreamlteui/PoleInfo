@@ -30,7 +30,7 @@
         android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:debuggable="true"
         android:extractNativeLibs="false"
-        android:label="PoleInfo"
+        android:label="Pôle Info"
         android:networkSecurityConfig="@xml/network_security_config"
         android:supportsRtl="true"
         android:testOnly="true"
