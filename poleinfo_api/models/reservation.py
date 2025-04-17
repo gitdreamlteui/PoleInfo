@@ -150,13 +150,13 @@ def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
             u.prenom,
             GROUP_CONCAT(cl.nom SEPARATOR ', ') AS noms_classes
         FROM reservation r
-        LEFT JOIN salle s ON r.id_salle = s.id_salle
-        LEFT JOIN matiere m ON r.id_matiere = m.id_matiere
-        LEFT JOIN creneau c ON r.id_creneau = c.id_creneau
-        LEFT JOIN user u ON r.id_user = u.id_user
+        JOIN salle s ON r.id_salle = s.id_salle
+        JOIN matiere m ON r.id_matiere = m.id_matiere
+        JOIN creneau c ON r.id_creneau = c.id_creneau
+        JOIN user u ON r.id_user = u.id_user
         LEFT JOIN classe_reservation cr ON r.id_reservation = cr.id_reservation
         LEFT JOIN classe cl ON cr.id_classe_grp = cl.id_classe_grp
-        WHERE u.nom = %s
+        WHERE u.nom LIKE %s
         GROUP BY r.id_reservation, r.duree, r.date, r.info, s.numero, s.capacite, s.type, m.nom, c.heure_debut, u.nom, u.prenom
         ORDER BY r.date ASC, c.heure_debut ASC
         """
