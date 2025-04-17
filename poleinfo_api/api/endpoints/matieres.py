@@ -6,9 +6,9 @@ Auteur : Elias GAUTHIER
 Dernière date de mise à jour : 09/04/2025
 """
 
-from models.schemas import MatiereResponse, MatiereDelete
+from models.schemas import MatiereResponse, MatiereDelete, MatiereCreate
 from core.auth import verify_token
-from models.matiere import get_all_matieres, remove_matiere, get_matiere_by_nom
+from models.matiere import get_all_matieres, remove_matiere, get_matiere_by_nom, create_matiere
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -48,3 +48,19 @@ def delete_matieres(matiere: MatiereDelete, user_id: int = Depends(verify_token)
         )
     
     return {"message": f"Matière '{matiere.nom}' supprimée avec succès"}
+
+
+@router.post("/", response_model=dict)
+def add_matiere(matiere: MatiereCreate, user_id: int = Depends(verify_token)):
+    existing_matiere = get_matiere_by_nom(matiere.nom)
+    if existing_matiere:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Une matière avec ce nom existe déjà"
+        )
+    
+    creneau_id = create_matiere(
+        nom=matiere.nom
+    )
+    
+    return {"message": "Matière créé avec succès", "id": creneau_id}
