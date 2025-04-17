@@ -214,11 +214,15 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         $data_creneau = json_decode($reponse_creneau, true);
                         
                         if (is_array($data_creneau)) {
+                            $creneau=[];
                             foreach ($data_creneau as $item) {
                                 $interval = new DateInterval($item['heure_debut']);
                                 $heures = $interval->h;
                                 $minutes = $interval->i;
-                                $creneau = sprintf("%02d:%02d", $heures, $minutes);
+                                $creneau += sprintf("%02d:%02d", $heures, $minutes);
+                            }
+                            $creneau=sort($creneau);
+                            foreach($creneau as $creneau){
                                 echo "<option value='$creneau'>$creneau</option>";
                             }
                         }
