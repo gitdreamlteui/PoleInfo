@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     else if ($action == "supprimer_utilisateur"){
         supprimerUtilisateur($_POST);
     }
-    else if ($action == "supprimer_matiere") {
+    else if ($action == "supprimer_matiere"){
         supprimerMatiere($_POST);
     }
     else if ($action == "supprimer_salle"){
@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         supprimerClasse($_POST);
     }
 }
-
+    echo $action;
 function verif_HTTP($code){
     if ($code === 201 || $code === 200) {
         $response_data = json_decode($response, true);
