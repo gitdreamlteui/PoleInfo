@@ -17,26 +17,29 @@ from models.user import create_user, get_user_by_login, get_all_users, delete_us
 from core.auth import verify_token
 from core.security import verify_admin
 
+# Définition du router avec le tag pour la documentation Swagger
 router = APIRouter(
     tags=["utilisateurs"]
 )
 
-"""
-Fonction qui permet d'ajouter un nouvel utilisateur dans le système.
-Cette route est protégée et nécessite des privilèges administrateur.
-
-Elle effectue d'abord une vérification pour s'assurer que le login n'existe pas déjà.
-En cas de doublon, une exception HTTP 400 est levée.
-
-Ensuite, elle prépare les données de l'utilisateur pour l'insertion en base de données
-et appelle la fonction create_user pour réaliser l'opération.
-
-La fonction retourne un message de confirmation avec l'identifiant de l'utilisateur créé.
-
-Utilise les méthodes verify_admin pour la sécurité et get_user_by_login pour la validation.
-"""
 @router.post("/", response_model=dict)
 def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
+    """
+    Ajoute un nouvel utilisateur dans le système.
+    
+    Cette route est protégée et nécessite des privilèges administrateur.
+    Elle effectue une vérification pour s'assurer que le login n'existe pas déjà.
+    
+    Args:
+        user (UserCreate): Données du nouvel utilisateur
+        admin_id (int): ID de l'administrateur authentifié
+        
+    Returns:
+        dict: Message de confirmation avec l'identifiant de l'utilisateur créé
+        
+    Raises:
+        HTTPException: Erreur 400 si un utilisateur avec le même login existe déjà
+    """
     existing_user = get_user_by_login(user.login)
     if existing_user:
         raise HTTPException(
@@ -56,7 +59,23 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
 
 @router.delete("/", response_model=dict)
 def delete_users(user: UserDelete, user_id: int = Depends(verify_admin)):
+    """
+    Supprime un utilisateur existant.
     
+    Cette opération nécessite des droits administrateur.
+    
+    Args:
+        user (UserDelete): Données de l'utilisateur à supprimer
+        user_id (int): ID de l'administrateur authentifié
+        
+    Returns:
+        dict: Message de confirmation de la suppression
+        
+    Raises:
+        HTTPException: 
+            - Erreur 404 si l'utilisateur n'existe pas
+            - Erreur 500 en cas d'échec de la suppression
+    """
     existing_user = get_user_by_login(user.login)
     
     if not existing_user:
@@ -78,6 +97,15 @@ def delete_users(user: UserDelete, user_id: int = Depends(verify_admin)):
 
 @router.get("/", response_model=List[UserResponse])
 def get_users():
+    """
+    Récupère la liste de tous les utilisateurs.
+    
+    Returns:
+        List[UserResponse]: Liste des utilisateurs enregistrés
+        
+    Raises:
+        HTTPException: Erreur 404 si aucun utilisateur n'est trouvé
+    """
     users = get_all_users()
         
     if len(users) == 0:
