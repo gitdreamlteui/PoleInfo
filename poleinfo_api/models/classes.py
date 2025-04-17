@@ -43,7 +43,7 @@ def create_classe(nom: str):
             INSERT INTO classe nom
             VALUES (%s)
         """
-        values = (nom)
+        values = (nom,)
         
         cursor.execute(query, values)
         
