@@ -74,8 +74,9 @@ class ReservationResponse(BaseModel):
     noms_classes: str
     
 class ReservationDelete(BaseModel):
-    id_reservation: int
-
+    date: date
+    numero_salle: str
+    heure_debut: str
 #--------------------------------------------------#
 
 class Token(BaseModel):
