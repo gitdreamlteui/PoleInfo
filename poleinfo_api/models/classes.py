@@ -40,10 +40,10 @@ def create_classe(nom: str):
     
     with get_db_cursor() as cursor:
         query = """
-            INSERT INTO classe nom
+            INSERT INTO classe (nom)
             VALUES (%s)
         """
-        values = (nom)
+        values = (nom,)
         
         cursor.execute(query, values)
         

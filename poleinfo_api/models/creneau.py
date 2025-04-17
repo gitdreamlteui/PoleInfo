@@ -45,7 +45,7 @@ def create_creneau(heure_debut):
             INSERT INTO creneau (heure_debut)
             VALUES (%s)
         """
-        values = (heure_debut)
+        values = (heure_debut,)
         
         cursor.execute(query, values)
         
