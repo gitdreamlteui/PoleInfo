@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.CalendarContract
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,20 +24,26 @@ import kotlin.concurrent.fixedRateTimer
 class MainActivity : AppCompatActivity(), OnReservationClickListener {
 
     private lateinit var recyclerView: RecyclerView
+    private lateinit var errorText: TextView
     private lateinit var reservationAdapter: ReservationAdapter
     private var reservationList: MutableList<Reservation> = mutableListOf()
     private val handler = Handler(Looper.getMainLooper())
+    private var hasFetchedData = false // Indicateur pour vérifier si des données ont été récupérées
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // Supprimer l'ombre de l'ActionBar pour réduire l'espace visuel
-        supportActionBar?.elevation = 0f
+        supportActionBar?. elevation = 0f
 
         // Initialisation du RecyclerView
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        // Initialisation du TextView pour l'erreur
+        errorText = findViewById(R.id.connectionErrorText)
+        errorText.visibility = View.GONE // Caché par défaut
 
         // Ajout d'un ItemDecoration pour gérer l'espacement entre les éléments
         recyclerView.addItemDecoration(object : RecyclerView.ItemDecoration() {
@@ -74,15 +81,27 @@ class MainActivity : AppCompatActivity(), OnReservationClickListener {
         val apiUrl = "http://192.168.8.152:8000/reservations/"
         val jsonRequest = JsonArrayRequest(Request.Method.GET, apiUrl, null,
             Response.Listener { response ->
+                // Succès : mettre à jour les données
                 val newList = parseReservations(response)
                 if (newList != reservationList) {
                     reservationList.clear()
                     reservationList.addAll(newList)
                     reservationAdapter.notifyDataSetChanged()
                 }
+                hasFetchedData = true // Marquer que des données ont été récupérées
+                recyclerView.visibility = View.VISIBLE // Afficher le RecyclerView
+                errorText.visibility = View.GONE // Cacher le message d'erreur
             },
             Response.ErrorListener { error ->
-                Toast.makeText(this, "Erreur de connexion : ${error.message}", Toast.LENGTH_SHORT).show()
+                // Échec : gérer l'affichage en fonction de l'état
+                if (!hasFetchedData) {
+                    // Afficher le message d'erreur si aucune donnée n'a été récupérée
+                    errorText.visibility = View.VISIBLE
+                    recyclerView.visibility = View.GONE
+                } else {
+                    // Si des données existent, montrer un Toast mais garder la liste
+                    Toast.makeText(this, "Erreur de connexion : ${error.message}", Toast.LENGTH_SHORT).show()
+                }
             })
 
         val requestQueue = Volley.newRequestQueue(this)

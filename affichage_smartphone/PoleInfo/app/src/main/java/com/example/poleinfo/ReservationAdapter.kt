@@ -32,7 +32,7 @@ class ReservationAdapter(
         // Heure de début : conversion de "PT8H10M" en "8h10"
         val heureRegex = Regex("""PT(\d+)H(\d+)?M?""")
         val match = heureRegex.matchEntire(reservation.heure_debut)
-        val heure = match?.groupValues?.getOrNull(1)?.toIntOrNull() ?: 0
+        val heure = match?.groupValues?.getOrNull(1)?.toIntOrNull() ?:  0
         val minute = match?.groupValues?.getOrNull(2)?.toIntOrNull() ?: 0
         val heureDebutText = String.format("%02dh%02d", heure, minute)
 
@@ -45,6 +45,7 @@ class ReservationAdapter(
         holder.tvHeureDebut.text = "Début : $heureDebutText - Fin : $heureFinText"
         holder.tvMatiere.text = "Matière : ${reservation.nom_matiere}"
         holder.tvSalle.text = "Salle : ${reservation.numero_salle}"
+        holder.tvProfesseur.text = "Professeur : ${reservation.prenom} ${reservation.nom_user.toUpperCase()}"
         holder.tvInfo.text = "Info : ${reservation.info}"
     }
 
@@ -55,6 +56,7 @@ class ReservationAdapter(
         val tvHeureDebut: TextView = itemView.findViewById(R.id.tvHeureDebut)
         val tvMatiere: TextView = itemView.findViewById(R.id.tvMatiere)
         val tvSalle: TextView = itemView.findViewById(R.id.tvSalle)
+        val tvProfesseur: TextView = itemView.findViewById(R.id.tvProfesseur)
         val tvInfo: TextView = itemView.findViewById(R.id.tvInfo)
 
         init {
