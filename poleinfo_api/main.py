@@ -16,18 +16,18 @@ import locale
 app = FastAPI(
     title="PoleInfo API", 
     description="""
-    # API de gestion des réservations de salles
+    API de gestion des réservations de salles
     
     Cette API permet la gestion complète des réservations de salles pour le Pôle Info.
     
-    ## Fonctionnalités principales
+    Fonctionnalités principales
     
-    * Authentification des utilisateurs
-    * Gestion des utilisateurs (création, consultation, suppression)
-    * Gestion des réservations de salles
-    * Gestion des salles, créneaux, matières et classes
+    - Authentification des utilisateurs
+    - Gestion des utilisateurs (création, consultation, suppression)
+    - Gestion des réservations de salles
+    - Gestion des salles, créneaux, matières et classes
     
-    Développé par Elias GAUTHIER
+    Développé par Elias GAUTHIER avec la co-conception d'Ethan CLEMENT
     """,
     version="1.0.0",
     contact={
