@@ -8,7 +8,7 @@ Dernière date de mise à jour : 09/04/2025
 
 from models.schemas import ClasseResponse, ClasseDelete
 from core.auth import verify_token
-from models.classes import get_all_classes, remove_classe
+from models.classes import get_all_classes, remove_classe, get_classe_by_nom
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -32,7 +32,7 @@ def get_classes():
 @router.delete("/", response_model=dict)
 def delete_classes(classe: ClasseDelete, user_id: int = Depends(verify_token)):
     
-    existing_salle = get_classes(classe.nom)
+    existing_salle = get_classe_by_nom(classe.nom)
     
     if not existing_salle:
         raise HTTPException(
