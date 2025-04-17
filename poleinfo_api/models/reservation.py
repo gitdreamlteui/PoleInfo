@@ -162,3 +162,29 @@ def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
         """
         cursor.execute(query, (prof,))
         return cursor.fetchall()
+
+def remove_reservation(user_id: int, date: str, numero_salle: str, heure_debut: str):
+    with get_db_cursor() as cursor:
+        try:
+            cursor.execute("""
+                SELECT r.id_reservation FROM reservation r
+                JOIN salle s ON r.id_salle = s.id_salle
+                JOIN creneau c ON r.id_creneau = c.id_creneau
+                WHERE r.id_user = %s AND r.date = %s AND s.numero = %s AND c.heure_debut = %s
+            """, (user_id, date, numero_salle, heure_debut))
+            
+            result = cursor.fetchone()
+            if not result:
+                return {"status": "error", "message": "Aucune réservation ne correspond à ces critères"}
+            
+            id_reservation = result['id_reservation']
+            
+            cursor.execute("""
+                DELETE FROM reservation 
+                WHERE id_reservation = %s
+            """, (id_reservation,))
+            
+            return {"status": "success", "message": "Réservation supprimée avec succès"}
+            
+        except Exception as e:
+            return {"status": "error", "message": f"Erreur lors de la suppression: {str(e)}"}
