@@ -16,7 +16,7 @@ def get_classe_by_nom(nom: str) -> Dict[str, Any]:
         result = cursor.fetchone()
     return result
 
-def delete_classe(numero: str) -> bool:
+def remove_classe(numero: str) -> bool:
     with get_db_cursor() as cursor:
         check_query = "SELECT id_salle_grp FROM classe WHERE nom = %s"
         cursor.execute(check_query, (numero,))
