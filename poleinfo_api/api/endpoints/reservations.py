@@ -71,19 +71,18 @@ def get_reservations(salle: str = Query(None, description="Numéro de la salle")
         )
     return reservations
 
-
-
 @router.delete("/", response_model=dict)
-def delete_reservation(date: date,
-                    numero_salle: str,
-                    heure_debut: str,
-                    user_id: int = Depends(verify_token)):
-    
+def delete_reservation(reservation: ReservationDelete, user_id: int = Depends(verify_token)):
+    """
+    Supprime une réservation en fonction des critères spécifiés dans le corps de la requête.
+    Seul l'utilisateur qui a créé la réservation ou un admin peut la supprimer.
+    """
     result = remove_reservation(
         user_id,
-        date.isoformat(),
-        numero_salle,
-        heure_debut)
+        reservation.date.isoformat(),
+        reservation.numero_salle,
+        reservation.heure_debut
+    )
     
     if result.get("status") == "success":
         return {
@@ -94,4 +93,3 @@ def delete_reservation(date: date,
             status_code=400, 
             detail=result.get("message", "Erreur lors de la suppression")
         )
-
