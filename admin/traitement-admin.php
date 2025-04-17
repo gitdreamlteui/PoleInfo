@@ -243,7 +243,7 @@ function supprimerSalle($data){
 
 function supprimerCreneau($data){
     global $api_url_creneau, $token;
-
+    echo $token;
     $heure_debut = htmlspecialchars($data['sup_creneau']);
     $time = explode(':', $heure_debut);
     $intervalSpec = sprintf('PT%dH%dM', $time[0], $time[1]);
