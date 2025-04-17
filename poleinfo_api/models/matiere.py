@@ -41,10 +41,10 @@ def create_matiere(nom: str):
     
     with get_db_cursor() as cursor:
         query = """
-            INSERT INTO matiere nom
+            INSERT INTO matiere (nom)
             VALUES (%s)
         """
-        values = (nom)
+        values = (nom,)
         
         cursor.execute(query, values)
         
