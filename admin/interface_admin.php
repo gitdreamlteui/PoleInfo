@@ -161,7 +161,14 @@ $date_jour = $date_actuelle->format('d/m/Y');
                                 $user=$item['login'];
                                 $nom_user=$item['nom'];
                                 $prenom_user=$item['prenom'];
-                                echo "<option value='$user'>$user | '$prenom_user'-'$nom_user'</option>";
+                                $type_user=$item['type'];
+                                if($type_user==1){
+                                    $type='Administrateur';
+                                }
+                                else{
+                                    $type='Utilisateur';
+                                }
+                                echo "<option value='$user'>$user | $prenom_user - $nom_user | $type</option>";
                             }
                         ?>
                     </select>
