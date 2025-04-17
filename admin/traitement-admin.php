@@ -24,6 +24,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     else if ($action == "ajouter_creneau") {
         ajouterCreneau($_POST);
     }
+    else if ($action == "ajouter_classe") {
+        ajouterClasse($_POST);
+    }
     else if ($action == "supprimer_utilisateur"){
         supprimerUtilisateur($_POST);
     }
@@ -180,6 +183,40 @@ function ajouterCreneau($data){
         exit;
 }
 
+function ajouterClasse($data){
+    global $api_url_classe, $token;
+
+    $nom = htmlspecialchars($data['add_classe']);
+    
+    $classe = [    
+        "nom" => $nom
+    ];
+    
+    // Convertir les données en JSON
+    $jsonData = json_encode($classe);
+    
+    // Initialiser cURL
+    $ch = curl_init($api_url_classe);
+    
+    // Configuration de la requête cURL
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer " . $token,
+        "Content-Type: application/json",
+    ]);
+    
+    // Exécuter la requête
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    $curl_error = curl_error($ch);
+    curl_close($ch);
+
+    verif_HTTP($http_code);
+        header("Location: interface_admin.php");
+        exit;
+}
 function supprimerUtilisateur($data){
     global $api_url_user, $token;
 
