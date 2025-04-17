@@ -31,3 +31,27 @@ def remove_classe(numero: str) -> bool:
         cursor.execute(delete_query, (classe_id,))
         
         return cursor.rowcount > 0
+
+def create_classe(nom: str):
+    """Crée une nouvelle classe dans la base de données  
+    Returns:
+        int: ID de la classe créé
+    """
+    
+    with get_db_cursor() as cursor:
+        query = """
+            INSERT INTO classe nom
+            VALUES (%s)
+        """
+        values = (nom)
+        
+        cursor.execute(query, values)
+        
+        cursor.execute("SELECT LAST_INSERT_ID() as id_classe_grp")
+        result = cursor.fetchone()
+        
+        if result and 'id_classe_grp' in result:
+            class_grp_id = result['id_classe_grp']
+            return class_grp_id
+        else:
+            raise ValueError("Impossible de récupérer l'ID de la classe créé")
