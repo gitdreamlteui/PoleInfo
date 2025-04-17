@@ -8,6 +8,7 @@ Dernière date de mise à jour : 09/04/2025
 
 from models.schemas import ClasseResponse, ClasseDelete, ClasseCreate
 from core.auth import verify_token
+from core.security import verify_admin
 from models.classes import get_all_classes, remove_classe, get_classe_by_nom, create_classe
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
@@ -30,7 +31,7 @@ def get_classes():
     return classes
 
 @router.delete("/", response_model=dict)
-def delete_classes(classe: ClasseDelete, user_id: int = Depends(verify_token)):
+def delete_classes(classe: ClasseDelete, user_id: int = Depends(verify_admin)):
     
     existing_salle = get_classe_by_nom(classe.nom)
     
@@ -51,7 +52,7 @@ def delete_classes(classe: ClasseDelete, user_id: int = Depends(verify_token)):
     return {"message": f"Classe '{classe.nom}' supprimée avec succès"}
 
 @router.post("/", response_model=dict)
-def add_classe(classe: ClasseCreate, user_id: int = Depends(verify_token)):
+def add_classe(classe: ClasseCreate, user_id: int = Depends(verify_admin)):
     existing_classe = get_classe_by_nom(classe.nom)
     if existing_classe:
         raise HTTPException(
