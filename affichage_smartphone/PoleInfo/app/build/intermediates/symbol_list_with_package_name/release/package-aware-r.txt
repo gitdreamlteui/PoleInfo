@@ -3176,6 +3176,7 @@ id closest
 id collapseActionView
 id compress
 id confirm_button
+id connectionErrorText
 id constraint
 id container
 id content
@@ -3531,6 +3532,7 @@ id tvDate
 id tvHeureDebut
 id tvInfo
 id tvMatiere
+id tvProfesseur
 id tvSalle
 id unchecked
 id uniform
