@@ -159,7 +159,9 @@ $date_jour = $date_actuelle->format('d/m/Y');
                             foreach($data_user as $item)
                             {
                                 $user=$item['login'];
-                                echo "<option value='$user'>$user</option>";
+                                $nom_user=$item['nom'];
+                                $prenom_user=$item['prenom'];
+                                echo "<option value='$user'>$user | '$prenom_user'-'$nom_user'</option>";
                             }
                         ?>
                     </select>
