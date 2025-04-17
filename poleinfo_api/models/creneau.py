@@ -17,7 +17,7 @@ def get_creneau_by_heure(heure_debut: timedelta) -> Dict[str, Any]:
         result = cursor.fetchone()
     return result
 
-def delete_creneau(heure_debut: timedelta) -> bool:
+def remove_creneau(heure_debut: timedelta) -> bool:
     with get_db_cursor() as cursor:
         check_query = "SELECT id_creneau FROM creneau WHERE heure_debut = %s"
         cursor.execute(check_query, (heure_debut,))

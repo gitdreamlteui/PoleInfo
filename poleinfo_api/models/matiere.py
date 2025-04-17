@@ -16,7 +16,7 @@ def get_matiere_by_nom(nom: str) -> Dict[str, Any]:
         result = cursor.fetchone()
     return result
 
-def delete_matiere(nom: str) -> bool:
+def remove_matiere(nom: str) -> bool:
     with get_db_cursor() as cursor:
         check_query = "SELECT id_matiere FROM matiere WHERE nom = %s"
         cursor.execute(check_query, (nom,))

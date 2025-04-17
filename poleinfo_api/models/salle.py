@@ -16,7 +16,7 @@ def get_salle_by_numero(numero: str) -> Dict[str, Any]:
         result = cursor.fetchone()
     return result
 
-def delete_salle(numero: str) -> bool:
+def remove_salle(numero: str) -> bool:
     with get_db_cursor() as cursor:
         check_query = "SELECT id_salle FROM salle WHERE numero = %s"
         cursor.execute(check_query, (numero,))
