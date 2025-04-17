@@ -3,7 +3,7 @@ API Pôle Info
 --------------
 
 Auteur : Elias GAUTHIER
-Dernière date de mise à jour : 28/03/2025
+Dernière date de mise à jour : 14/04/2025
 
 Description : ce programme permet de créer toute les routes relatives aux authentifications 
 via un token. 
