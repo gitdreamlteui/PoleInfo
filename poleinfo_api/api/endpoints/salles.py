@@ -8,7 +8,7 @@ Dernière date de mise à jour : 02/04/2025
 
 from models.schemas import SalleResponse, SalleDelete, SalleCreate
 from core.auth import verify_token
-from models.salle import get_all_salles, get_salle_by_numero, delete_salle, create_salle
+from models.salle import get_all_salles, get_salle_by_numero, remove_salle, create_salle
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -31,7 +31,7 @@ def get_salles():
 
 
 @router.delete("/", response_model=dict)
-def delete_salle_endpoint(salle: SalleDelete, user_id: int = Depends(verify_token)):
+def delete_salle(salle: SalleDelete, user_id: int = Depends(verify_token)):
     
     existing_salle = get_salle_by_numero(salle.numero)
     
@@ -41,7 +41,7 @@ def delete_salle_endpoint(salle: SalleDelete, user_id: int = Depends(verify_toke
             detail="Salle non trouvée"
         )
     
-    result = delete_salle(salle.numero)
+    result = remove_salle(salle.numero)
     
     if not result:
         raise HTTPException(
