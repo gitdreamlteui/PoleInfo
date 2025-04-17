@@ -8,6 +8,8 @@ Dernière date de mise à jour : 02/04/2025
 
 from models.schemas import SalleResponse, SalleDelete, SalleCreate
 from core.auth import verify_token
+from core.security import verify_admin
+
 from models.salle import get_all_salles, get_salle_by_numero, remove_salle, create_salle
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
@@ -31,7 +33,7 @@ def get_salles():
 
 
 @router.delete("/", response_model=dict)
-def delete_salle(salle: SalleDelete, user_id: int = Depends(verify_token)):
+def delete_salle(salle: SalleDelete, user_id: int = Depends(verify_admin)):
     
     existing_salle = get_salle_by_numero(salle.numero)
     
@@ -52,7 +54,7 @@ def delete_salle(salle: SalleDelete, user_id: int = Depends(verify_token)):
     return {"message": f"Salle '{salle.numero}' supprimée avec succès"}
 
 @router.post("/", response_model=dict)
-def add_salle(salle: SalleCreate, user_id: int = Depends(verify_token)):
+def add_salle(salle: SalleCreate, user_id: int = Depends(verify_admin)):
     existing_salle = get_salle_by_numero(salle.numero)
     if existing_salle:
         raise HTTPException(

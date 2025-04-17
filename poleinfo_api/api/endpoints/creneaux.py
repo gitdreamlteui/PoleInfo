@@ -31,7 +31,7 @@ def get_creneaux():
     return creneaux
 
 @router.delete("/", response_model=dict)
-def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_token)):
+def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_admin)):
     print(f"Créneau récupéré : {creneau.heure_debut}")
 
     existing_creneau = get_creneau_by_heure(creneau.heure_debut)
@@ -53,7 +53,7 @@ def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_token))
     return {"message": "Créneau supprimé avec succès"}
 
 @router.post("/", response_model=dict)
-def add_creneau(creneau: CreneauCreate, user_id: int = Depends(verify_token)):
+def add_creneau(creneau: CreneauCreate, user_id: int = Depends(verify_admin)):
     existing_creneau = get_creneau_by_heure(creneau.heure_debut)
     if existing_creneau:
         raise HTTPException(

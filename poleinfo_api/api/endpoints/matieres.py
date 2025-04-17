@@ -8,6 +8,7 @@ Dernière date de mise à jour : 09/04/2025
 
 from models.schemas import MatiereResponse, MatiereDelete, MatiereCreate
 from core.auth import verify_token
+from core.security import verify_admin
 from models.matiere import get_all_matieres, remove_matiere, get_matiere_by_nom, create_matiere
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
@@ -29,7 +30,7 @@ def get_matieres():
     return matieres
 
 @router.delete("/", response_model=dict)
-def delete_matieres(matiere: MatiereDelete, user_id: int = Depends(verify_token)):
+def delete_matieres(matiere: MatiereDelete, user_id: int = Depends(verify_admin)):
     
     existing_matiere = get_matiere_by_nom(matiere.nom)
     
@@ -51,7 +52,7 @@ def delete_matieres(matiere: MatiereDelete, user_id: int = Depends(verify_token)
 
 
 @router.post("/", response_model=dict)
-def add_matiere(matiere: MatiereCreate, user_id: int = Depends(verify_token)):
+def add_matiere(matiere: MatiereCreate, user_id: int = Depends(verify_admin)):
     existing_matiere = get_matiere_by_nom(matiere.nom)
     if existing_matiere:
         raise HTTPException(
