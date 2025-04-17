@@ -176,8 +176,9 @@ $date_jour = $date_actuelle->format('d/m/Y');
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
                 <h2 class="text-xl font-semibold mb-4 text-primary">Gestion des Matières</h2>
-                <form class="space-y-4">
-                    <input type="text" placeholder="Nom de la matière" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                <form action="traitement-admin.php" method="POST" class="space-y-4">
+                    <input name="add_matiere"type="text" pattern="^[A-Za-zÀ-ÿ\- ]+$" placeholder="Nom de la matière" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <input type="hidden" name="action" value="ajouter_matiere">
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Matière</button>
                 </form>
                 <form class="mt-6 space-y-4" action="traitement-admin.php" method="POST">
@@ -200,8 +201,9 @@ $date_jour = $date_actuelle->format('d/m/Y');
             
             <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
                 <h2 class="text-xl font-semibold mb-4 text-primary">Gestion des Créneaux</h2>
-                <form class="space-y-4">
-                    <input type="text" placeholder="00:00" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                <form action="traitement-admin.php" method="POST" class="space-y-4">
+                    <input type="text" name="add_creneau" pattern="^([01][0-9]|2[0-3]):[0-5][0-9]$" placeholder="00:00" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <input type="hidden" name="action" value="ajouter_creneau">
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Créneau</button>
                 </form>
                 <form class="mt-6 space-y-4" action="traitement-admin.php" method="POST">
@@ -229,8 +231,9 @@ $date_jour = $date_actuelle->format('d/m/Y');
             
             <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
                 <h2 class="text-xl font-semibold mb-4 text-primary">Gestion des Classes</h2>
-                <form class="space-y-4">
-                    <input type="text" placeholder="Nom de la classe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                <form action="traitement-admin.php" method="POST" class="space-y-4">
+                    <input type="text" name="add_classe" pattern="^[A-Za-z0-9_-]+$" placeholder="Nom de la classe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <input type="hidden" name="action" value="ajouter_classe">
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Classe</button>
                 </form>
                 <form class="mt-6 space-y-4" action="traitement-admin.php" method="POST">
@@ -253,10 +256,11 @@ $date_jour = $date_actuelle->format('d/m/Y');
             
             <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
                 <h2 class="text-xl font-semibold mb-4 text-primary">Gestion des Salles</h2>
-                <form class="space-y-4">
-                    <input type="text" placeholder="Nom ou numéro de la salle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
-                    <input type="text" placeholder="Type de salle (TP-info, Cours, etc.)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
-                    <input type="number" placeholder="Capacité de la salle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                <form action="traitement-admin.php" method="POST" class="space-y-4">
+                    <input pattern="^[A-Za-z0-9]+$" name="add_salle1" type="text" placeholder="Nom ou numéro de la salle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <input pattern="^[A-Za-zÀ-ÿ\s\-$]+$" name="add_salle2" type="text" placeholder="Type de salle (TP-info, Cours, etc.)" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <input pattern="^[0-9]+$" name="add_salle3" type="number" placeholder="Capacité de la salle" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary" required>
+                    <input type="hidden" name="action" value="ajouter_salle">
                     <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Ajouter Salle</button>
                 </form>
                 <form class="mt-10 space-y-4" action="traitement-admin.php" method="POST">
