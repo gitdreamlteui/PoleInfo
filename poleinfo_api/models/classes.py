@@ -27,7 +27,7 @@ def remove_classe(numero: str) -> bool:
         
         classe_id = classe['id_classe_grp']
             
-        delete_query = "DELETE FROM classe WHERE id_classe = %s"
+        delete_query = "DELETE FROM classe WHERE id_classe_grp = %s"
         cursor.execute(delete_query, (classe_id,))
         
         return cursor.rowcount > 0
