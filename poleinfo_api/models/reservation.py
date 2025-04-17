@@ -150,15 +150,41 @@ def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
             u.prenom,
             GROUP_CONCAT(cl.nom SEPARATOR ', ') AS noms_classes
         FROM reservation r
-        LEFT JOIN salle s ON r.id_salle = s.id_salle
-        LEFT JOIN matiere m ON r.id_matiere = m.id_matiere
-        LEFT JOIN creneau c ON r.id_creneau = c.id_creneau
-        LEFT JOIN user u ON r.id_user = u.id_user
+        JOIN salle s ON r.id_salle = s.id_salle
+        JOIN matiere m ON r.id_matiere = m.id_matiere
+        JOIN creneau c ON r.id_creneau = c.id_creneau
+        JOIN user u ON r.id_user = u.id_user
         LEFT JOIN classe_reservation cr ON r.id_reservation = cr.id_reservation
         LEFT JOIN classe cl ON cr.id_classe_grp = cl.id_classe_grp
-        WHERE u.nom = %s
+        WHERE u.nom LIKE %s
         GROUP BY r.id_reservation, r.duree, r.date, r.info, s.numero, s.capacite, s.type, m.nom, c.heure_debut, u.nom, u.prenom
         ORDER BY r.date ASC, c.heure_debut ASC
         """
         cursor.execute(query, (prof,))
         return cursor.fetchall()
+
+def remove_reservation(user_id: int, date: str, numero_salle: str, heure_debut: str):
+    with get_db_cursor() as cursor:
+        try:
+            cursor.execute("""
+                SELECT r.id_reservation FROM reservation r
+                JOIN salle s ON r.id_salle = s.id_salle
+                JOIN creneau c ON r.id_creneau = c.id_creneau
+                WHERE r.id_user = %s AND r.date = %s AND s.numero = %s AND c.heure_debut = %s
+            """, (user_id, date, numero_salle, heure_debut))
+            
+            result = cursor.fetchone()
+            if not result:
+                return {"status": "error", "message": "Aucune réservation ne correspond à ces critères"}
+            
+            id_reservation = result['id_reservation']
+            
+            cursor.execute("""
+                DELETE FROM reservation 
+                WHERE id_reservation = %s
+            """, (id_reservation,))
+            
+            return {"status": "success", "message": "Réservation supprimée avec succès"}
+            
+        except Exception as e:
+            return {"status": "error", "message": f"Erreur lors de la suppression: {str(e)}"}

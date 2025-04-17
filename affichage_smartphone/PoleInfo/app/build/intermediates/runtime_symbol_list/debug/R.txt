@@ -3175,6 +3175,7 @@ int id closest 0x7f080077
 int id collapseActionView 0x7f080078
 int id compress 0x7f080079
 int id confirm_button 0x7f08007a
+int id connectionErrorText 0x7f0801f6
 int id constraint 0x7f08007b
 int id container 0x7f08007c
 int id content 0x7f08007d
@@ -3530,6 +3531,7 @@ int id tvDate 0x7f0801da
 int id tvHeureDebut 0x7f0801db
 int id tvInfo 0x7f0801dc
 int id tvMatiere 0x7f0801dd
+int id tvProfesseur 0x7f0801f7
 int id tvSalle 0x7f0801de
 int id unchecked 0x7f0801df
 int id uniform 0x7f0801e0

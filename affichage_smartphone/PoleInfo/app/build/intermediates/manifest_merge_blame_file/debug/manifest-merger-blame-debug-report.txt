@@ -48,8 +48,8 @@
 30-->[androidx.core:core:1.12.0] /Users/lucas/.gradle/caches/transforms-3/19bc0d4be43f634c83c1f61f81e082df/transformed/core-1.12.0/AndroidManifest.xml:28:18-86
 31        android:debuggable="true"
 32        android:extractNativeLibs="false"
-33        android:label="PoleInfo"
-33-->/Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:19:9-33
+33        android:label="Pôle Info"
+33-->/Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:19:9-34
 34        android:networkSecurityConfig="@xml/network_security_config"
 34-->/Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:18:9-69
 35        android:supportsRtl="true"

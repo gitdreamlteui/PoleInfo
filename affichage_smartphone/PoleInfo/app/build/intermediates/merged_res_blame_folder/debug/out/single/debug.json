@@ -1,9 +1,5 @@
 [
     {
-        "merged": "com.example.poleinfo.app-merged_res-31:/layout_activity_main.xml.flat",
-        "source": "com.example.poleinfo.app-main-33:/layout/activity_main.xml"
-    },
-    {
         "merged": "com.example.poleinfo.app-merged_res-31:/layout_item_reservation.xml.flat",
         "source": "com.example.poleinfo.app-main-33:/layout/item_reservation.xml"
     },

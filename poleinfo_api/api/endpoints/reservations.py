@@ -9,14 +9,14 @@ Description : ce programme permet de créer toutes les routes relatives à la ge
 des réservations de salles, avec des fonctions pour créer et consulter les réservations.
 """
 
-from models.schemas import ReservationCreate, ReservationResponse
+from models.schemas import ReservationCreate, ReservationResponse, ReservationDelete
 from core.auth import verify_token
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
 from datetime import date
 
-from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation, get_reservations_by_prof_increase
+from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation, get_reservations_by_prof_increase, remove_reservation
 from models.user import get_user_by_id
 router = APIRouter(
     tags=["reservations"]
@@ -60,7 +60,7 @@ def get_reservations(salle: str = Query(None, description="Numéro de la salle")
     if salle is not None and croissant == True:
         reservations = get_reservations_by_salle_increase(salle)
     elif prof is not None and croissant == True:
-        reservations = get_reservations_by_prof_increase(salle)
+        reservations = get_reservations_by_prof_increase(prof)
     else:
         reservations = get_all_reservations()
     
@@ -70,3 +70,28 @@ def get_reservations(salle: str = Query(None, description="Numéro de la salle")
             detail="Aucune réservation trouvée"
         )
     return reservations
+
+
+
+@router.delete("/", response_model=dict)
+def delete_reservation(date: date,
+                    numero_salle: str,
+                    heure_debut: str,
+                    user_id: int = Depends(verify_token)):
+    
+    result = remove_reservation(
+        user_id,
+        date.isoformat(),
+        numero_salle,
+        heure_debut)
+    
+    if result.get("status") == "success":
+        return {
+            "message": "Réservation supprimée avec succès"
+        }
+    else:
+        raise HTTPException(
+            status_code=400, 
+            detail=result.get("message", "Erreur lors de la suppression")
+        )
+
