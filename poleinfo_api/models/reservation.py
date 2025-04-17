@@ -132,3 +132,33 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
         
         except Exception as e:
             return {"status": "error", "message": f"Erreur lors de la création de la réservation: {str(e)}"}
+
+def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
+    """Récupère toutes les réservations pour un professeur spécifique par ordre croissant"""
+    with get_db_cursor() as cursor:
+        query = """SELECT 
+            r.id_reservation, 
+            r.duree, 
+            r.date, 
+            r.info,
+            s.numero AS numero_salle,
+            s.capacite AS capacite_salle,
+            s.type AS type_salle,
+            m.nom AS nom_matiere,
+            c.heure_debut,
+            u.nom AS nom_user,
+            u.prenom,
+            GROUP_CONCAT(cl.nom SEPARATOR ', ') AS noms_classes
+        FROM reservation r
+        LEFT JOIN salle s ON r.id_salle = s.id_salle
+        LEFT JOIN matiere m ON r.id_matiere = m.id_matiere
+        LEFT JOIN creneau c ON r.id_creneau = c.id_creneau
+        LEFT JOIN user u ON r.id_user = u.id_user
+        LEFT JOIN classe_reservation cr ON r.id_reservation = cr.id_reservation
+        LEFT JOIN classe cl ON cr.id_classe_grp = cl.id_classe_grp
+        WHERE u.nom = %s
+        GROUP BY r.id_reservation, r.duree, r.date, r.info, s.numero, s.capacite, s.type, m.nom, c.heure_debut, u.nom, u.prenom
+        ORDER BY r.date ASC, c.heure_debut ASC
+        """
+        cursor.execute(query, (prof,))
+        return cursor.fetchall()
