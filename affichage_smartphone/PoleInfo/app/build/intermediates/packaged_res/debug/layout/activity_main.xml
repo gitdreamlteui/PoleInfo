@@ -7,6 +7,22 @@
     android:background="@color/custom_blue"
     tools:context=".MainActivity">
 
+    <!-- TextView pour afficher l'erreur API -->
+    <TextView
+        android:id="@+id/connectionErrorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="L'API n'est pas joignable, veuillez vous connecter au réseau LP2I"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <!-- RecyclerView pour afficher les réservations -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
