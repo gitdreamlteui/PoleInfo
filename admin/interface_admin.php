@@ -219,9 +219,9 @@ $date_jour = $date_actuelle->format('d/m/Y');
                                 $interval = new DateInterval($item['heure_debut']);
                                 $heures = $interval->h;
                                 $minutes = $interval->i;
-                                $creneau += sprintf("%02d:%02d", $heures, $minutes);
+                                $creneau[]= sprintf("%02d:%02d", $heures, $minutes);
                             }
-                            $creneau=sort($creneau);
+                            sort($creneau);
                             foreach($creneau as $creneau){
                                 echo "<option value='$creneau'>$creneau</option>";
                             }
