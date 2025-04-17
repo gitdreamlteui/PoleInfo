@@ -31,3 +31,28 @@ def remove_matiere(nom: str) -> bool:
         cursor.execute(delete_query, (matiere_id,))
         
         return cursor.rowcount > 0
+    
+
+def create_matiere(nom: str):
+    """Crée une nouvelle matière dans la base de données  
+    Returns:
+        int: ID de la matière créé
+    """
+    
+    with get_db_cursor() as cursor:
+        query = """
+            INSERT INTO matiere nom
+            VALUES (%s)
+        """
+        values = (nom)
+        
+        cursor.execute(query, values)
+        
+        cursor.execute("SELECT LAST_INSERT_ID() as id_matiere")
+        result = cursor.fetchone()
+        
+        if result and 'id_matiere' in result:
+            user_id = result['id_matiere']
+            return user_id
+        else:
+            raise ValueError("Impossible de récupérer l'ID de la matière créé")
