@@ -119,7 +119,7 @@ function ajouterMatiere($data){
     $jsonData = json_encode($matiere);
     
     // Initialiser cURL
-    $ch = curl_init($api_url_user);
+    $ch = curl_init($api_url_matiere);
     
     // Configuration de la requête cURL
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
