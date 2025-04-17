@@ -1,0 +1,21 @@
+R_DEF: Internal format may change without notice
+local
+color black
+color custom_action_bar_color
+color custom_blue
+color purple_500
+color purple_700
+color teal_200
+color white
+id recyclerView
+id tvDate
+id tvHeureDebut
+id tvInfo
+id tvMatiere
+id tvSalle
+layout activity_main
+layout item_reservation
+string app_name
+style AppActionBar
+style AppTheme
+xml network_security_config

@@ -6,9 +6,9 @@ Auteur : Elias GAUTHIER
 Dernière date de mise à jour : 09/04/2025
 """
 
-from models.schemas import ClasseResponse, ClasseDelete
+from models.schemas import ClasseResponse, ClasseDelete, ClasseCreate
 from core.auth import verify_token
-from models.classes import get_all_classes, remove_classe, get_classe_by_nom
+from models.classes import get_all_classes, remove_classe, get_classe_by_nom, create_classe
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -49,3 +49,18 @@ def delete_classes(classe: ClasseDelete, user_id: int = Depends(verify_token)):
         )
     
     return {"message": f"Classe '{classe.nom}' supprimée avec succès"}
+
+@router.post("/", response_model=dict)
+def add_classe(classe: ClasseCreate, user_id: int = Depends(verify_token)):
+    existing_classe = get_classe_by_nom(classe.nom)
+    if existing_classe:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Une classe avec ce nom existe déjà"
+        )
+    
+    classe_id = create_classe(
+        nom=classe.nom
+    )
+    
+    return {"message": "Classe créé avec succès", "id": classe_id}

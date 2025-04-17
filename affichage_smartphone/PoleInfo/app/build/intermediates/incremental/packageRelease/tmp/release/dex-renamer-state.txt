@@ -1,0 +1,4 @@
+#Thu Apr 17 09:33:48 CEST 2025
+base.0=/Users/lucas/AndroidStudioProjects/PoleInfo/app/build/intermediates/dex/release/mergeDexRelease/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
