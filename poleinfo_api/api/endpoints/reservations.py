@@ -3,7 +3,7 @@ API Pôle Info
 --------------
 
 Auteur : Elias GAUTHIER
-Dernière date de mise à jour : 28/03/2025
+Dernière date de mise à jour : 17/04/2025
 
 Description : ce programme permet de créer toutes les routes relatives à la gestion
 des réservations de salles, avec des fonctions pour créer et consulter les réservations.
@@ -18,12 +18,31 @@ from datetime import date
 
 from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation, get_reservations_by_prof_increase, remove_reservation
 from models.user import get_user_by_id
+
+# Définition du router avec le tag pour la documentation Swagger
 router = APIRouter(
     tags=["reservations"]
 )
 
 @router.post("/", response_model=dict)
 def create_reservation(reservation: ReservationCreate, user_id: int = Depends(verify_token)):
+    """
+    Crée une nouvelle réservation de salle.
+    
+    L'utilisateur doit être authentifié pour effectuer cette opération.
+    
+    Args:
+        reservation (ReservationCreate): Données de la réservation à créer
+        user_id (int): ID de l'utilisateur authentifié
+        
+    Returns:
+        dict: Message de confirmation et ID de la réservation créée
+        
+    Raises:
+        HTTPException: 
+            - Erreur 404 si l'utilisateur n'existe pas
+            - Erreur 400 si la réservation ne peut pas être créée
+    """
     user = get_user_by_id(user_id)
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
@@ -56,7 +75,20 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
 def get_reservations(salle: str = Query(None, description="Numéro de la salle"),
                      croissant: bool = Query(None, description="Retourne les reservations dans l'ordre croissant"),
                      prof: str = Query(None, description="Retourne les réservations du professeur concerné par nom")):
+    """
+    Récupère la liste des réservations avec possibilité de filtrage.
     
+    Args:
+        salle (str, optional): Filtrer par numéro de salle
+        croissant (bool, optional): Trier les résultats par ordre croissant
+        prof (str, optional): Filtrer par nom de professeur
+        
+    Returns:
+        List[ReservationResponse]: Liste des réservations correspondant aux critères
+        
+    Raises:
+        HTTPException: Erreur 410 si aucune réservation n'est trouvée
+    """
     if salle is not None and croissant == True:
         reservations = get_reservations_by_salle_increase(salle)
     elif prof is not None and croissant == True:
@@ -76,6 +108,16 @@ def delete_reservation(reservation: ReservationDelete, user_id: int = Depends(ve
     """
     Supprime une réservation en fonction des critères spécifiés dans le corps de la requête.
     Seul l'utilisateur qui a créé la réservation ou un admin peut la supprimer.
+    
+    Args:
+        reservation (ReservationDelete): Critères de la réservation à supprimer
+        user_id (int): ID de l'utilisateur authentifié
+        
+    Returns:
+        dict: Message confirmant la suppression
+        
+    Raises:
+        HTTPException: Erreur 400 si la suppression échoue
     """
     result = remove_reservation(
         user_id,
