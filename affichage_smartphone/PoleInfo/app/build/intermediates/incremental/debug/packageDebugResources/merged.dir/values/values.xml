@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#000000</color>
+    <color name="custom_action_bar_color">#104887</color>
+    <color name="custom_blue">#104887</color>
+    <color name="purple_500">#6200EE</color>
+    <color name="purple_700">#3700B3</color>
+    <color name="teal_200">#03DAC5</color>
+    <color name="white">#FFFFFF</color>
+    <string name="app_name">PoleInfo</string>
+    <style name="AppActionBar" parent="Widget.AppCompat.ActionBar">
+        <item name="background">@color/custom_action_bar_color</item>
+    </style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/custom_action_bar_color</item>
+        <item name="colorPrimaryDark">@color/custom_action_bar_color</item>
+        <item name="colorAccent">@color/white</item>
+    </style>
+</resources>

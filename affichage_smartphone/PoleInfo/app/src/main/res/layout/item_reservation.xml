@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="4dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginTop="0dp"
+    android:layout_marginBottom="8dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvHeureDebut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Heure de début" />
+
+        <TextView
+            android:id="@+id/tvMatiere"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Matière" />
+
+        <TextView
+            android:id="@+id/tvSalle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Salle" />
+
+        <TextView
+            android:id="@+id/tvInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Info" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
