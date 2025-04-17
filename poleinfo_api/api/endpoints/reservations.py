@@ -16,7 +16,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
 from datetime import date
 
-from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation
+from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation, get_reservations_by_prof_increase
 from models.user import get_user_by_id
 router = APIRouter(
     tags=["reservations"]
@@ -54,10 +54,13 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
 
 @router.get("/", response_model=List[ReservationResponse])
 def get_reservations(salle: str = Query(None, description="Numéro de la salle"),
-                     croissant: bool = Query(None, description="Retourne les reservations dans l'ordre croissant")):
+                     croissant: bool = Query(None, description="Retourne les reservations dans l'ordre croissant"),
+                     prof: str = Query(None, description="Retourne les réservations du professeur concerné par nom")):
     
     if salle is not None and croissant == True:
         reservations = get_reservations_by_salle_increase(salle)
+    elif prof is not None and croissant == True:
+        reservations = get_reservations_by_prof_increase(salle)
     else:
         reservations = get_all_reservations()
     
