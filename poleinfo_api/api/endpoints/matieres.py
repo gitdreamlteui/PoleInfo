@@ -8,7 +8,7 @@ Dernière date de mise à jour : 09/04/2025
 
 from models.schemas import MatiereResponse, MatiereDelete
 from core.auth import verify_token
-from models.matiere import get_all_matieres, delete_matiere, get_matiere_by_nom
+from models.matiere import get_all_matieres, remove_matiere, get_matiere_by_nom
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -39,7 +39,7 @@ def delete_matieres(matiere: MatiereDelete, user_id: int = Depends(verify_token)
             detail="Matière non trouvée"
         )
     
-    result = delete_matiere(matiere.nom)
+    result = remove_matiere(matiere.nom)
     
     if not result:
         raise HTTPException(

@@ -9,7 +9,7 @@ Dernière date de mise à jour : 09/04/2025
 from models.schemas import CreneauResponse, CreneauDelete, CreneauCreate
 from core.auth import verify_token
 from core.security import verify_admin
-from models.creneau import get_all_creneaux, get_creneau_by_heure, delete_creneau, create_creneau
+from models.creneau import get_all_creneaux, get_creneau_by_heure, remove_creneau, create_creneau
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
@@ -31,7 +31,7 @@ def get_creneaux():
     return creneaux
 
 @router.delete("/", response_model=dict)
-def delete_creneau_endpoint(creneau: CreneauDelete, user_id: int = Depends(verify_token)):
+def delete_creneau(creneau: CreneauDelete, user_id: int = Depends(verify_token)):
     print(f"Créneau récupéré : {creneau.heure_debut}")
 
     existing_creneau = get_creneau_by_heure(creneau.heure_debut)
@@ -42,7 +42,7 @@ def delete_creneau_endpoint(creneau: CreneauDelete, user_id: int = Depends(verif
             detail="Créneau non trouvé"
         )
     
-    result = delete_creneau(creneau.heure_debut)
+    result = remove_creneau(creneau.heure_debut)
     
     if not result:
         raise HTTPException(
