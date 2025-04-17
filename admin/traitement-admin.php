@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         supprimerClasse($_POST);
     }
 }
-    echo $action;
+
 function verif_HTTP($code){
     if ($code === 201 || $code === 200) {
         $response_data = json_decode($response, true);
@@ -139,7 +139,6 @@ function supprimerUtilisateur($data){
 
 function supprimerClasse($data){
     global $api_url_classe, $token;
-    echo $token;
     $nom = htmlspecialchars($data['sup_classe']);
     $classe=[
         "nom"=>$nom
