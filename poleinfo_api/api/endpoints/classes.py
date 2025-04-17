@@ -3,7 +3,7 @@ API Pôle Info
 --------------
 
 Auteur : Elias GAUTHIER
-Dernière date de mise à jour : 09/04/2025
+Dernière date de mise à jour : 17/04/2025
 
 Description : Gestion des routes API relatives aux opérations sur les classes
 (récupération, création et suppression).
