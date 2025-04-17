@@ -60,7 +60,7 @@ def get_reservations(salle: str = Query(None, description="Numéro de la salle")
     if salle is not None and croissant == True:
         reservations = get_reservations_by_salle_increase(salle)
     elif prof is not None and croissant == True:
-        reservations = get_reservations_by_prof_increase(salle)
+        reservations = get_reservations_by_prof_increase(prof)
     else:
         reservations = get_all_reservations()
     
