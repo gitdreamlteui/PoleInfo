@@ -1,17 +1,5 @@
 <?php
 
-session_start();
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
-    header("Location: login.php");
-    exit;
-}
-
-// Vérifier si un ID de réservation a été fourni
-if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-    $_SESSION['error_message'] = "ID de réservation non valide";
-    header("Location: dashboard.php");
-    exit;
-}
 
 $reservation_id = intval($_GET['id']);
 
