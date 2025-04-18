@@ -16,7 +16,7 @@ from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
 from datetime import date
 
-from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation, get_reservations_by_prof_increase, remove_reservation
+from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation, get_reservations_by_prof_increase, remove_reservation, remove_reservation_by_id
 from models.user import get_user_by_id
 
 # Définition du router avec le tag pour la documentation Swagger
@@ -106,25 +106,35 @@ def get_reservations(salle: str = Query(None, description="Numéro de la salle")
 @router.delete("/", response_model=dict)
 def delete_reservation(reservation: ReservationDelete, user_id: int = Depends(verify_token)):
     """
-    Supprime une réservation en fonction des critères spécifiés dans le corps de la requête.
+    Supprime une réservation soit par son ID, soit par les critères date/salle/heure.
     Seul l'utilisateur qui a créé la réservation ou un admin peut la supprimer.
     
     Args:
-        reservation (ReservationDelete): Critères de la réservation à supprimer
+        reservation (ReservationDelete): ID de la réservation ou critères de recherche
         user_id (int): ID de l'utilisateur authentifié
         
     Returns:
         dict: Message confirmant la suppression
         
     Raises:
-        HTTPException: Erreur 400 si la suppression échoue
+        HTTPException: Erreur 400 si la suppression échoue ou 422 si les paramètres sont insuffisants
     """
-    result = remove_reservation(
-        user_id,
-        reservation.date.isoformat(),
-        reservation.numero_salle,
-        reservation.heure_debut
-    )
+    # Suppression par ID
+    if reservation.id_reservation is not None:
+        result = remove_reservation_by_id(user_id, reservation.id_reservation)
+
+    elif all([reservation.date, reservation.numero_salle, reservation.heure_debut]):
+        result = remove_reservation(
+            user_id,
+            reservation.date.isoformat(),
+            reservation.numero_salle,
+            reservation.heure_debut
+        )
+    else:
+        raise HTTPException(
+            status_code=422, 
+            detail="Paramètres insuffisants. Fournir soit id_reservation, soit date + numero_salle + heure_debut"
+        )
     
     if result.get("status") == "success":
         return {
