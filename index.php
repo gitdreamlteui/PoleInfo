@@ -124,6 +124,10 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         // Traitement heure fin
                         $heuresfin = floor($heureFloat + $item['duree']);
                         $minutesfin = ($heureFloat + $item['duree'] - $heuresfin) * 60;
+                        if(($heures<10&&$heuresfin>10)||($heures<15&&$heuresfin>15))
+                        {
+                            $minutesfin+=15;
+                        }
                         $heurefinString = sprintf("%02d:%02d", $heuresfin, $minutesfin);
                         
                         // Traitement de la date
