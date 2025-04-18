@@ -51,7 +51,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     user_name = user["nom"]
 
     token = create_access_token(user["id_user"])
-    return {"access_token": token, "token_type": "bearer", "user_type": type_user, "user_name": user_name}
+    return {"access_token": token, "token_type": "bearer", "user_type": type_user, "user_name": user_name, "user_login" : user_login}
 
 
 @router.get("/verify-token")
