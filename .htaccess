@@ -1,8 +1,8 @@
-#Désactiver l'indexation des dossiers
+# Désactiver l'indexation des dossiers
 Options -Indexes
 
-#Activer le moteur de réécriture
+# Activer le moteur de réécriture
 RewriteEngine On 
 
-#Redirection
+# Redirection
 RewriteRule ^(.)$ /index.php [L,R=301]
