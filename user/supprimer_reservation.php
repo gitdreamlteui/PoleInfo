@@ -1,10 +1,5 @@
 <?php
 
-if (!isset($_SESSION['token'])) {
-    header("Location: /login.php?error=unauthorized");
-    exit;
-}
-
 session_start();
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['username'])) {
     header("Location: login.php");
