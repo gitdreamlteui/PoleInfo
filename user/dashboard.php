@@ -259,7 +259,7 @@ elseif ($type == 0) {
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 overflow-hidden">
             <div class="bg-primary text-white p-3 font-semibold text-lg rounded-t-lg flex items-center">
                 <i class="fas fa-calendar-alt mr-2"></i>
-                Réservations à venir
+                Mes réservations
             </div>
             
             <div class="p-4">
