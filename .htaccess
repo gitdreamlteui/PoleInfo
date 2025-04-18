@@ -3,6 +3,3 @@ Options -Indexes
 
 # Activer le moteur de réécriture
 RewriteEngine On 
-
-# Redirection
-RewriteRule ^(.)$ /index.php [L,R=301]
