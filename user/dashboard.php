@@ -88,7 +88,6 @@ if ($type == 1) {
 elseif ($type == 0) {
     $reservations = getReservations($username);
 }
-$reservations = getReservations();
 
 ?>
 
