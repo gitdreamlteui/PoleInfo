@@ -32,14 +32,15 @@ class ReservationAdapter(
         // Heure de début : conversion de "PT8H10M" en "8h10"
         val heureRegex = Regex("""PT(\d+)H(\d+)?M?""")
         val match = heureRegex.matchEntire(reservation.heure_debut)
-        val heure = match?.groupValues?.getOrNull(1)?.toIntOrNull() ?:  0
+        val heure = match?.groupValues?.getOrNull(1)?.toIntOrNull() ?: 0
         val minute = match?.groupValues?.getOrNull(2)?.toIntOrNull() ?: 0
         val heureDebutText = String.format("%02dh%02d", heure, minute)
 
         // Calcul de l’heure de fin
-        val dureeEnMinutes = (reservation.duree * 60).toInt()
-        val heureFin = LocalTime.of(heure, minute).plusMinutes(dureeEnMinutes.toLong())
-        val heureFinText = heureFin.format(DateTimeFormatter.ofPattern("HH'h'mm"))
+        val dureeEnMinutes = Math.round(reservation.duree * 60).toLong() // Arrondir la durée en minutes
+        val debut = LocalTime.of(heure, minute)
+        val fin = debut.plusMinutes(dureeEnMinutes)
+        val heureFinText = fin.format(DateTimeFormatter.ofPattern("HH'h'mm"))
 
         holder.tvDate.text = formattedDate
         holder.tvHeureDebut.text = "Début : $heureDebutText - Fin : $heureFinText"
