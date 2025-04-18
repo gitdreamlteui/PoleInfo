@@ -4,6 +4,7 @@ require_once 'utils/recuperer_creneaux.php';
 require_once 'utils/recuperer_salles.php';
 require_once 'utils/recuperer_matieres.php';
 require_once 'utils/recuperer_classes.php';
+require_once 'utils/recuperer_reservation.php';
 
 session_start();
 if (!isset($_SESSION['token'])) {
@@ -13,6 +14,8 @@ if (!isset($_SESSION['token'])) {
 
 $token = $_SESSION['token'];
 $username = $_SESSION["username"];
+$login = $_SESSION["login"];
+$type = $_SESSION['type_compte'];
 
 $api_url_verify = "http://192.168.8.152:8000/verify-token/";
 $api_url_reservations = "http://192.168.8.152:8000/reservations/";
@@ -73,6 +76,13 @@ $creneaux = getCreneaux();
 $salles = getSalles();
 $matieres = getMatieres();
 $classes = getClasses();
+
+if ($type == 1) {
+    $reservations = getReservations();
+}
+elseif ($type = 0) {
+    $reservations = getReservations($username);
+}
 
 ?>
 
@@ -224,10 +234,10 @@ $classes = getClasses();
                                 <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Durée</label>
                                 <select id="duration" name="duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
                                     <option value="">Sélectionnez une durée</option>
-                                    <option value="0.83">50 minutes (1 heure)</option>
-                                    <option value="1.67">1 heure 40 (2 heures)</option>
-                                    <option value="2.5">2 heures 30 (3 heures)</option>
-                                    <option value="3.33">3 heures 20 (4 heures)</option>
+                                    <option value="0.84">50 minutes</option>
+                                    <option value="1.67">1 heure 40</option>
+                                    <option value="2.5">2 heures 30</option>
+                                    <option value="3.33">3 heures 20</option>
                                 </select>
                             </div>
                         </div>
@@ -244,6 +254,105 @@ $classes = getClasses();
 
             </div>
         </div>
+
+        <!-- Réservations existantes -->
+        <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 overflow-hidden">
+            <div class="bg-primary text-white p-3 font-semibold text-lg rounded-t-lg flex items-center">
+                <i class="fas fa-calendar-alt mr-2"></i>
+                Réservations à venir
+            </div>
+            
+            <div class="p-4">
+                <?php if (empty($reservations)): ?>
+                <div class="text-center py-8 text-gray-500">
+                    <i class="fas fa-calendar-times text-4xl mb-3"></i>
+                    <p>Aucune réservation n'a été trouvée.</p>
+                </div>
+                <?php else: ?>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Horaire</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Salle</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Matière</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Classe(s)</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Professeur</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <?php foreach ($reservations as $reservation): 
+                                // Convertir l'heure de début en format lisible
+                                $heure_debut = preg_replace('/^PT(\d+)H(?:(\d+)M)?$/', '$1:$2', $reservation['heure_debut']);
+                                $heure_debut = str_replace(':','h',$heure_debut);
+                                if (substr($heure_debut, -1) === 'h') $heure_debut .= '00';
+                            ?>
+                            <tr class="hover:bg-primary-light transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <?php echo date('d/m/Y', strtotime($reservation['date'])); ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?php echo $heure_debut; ?> (<?php echo number_format($reservation['duree'], 2); ?>h)
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-md">
+                                        <?php echo $reservation['numero_salle']; ?>
+                                    </span>
+                                    <span class="text-xs text-gray-500 block mt-1"><?php echo $reservation['type_salle']; ?></span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?php echo $reservation['nom_matiere']; ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?php 
+                                        $classes = explode(', ', $reservation['noms_classes']);
+                                        foreach ($classes as $classe) {
+                                            echo "<span class='inline-block px-2 py-1 bg-green-100 text-green-800 rounded-md mr-1 mb-1'>$classe</span>";
+                                        }
+                                    ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    <?php echo $reservation['prenom'] . ' ' . $reservation['nom_user']; ?>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <button onclick="toggleDetails('details-<?php echo $reservation['id_reservation']; ?>')" class="text-primary hover:text-blue-800 mr-3">
+                                        <i class="fas fa-info-circle"></i>
+                                    </button>
+                                    <?php if ($reservation['nom_user'] === $username): ?>
+                                    <a href="modifier_reservation.php?id=<?php echo $reservation['id_reservation']; ?>" class="text-indigo-600 hover:text-indigo-800 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="supprimer_reservation.php?id=<?php echo $reservation['id_reservation']; ?>" class="text-red-600 hover:text-red-800" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?')">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                            <tr id="details-<?php echo $reservation['id_reservation']; ?>" class="hidden bg-gray-50">
+                                <td colspan="7" class="px-6 py-4 text-sm text-gray-500">
+                                    <div class="flex items-start">
+                                        <div class="flex-1">
+                                            <div class="font-medium text-gray-700 mb-1">Informations supplémentaires :</div>
+                                            <p><?php echo !empty($reservation['info']) ? nl2br(htmlspecialchars($reservation['info'])) : 'Aucune information supplémentaire'; ?></p>
+                                        </div>
+                                        <div class="ml-8">
+                                            <div class="font-medium text-gray-700 mb-1">Détails de la salle :</div>
+                                            <p>Capacité : <?php echo $reservation['capacite_salle']; ?> personnes</p>
+                                            <p>Type : <?php echo $reservation['type_salle']; ?></p>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
         <!-- Footer -->
         <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
             © 2025 Système d'information BTS - Tous droits réservés
