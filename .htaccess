@@ -1,8 +1,10 @@
-# Désactiver l'indexation des dossiers
+# Désactiver l'indexation automatique
 Options -Indexes
 
-# Activer le moteur de réécriture
-RewriteEngine On 
+# Activer mod_rewrite
+RewriteEngine On
 
-# Intercepter les erreurs 403 (ex : dossier sans index) et rediriger vers index.php
-ErrorDocument 403 /index.php
+# Si l'erreur est 403 (souvent causée par Options -Indexes)
+# Rediriger vers index.php (redirection visible)
+RewriteCond %{ENV:REDIRECT_STATUS} =403
+RewriteRule ^.*$ /index.php [R=302,L]
