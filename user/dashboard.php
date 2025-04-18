@@ -13,8 +13,8 @@ if (!isset($_SESSION['token'])) {
 }
 
 $token = $_SESSION['token'];
-$username = $_SESSION["username"];
-$login = $_SESSION["login"];
+$username = $_SESSION['username'];
+$login = $_SESSION['login'];
 $type = $_SESSION['type_compte'];
 
 $api_url_verify = "http://192.168.8.152:8000/verify-token/";
