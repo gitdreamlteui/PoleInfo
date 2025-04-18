@@ -80,7 +80,7 @@ $classes = getClasses();
 if ($type == 1) {
     $reservations = getReservations();
 }
-elseif ($type = 0) {
+elseif ($type == 0) {
     $reservations = getReservations($username);
 }
 
