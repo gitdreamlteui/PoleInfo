@@ -36,6 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['type_compte'] = $token_data['user_type'];
             $_SESSION['login'] = $token_data['user_login'];
             $_SESSION['username'] = $token_data['user_name'];
+            echo  $_SESSION['username'];
 
             
             // Redirection après le stockage du token
