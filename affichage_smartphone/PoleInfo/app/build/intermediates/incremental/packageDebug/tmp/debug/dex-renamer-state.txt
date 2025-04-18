@@ -1,4 +1,4 @@
-#Thu Apr 17 13:46:15 CEST 2025
+#Fri Apr 18 09:52:44 CEST 2025
 base.0=/Users/lucas/AndroidStudioProjects/PoleInfo/app/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
 base.1=/Users/lucas/AndroidStudioProjects/PoleInfo/app/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
 base.2=/Users/lucas/AndroidStudioProjects/PoleInfo/app/build/intermediates/dex/debug/mergeProjectDexDebug/8/classes.dex
