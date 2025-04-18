@@ -188,3 +188,17 @@ def remove_reservation(user_id: int, date: str, numero_salle: str, heure_debut: 
             
         except Exception as e:
             return {"status": "error", "message": f"Erreur lors de la suppression: {str(e)}"}
+        
+
+def remove_reservation_by_id(user_id: int, id_reservation: int):
+    with get_db_cursor() as cursor:
+        try:
+            cursor.execute("""
+                DELETE FROM reservation 
+                WHERE id_reservation = %s
+            """, (id_reservation,))
+            
+            return {"status": "success", "message": "Réservation supprimée avec succès"}
+            
+        except Exception as e:
+            return {"status": "error", "message": f"Erreur lors de la suppression: {str(e)}"}
