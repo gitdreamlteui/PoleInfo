@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . '/../../config.php';
+
 function getSalles() {
     $salles = [];
     
-    $get_salles = "http://192.168.8.152:8000/salles/";
+    $get_salles = getApiUrl('/salles/');
     $reponse_salles = file_get_contents($get_salles);
     $data_salles = json_decode($reponse_salles, true);
     

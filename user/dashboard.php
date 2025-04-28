@@ -1,5 +1,6 @@
 <?php
 // DASHBOARD.PHP
+require_once __DIR__ . '/../config.php';
 require_once 'utils/recuperer_creneaux.php';
 require_once 'utils/recuperer_salles.php';
 require_once 'utils/recuperer_matieres.php';
@@ -8,7 +9,7 @@ require_once 'utils/recuperer_reservation.php';
 
 session_start();
 if (!isset($_SESSION['token'])) {
-    header("Location: http://192.168.8.152/interface_login.php?error=expired");
+    header("Location: " . getWebUrl('interface_login.php?error=expired'));
     exit;
 }
 
@@ -17,9 +18,8 @@ $username = $_SESSION['username'];
 $login = $_SESSION['login'];
 $type = $_SESSION['type_compte'];
 
-$api_url_verify = "http://192.168.8.152:8000/verify-token/";
-$api_url_reservations = "http://192.168.8.152:8000/reservations/";
-
+$api_url_verify = getApiUrl('/verify-token/');
+$api_url_reservations = getApiUrl('/reservations/');
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -37,7 +37,7 @@ curl_close($ch);
 if ($http_code != 200 || !$response) {
     error_log("Erreur de vérification du token : HTTP $http_code - $curl_error");
     session_destroy();
-    header("Location: http://192.168.8.152/interface_login.php?error=expired");
+    header("Location: " . getWebUrl('interface_login.php?error=expired'));
     exit;
 }
 
@@ -51,6 +51,7 @@ if (isset($_SESSION['info_message'])) {
     $success_message = $_SESSION['info_message'];
     unset($_SESSION['info_message']);
 }
+
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url_reservations);
@@ -68,7 +69,7 @@ $date_actuelle = new DateTime();
 $heure_actuelle = $date_actuelle->format('H:i');
 $date_jour = $date_actuelle->format('d/m/Y');
 
-$request_reservation = "http://192.168.8.152:8000/reservations/?croissant=true";
+$request_reservation = getApiUrl('/reservations/?croissant=true');
 $response_reservation = file_get_contents($request_reservation);
 $data = json_decode($response_reservation, true);
 
@@ -136,11 +137,25 @@ elseif ($type == 0) {
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 py-6 mt-16">
-        <!-- Page Header -->
-        <div class="mb-6">
+    <!-- Page Header -->
+    <div class="mb-6">
+        <a href="../index.php">
+            <button class="bg-gray-200 text-gray-800 font-semibold py-2 px-5 rounded-md hover:bg-gray-300 transition-colors flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Retour au menu principal
+            </button>
+        </a>
+    </div>
+
+    <div class="flex items-center justify-between mb-6">
+        <div>
             <h1 class="text-2xl font-bold text-gray-800">Tableau de bord</h1>
             <p class="text-gray-600">Gérez vos réservations de salles et consultez le planning.</p>
         </div>
+        <div>
+            <img src="../logo.png" alt="Logo BTS" class="h-24 w-auto">
+        </div>
+    </div>
 
         <!-- Date and Time Display -->
         <div class="bg-white p-3 mb-6 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center">
@@ -321,7 +336,7 @@ elseif ($type == 0) {
                                         <i class="fas fa-info-circle"></i>
                                     </button>
                                     <?php if ($reservation['nom_user'] === $username): ?>
-                                    <a href="modifier_reservation.php?id=<?php echo $reservation['id_reservation']; ?>" class="text-indigo-600 hover:text-indigo-800 mr-3">
+                                    <a href="edit.php?id=<?php echo $reservation['id_reservation']; ?>" class="text-indigo-600 hover:text-indigo-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     <a href="supprimer_reservation.php?id=<?php echo $reservation['id_reservation']; ?>" class="text-red-600 hover:text-red-800" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?')">
@@ -329,6 +344,7 @@ elseif ($type == 0) {
                                     </a>
                                     <?php endif; ?>
                                 </td>
+                                
                             </tr>
                             <tr id="details-<?php echo $reservation['id_reservation']; ?>" class="hidden bg-gray-50">
                                 <td colspan="7" class="px-6 py-4 text-sm text-gray-500">

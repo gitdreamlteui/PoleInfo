@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . '/../../config.php';
+
 function getMatieres() {
     $matieres = [];
     
-    $get_matieres = "http://192.168.8.152:8000/matieres/";
+    $get_matieres = getApiUrl('/matieres/');
     $reponse_matieres = file_get_contents($get_matieres);
     $data_matiere = json_decode($reponse_matieres, true);
     

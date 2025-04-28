@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . '/../../config.php';
+
 function getReservations($nomProf = null) {
     $reservations = [];
     
-    $get_reservation = "http://192.168.8.152:8000/reservations/?croissant=true";
+    $get_reservation = getApiUrl('/reservations/?croissant=true');
     
     if (!empty($nomProf)) {
         $get_reservation .= "&prof=" . urlencode($nomProf);

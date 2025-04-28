@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . '/../../config.php';
 function getClasses() {
     $classes = [];
     
-    $get_classe = "http://192.168.8.152:8000/classes/";
+    $get_classe = getApiUrl('/classes/');
     $reponse_classe = file_get_contents($get_classe);
     $data_classe = json_decode($reponse_classe, true);
     
