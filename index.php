@@ -1,6 +1,8 @@
 <?php
 // INDEX.PHP
-$request_reservation = "http://192.168.8.152:8000/reservations/?croissant=true";
+require_once __DIR__ . '/config.php';
+
+$request_reservation = getApiUrl("/reservations/?croissant=true");
 $response_reservation = file_get_contents($request_reservation);
 $data = json_decode($response_reservation, true);
 
@@ -174,19 +176,10 @@ $date_jour = $date_actuelle->format('d/m/Y');
                     Actualités & Messages
                 </div>
                 
-                <div class="space-y-4">
-                    <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-blue-500">
-                        <h3 class="font-semibold text-lg text-primary mb-2">Dead-line du projet</h3>
-                        <p class="text-gray-600 mb-2">Chers développeurs du Pôle Info, je tiens à vous rappeller que nous avons pour objectif de boucler ce projet le vendredi 18 avril avant les vacances.</p>
-                        <div class="flex justify-between items-center text-sm text-gray-500">
-                            <span>Direction</span>
-                            <span>28/03/2025</span>
-                        </div>
-                    </div>
-                    
+                <div class="space-y-4">               
                     <div class="bg-white rounded-lg shadow-sm p-4 border-l-4 border-green-500">
-                        <h3 class="font-semibold text-lg text-primary mb-2">Le système d'information</h3>
-                        <p class="text-gray-600 mb-2">Ce système d'information est développé par les meilleurs étudiants du BTS CIEL du LP2I.</p>
+                        <h3 class="font-semibold text-lg text-primary mb-2">Bienvenue !</h3>
+                        <p class="text-gray-600 mb-2">L'équipe de développement du système d'information Pôle Info vous souhaite la bienvenue.</p>
                         <div class="flex justify-between items-center text-sm text-gray-500">
                             <span>Service développement</span>
                             <span>28/03/2025</span>
