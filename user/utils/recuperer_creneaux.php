@@ -1,8 +1,10 @@
 <?php
+require_once __DIR__ . '/../../config.php';
+
 function getCreneaux() {
     $creneaux = [];
     
-    $get_creneau = "http://192.168.8.152:8000/creneaux/";
+    $get_creneau = getApiUrl('/creneaux/');
     $reponse_creneau = file_get_contents($get_creneau);
     $data_creneau = json_decode($reponse_creneau, true);
     

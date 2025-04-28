@@ -1,8 +1,9 @@
 <?php
+require_once __DIR__ . '/../config.php';
 session_start();
 
 if (!isset($_SESSION['token'])) {
-    header("Location: /login.php?error=unauthorized");
+    header("Location: " . getWebUrl('login.php?error=unauthorized'));
     exit;
 }
 
@@ -11,7 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] !== "POST") {
 }
 
 $token = $_SESSION['token'];
-$api_url = "http://192.168.8.152:8000/reservations/";
+$api_url = getApiUrl('/reservations/');
 
 $numero_salle = $_POST['salle'] ?? '';
 $nom_matiere = $_POST['matiere'] ?? '';
@@ -38,7 +39,6 @@ $data = [
     "heure_debut_creneau" => $heure_debut,
     "login_user" => $login_user,
     "nom_classe" => $nom_classe,
-
 ];
 
 $ch = curl_init();
@@ -61,7 +61,7 @@ if ($http_code === 201 || $http_code === 200) {
     $message = $response_data['message'] ?? "Réservation ajoutée avec succès!";
     
     $_SESSION['info_message'] = $message;
-    header("Location: dashboard.php");
+    header("Location: " . getWebUrl('user/dashboard.php'));
     exit;
 } else {
     $message = "Erreur lors de l'ajout de la réservation: ";
@@ -75,7 +75,7 @@ if ($http_code === 201 || $http_code === 200) {
     }
     
     $_SESSION['info_message'] = $message;
-    header("Location: dashboard.php");
+    header("Location: " . getWebUrl('user/dashboard.php'));
     exit;
 }
 ?>

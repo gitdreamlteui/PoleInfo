@@ -9,14 +9,14 @@ Description : ce programme permet de créer toutes les routes relatives à la ge
 des réservations de salles, avec des fonctions pour créer et consulter les réservations.
 """
 
-from models.schemas import ReservationCreate, ReservationResponse, ReservationDelete
+from models.schemas import ReservationCreate, ReservationResponse, ReservationDelete, ReservationUpdate
 from core.auth import verify_token
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
 from datetime import date
 
-from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation, get_reservations_by_prof_increase, remove_reservation, remove_reservation_by_id
+from models.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation, get_reservations_by_prof_increase, remove_reservation, remove_reservation_by_id, update_reservation, get_reservation_by_id
 from models.user import get_user_by_id
 
 # Définition du router avec le tag pour la documentation Swagger
@@ -73,35 +73,35 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
 
 @router.get("/", response_model=List[ReservationResponse])
 def get_reservations(salle: str = Query(None, description="Numéro de la salle"),
-                     croissant: bool = Query(None, description="Retourne les reservations dans l'ordre croissant"),
-                     prof: str = Query(None, description="Retourne les réservations du professeur concerné par nom")):
+                     croissant: bool = Query(None, description="Retourne les réservations dans l'ordre croissant"),
+                     prof: str = Query(None, description="Retourne les réservations du professeur concerné par nom"),
+                     reservation_id: int = Query(None, description="Retourne les informations d'une certaine réservation par son ID")):
     """
     Récupère la liste des réservations avec possibilité de filtrage.
-    
-    Args:
-        salle (str, optional): Filtrer par numéro de salle
-        croissant (bool, optional): Trier les résultats par ordre croissant
-        prof (str, optional): Filtrer par nom de professeur
-        
-    Returns:
-        List[ReservationResponse]: Liste des réservations correspondant aux critères
-        
-    Raises:
-        HTTPException: Erreur 410 si aucune réservation n'est trouvée
     """
-    if salle is not None and croissant == True:
+    if reservation_id is not None:
+        reservation = get_reservation_by_id(reservation_id)
+        if not reservation:
+            raise HTTPException(
+                status_code=status.HTTP_410_GONE,
+                detail="Aucune réservation trouvée pour cet ID"
+            )
+        return [reservation]
+
+    elif salle and croissant:
         reservations = get_reservations_by_salle_increase(salle)
-    elif prof is not None and croissant == True:
+    elif prof and croissant:
         reservations = get_reservations_by_prof_increase(prof)
     else:
         reservations = get_all_reservations()
-    
+
     if not reservations:
         raise HTTPException(
             status_code=status.HTTP_410_GONE,
             detail="Aucune réservation trouvée"
         )
     return reservations
+
 
 @router.delete("/", response_model=dict)
 def delete_reservation(reservation: ReservationDelete, user_id: int = Depends(verify_token)):
@@ -145,3 +145,36 @@ def delete_reservation(reservation: ReservationDelete, user_id: int = Depends(ve
             status_code=400, 
             detail=result.get("message", "Erreur lors de la suppression")
         )
+
+@router.put("/", response_model=dict)
+def update_reservation_endpoint(reservation: ReservationUpdate, user_id: int = Depends(verify_token)):
+    """
+    Met à jour une réservation existante.
+    
+    L'utilisateur doit être authentifié pour effectuer cette opération.
+    
+    Args:
+        reservation (ReservationUpdate): Données de la réservation à mettre à jour
+        user_id (int): ID de l'utilisateur authentifié
+        
+    Returns:
+        dict: Message de confirmation
+        
+    Raises:
+        HTTPException: Erreur 400 si la mise à jour échoue
+    """
+    result = update_reservation(
+        id_reservation=reservation.id_reservation,
+        duree=reservation.duree,
+        date=reservation.date,
+        info=reservation.info,
+        numero_salle=reservation.numero_salle,
+        nom_matiere=reservation.nom_matiere,
+        heure_debut_creneau=reservation.heure_debut_creneau,
+        nom_classe=reservation.nom_classe
+    )
+
+    if result.get("status") == "success":
+        return {"message": result["message"]}
+    else:
+        raise HTTPException(status_code=400, detail=result.get("message", "Erreur lors de la mise à jour"))

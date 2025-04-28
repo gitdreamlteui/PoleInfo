@@ -74,10 +74,18 @@ class ReservationResponse(BaseModel):
     noms_classes: str
     
 class ReservationDelete(BaseModel):
-    id_reservation: Optional[int] = None
+    id_reservation: int
+
+class ReservationUpdate(BaseModel):
+    id_reservation: int
     date: Optional[date]
-    numero_salle: Optional[str] = None
-    heure_debut: Optional[str] = None
+    heure_debut_creneau: Optional[str]
+    duree: Optional[int]
+    info: Optional[str]
+    numero_salle: Optional[str]
+    nom_matiere: Optional[str]
+    nom_classe: Optional[str]
+
 #--------------------------------------------------#
 
 class Token(BaseModel):
