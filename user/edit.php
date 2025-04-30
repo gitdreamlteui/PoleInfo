@@ -147,9 +147,6 @@ $classes_reservees = explode(', ', $reservation['noms_classes']);
                 <h1 class="text-2xl font-bold text-gray-800">Modifier la réservation</h1>
                 <p class="text-gray-600">Modifiez les détails de votre réservation.</p>
             </div>
-            <div>
-                <img src="../logo.png" alt="Logo BTS" class="h-24 w-auto">
-            </div>
         </div>
 
         <!-- Reservation Form Card -->

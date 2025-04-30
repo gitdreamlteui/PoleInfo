@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page non trouvée - Système d'information BTS</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: { DEFAULT: '#1a4d85', light: '#e6f0ff' } },
+                    fontFamily: { inter: ['Inter', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        .clock-display {
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.5px;
+        }
+        .error-gif {
+            border-radius: 8px;
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const time = [now.getHours(), now.getMinutes(), now.getSeconds()]
+                .map(n => n.toString().padStart(2, '0'))
+                .join(':');
+            document.getElementById('clock').textContent = time;
+            setTimeout(updateClock, 1000);
+        }
+
+        window.onload = updateClock;
+    </script>
+</head>
+<body class="bg-gray-50 font-inter text-gray-800 m-0 p-0">
+    <header class="bg-primary fixed top-0 w-full py-3 px-4 shadow-md z-10">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="font-semibold text-white text-2xl">Système d'information BTS - Pôle Info</div>
+            </div>
+            <a href="interface_login.php" class="no-underline">
+                <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
+                    Se connecter
+                </button>
+            </a>
+        </div>
+    </header>
+    
+    <main class="container mx-auto px-4 py-6 mt-16">
+        <div class="bg-white p-3 mb-6 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center">
+            <div class="text-gray-600">
+                <span class="font-medium">Erreur 404</span>
+                <span> - Page non trouvée</span>
+            </div>
+            <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="font-medium text-primary mr-2">Heure actuelle :</span>
+                <span id="clock" class="clock-display font-medium bg-primary text-white px-3 py-1 rounded-md">
+                    00:00:00
+                </span>
+            </div>
+        </div>
+
+        <div class="flex flex-col items-center justify-center py-12">
+            <div class="bg-primary-light p-8 rounded-lg shadow-sm text-center max-w-lg">
+                <div class="text-7xl font-bold text-primary mb-4">404</div>
+                <h1 class="text-2xl font-semibold text-primary mb-4">Page non trouvée</h1>
+                <p class="text-gray-600 mb-6">La page que vous recherchez n'existe pas ou a été déplacée.</p>
+                
+                <!-- GIF intégré à la place du smiley SVG -->
+                <div class="mx-auto mb-6 flex justify-center">
+                    <img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYXQ3ODloZDAxYzdkYjY0cnJ0aHU5MnV5MXZqNHcxNjh5bGlyaWh6bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/6uGhT1O4sxpi8/giphy.gif" 
+                         alt="Erreur 404" 
+                         class="error-gif shadow-sm" 
+                         style="max-width: 280px;">
+                </div>
+                
+                <div class="flex justify-center">
+                    <a href="index.php" class="bg-primary text-white font-semibold py-2 px-6 rounded hover:bg-blue-700 transition-colors">
+                        Retour à l'accueil
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
+            © 2025 Système d'information BTS - Tous droits réservés
+        </footer>
+    </main>
+</body>
+</html>

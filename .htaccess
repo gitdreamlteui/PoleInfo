@@ -8,3 +8,6 @@ RewriteEngine On
 # Rediriger vers index.php (redirection visible)
 RewriteCond %{ENV:REDIRECT_STATUS} =403
 RewriteRule ^.*$ /index.php [R=302,L]
+
+# Gérer erreur 4°4 
+ErrorDocument 404 /404.html

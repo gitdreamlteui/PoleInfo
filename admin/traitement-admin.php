@@ -1,15 +1,18 @@
 <?php
+require_once __DIR__ . '/../config.php';
+
 session_start();
 if (!isset($_SESSION['token']) || $_SESSION['type_compte'] != 1) {
-    header("Location: http://192.168.8.152/interface_login.php?error=expired");
+    header('Location' . getWebUrl("/interface_login.php?error=expired"));
     exit;
 }
+
 $token = $_SESSION['token'];
-$api_url_user = "http://192.168.8.152:8000/utilisateurs/";
-$api_url_matiere = "http://192.168.8.152:8000/matieres/";
-$api_url_salle = "http://192.168.8.152:8000/salles/";
-$api_url_creneau ="http://192.168.8.152:8000/creneaux/";
-$api_url_classe ="http://192.168.8.152:8000/classes/";
+$api_url_user = getApiUrl('/utilisateurs/');
+$api_url_matiere = getApiUrl('/matieres/');
+$api_url_salle = getApiUrl('/salles/');
+$api_url_creneau = getApiUrl('/creneaux/');
+$api_url_classe = getApiUrl('/classes/');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
@@ -50,9 +53,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 function verif_HTTP($code){
     if ($code === 201 || $code === 200) {
         $response_data = json_decode($response, true);
-        $message = $response_data['message'] ?? "Utilisateur ajouté avec succès!";
         
-        $_SESSION['info_message'] = $message;
+        $_SESSION['info_message'] = "Opération réalisée avec succès  !";
         header("Location: interface_admin.php");
         exit;
     } else {

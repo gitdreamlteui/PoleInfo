@@ -19,10 +19,9 @@ if ($id_reservation <= 0) {
     exit;
 }
 
-// Récupérer et nettoyer les données du formulaire
 $date_reserv = $_POST['date_reserv'] ?? '';
 $startTime = $_POST['startTime'] ?? '';
-$duration = isset($_POST['duration']) ? $_POST['duration'] : 0; // Garder la valeur originale sans conversion
+$duration = isset($_POST['duration']) ? $_POST['duration'] : 0;
 $info = $_POST['message'] ?? '';
 $matiere = $_POST['matiere'] ?? '';
 $salle = $_POST['salle'] ?? '';
@@ -55,19 +54,15 @@ if (!empty($errors)) {
     exit;
 }
 
-// Transformer le tableau des classes en chaîne de caractères séparée par des virgules
 $classes_string = implode(", ", $classe);
 
-// Conversion de la durée en entier si nécessaire (multiplier par 100 pour conserver la précision)
-// Cette conversion est basée sur l'hypothèse que l'API s'attend à un nombre de minutes entier
 $duration_value = intval(floatval($duration) * 100); // Convertir en entier (en centièmes d'heure)
 
-// Construction du payload selon la structure exacte attendue par l'API
 $data = [
     "id_reservation" => $id_reservation,
     "date" => $date_reserv,
     "heure_debut_creneau" => $startTime,
-    "duree" => $duration_value, // Utiliser la valeur entière
+    "duree" => $duration_value,
     "info" => $info,
     "numero_salle" => $salle,
     "nom_matiere" => $matiere,
@@ -91,11 +86,6 @@ $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curl_error = curl_error($ch);
 curl_close($ch);
 
-// Pour le débogage, vous pouvez décommenter ces lignes
-// error_log("Données envoyées: " . json_encode($data));
-// error_log("Réponse du serveur: " . $response);
-
-// Traitement du retour
 if ($http_code >= 200 && $http_code < 300) {
     $_SESSION['info_message'] = "Réservation modifiée avec succès.";
     header("Location: dashboard.php");
