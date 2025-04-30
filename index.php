@@ -74,9 +74,6 @@ $date_jour = $date_actuelle->format('d/m/Y');
     <header class="bg-primary fixed top-0 w-full py-3 px-4 shadow-md z-10">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center">
-                <div class="bg-white p-2 rounded-lg mr-3">
-                    <img src="logo.png" alt="Logo Pole Info" class="h-9">
-                </div>
                 <div class="font-semibold text-white text-2xl">Système d'information BTS - Pôle Info</div>
             </div>
             <a href="interface_login.php" class="no-underline">

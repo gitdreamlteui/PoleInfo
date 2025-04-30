@@ -1,13 +1,21 @@
 <?php
+require_once __DIR__ . '/../config.php';
 session_start();
+
+$success_message = "";
+if (isset($_SESSION['info_message'])) {
+    $success_message = $_SESSION['info_message'];
+    unset($_SESSION['info_message']);
+}
+
 if (!isset($_SESSION['token']) or $_SESSION['type_compte']!=1) {
-    header("Location: http://192.168.8.152/interface_login.php?error=expired");
+    header('Location:' . getWebUrl('dashboard.php'));
     exit;
 }
 
 $token = $_SESSION['token'];
-$api_url_verify = "http://192.168.8.152:8000/verify-token/";
-$api_url_reservations = "http://192.168.8.152:8000/reservations/";
+$api_url_verify = getApiUrl("/verify-token/");
+$api_url_reservations = getApiUrl("/reservations/");
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
@@ -25,13 +33,13 @@ curl_close($ch);
 if ($http_code != 200 || !$response) {
     error_log("Erreur de vérification du token : HTTP $http_code - $curl_error");
     session_destroy();
-    header("Location: http://192.168.8.152/interface_login.php?error=expired");
+    header('Location:' . getWebUrl('interface_login.php?error=expired'));
     exit;
 }
 
 if ($http_code != 200) {
     session_destroy();
-    header("Location: http://192.168.8.152/interface_login.php?error=expired");
+    header('Location:' . getWebUrl('interface_login.php?error=expired'));
     exit;
 }
 
@@ -39,6 +47,7 @@ $date_actuelle = new DateTime();
 $heure_actuelle = $date_actuelle->format('H:i');
 $date_jour = $date_actuelle->format('d/m/Y');
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -123,14 +132,15 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 </span>
             </div>
         </div>
-        <?php if ($success_message): ?>
+        <?php if ($success_message) { ?>
             <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded shadow-sm">
                 <div class="flex items-center">
                     <i class="fas fa-check-circle mr-2"></i>
                     <p><?php echo htmlspecialchars($success_message); ?></p>
+                    
                 </div>
             </div>
-        <?php endif; ?>
+        <?php } ?>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
@@ -153,7 +163,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 <form class="space-y-4" action="traitement-admin.php" method="POST">
                     <select name="sup_user" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         <?php
-                            $get_user = "http://192.168.8.152:8000/utilisateurs/";
+                            $get_user = getApiUrl("/utilisateurs/");
                             $response_user = file_get_contents($get_user);
                             $data_user = json_decode($response_user, true);
                             foreach($data_user as $item)
@@ -193,7 +203,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 <form class="mt-6 space-y-4" action="traitement-admin.php" method="POST">
                     <select name="sup_matiere" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                     <?php
-                        $get_matiere = "http://192.168.8.152:8000/matieres/";
+                        $get_matiere = getApiUrl("/matieres/");
                         $response_matiere = file_get_contents($get_matiere);
                         $data_matiere = json_decode($response_matiere, true);
                         foreach($data_matiere as $item)
@@ -218,7 +228,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 <form class="mt-6 space-y-4" action="traitement-admin.php" method="POST">
                     <select name="sup_creneau" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                         <?php
-                        $get_creneau = "http://192.168.8.152:8000/creneaux/";
+                        $get_creneau = getApiUrl("/creneaux/");
                         $reponse_creneau = file_get_contents($get_creneau);
                         $data_creneau = json_decode($reponse_creneau, true);
                         
@@ -252,7 +262,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 <form class="mt-6 space-y-4" action="traitement-admin.php" method="POST">
                     <select name="sup_classe" class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary">
                     <?php
-                        $get_classe = "http://192.168.8.152:8000/classes/";
+                        $get_classe = getApiUrl("/classes/");
                         $response_classe = file_get_contents($get_classe);
                         $data_classe = json_decode($response_classe, true);
                         foreach($data_classe as $item)
@@ -279,7 +289,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 <form class="mt-10 space-y-4" action="traitement-admin.php" method="POST">
                     <select name="sup_salle" class="w-full p-2 border rounded-md">
                         <?php
-                        $get_salle = "http://192.168.8.152:8000/salles/";
+                        $get_salle = getApiUrl("/salles/");
                         $response_salle = file_get_contents($get_salle);
                         $data_salle = json_decode($response_salle, true);
                         foreach($data_salle as $item)

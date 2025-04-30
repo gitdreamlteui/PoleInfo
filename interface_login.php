@@ -27,6 +27,11 @@
 </head>
 <body class="bg-gray-50 min-h-screen flex items-center justify-center p-3 font-inter text-gray-800">
     <div class="w-full max-w-sm">
+        <!-- Logo centré au-dessus -->
+        <div class="text-center mb-6">
+            <img src="logo.png" alt="Logo BTS" class="mx-auto h-24 w-auto">
+        </div>
+        
         <div class="bg-white rounded-lg shadow overflow-hidden">
             <div class="bg-primary py-3 px-4">
                 <h1 class="text-white text-xl font-semibold text-center">Système d'information BTS</h1>
@@ -53,8 +58,15 @@
                     </button>
                 </form>
                 
-                <div class="mt-2 text-center">
-                    <a href="#" class="text-xs text-primary hover:text-primary-dark hover:underline">
+                <div class="mt-4 flex justify-between items-center">
+                    <a href="index.php" class="flex items-center text-sm text-primary hover:text-primary-dark">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Retour à l'accueil
+                    </a>
+                    
+                    <a href="mailto:elias.gauthier@lp2i-poitiers.fr?subject=Mot%20de%20passe%20oublié" class="text-xs text-primary hover:text-primary-dark hover:underline">
                         Mot de passe oublié ?
                     </a>
                 </div>
