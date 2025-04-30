@@ -152,9 +152,6 @@ elseif ($type == 0) {
             <h1 class="text-2xl font-bold text-gray-800">Tableau de bord</h1>
             <p class="text-gray-600">Gérez vos réservations de salles et consultez le planning.</p>
         </div>
-        <div>
-            <img src="../logo.png" alt="Logo BTS" class="h-24 w-auto">
-        </div>
     </div>
 
         <!-- Date and Time Display -->
