@@ -12,7 +12,7 @@ Description : Gestion des routes API relatives aux matières scolaires
 from models.schemas import MatiereResponse, MatiereDelete, MatiereCreate
 from core.auth import verify_token
 from core.security import verify_admin
-from models.matiere import get_all_matieres, remove_matiere, get_matiere_by_nom, create_matiere
+from db.requests.matiere import get_all_matieres, remove_matiere, get_matiere_by_nom, create_matiere
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
