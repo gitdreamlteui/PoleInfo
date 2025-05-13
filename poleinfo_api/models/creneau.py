@@ -33,7 +33,6 @@ def remove_creneau(heure_debut: timedelta) -> bool:
         
         return cursor.rowcount > 0
     
-
 def create_creneau(heure_debut):
     """Crée un nouveau créneau dans la base de données  
     Returns:
