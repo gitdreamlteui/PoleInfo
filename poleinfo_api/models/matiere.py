@@ -32,7 +32,6 @@ def remove_matiere(nom: str) -> bool:
         
         return cursor.rowcount > 0
     
-
 def create_matiere(nom: str):
     """Crée une nouvelle matière dans la base de données  
     Returns:
