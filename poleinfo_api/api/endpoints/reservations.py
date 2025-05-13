@@ -31,7 +31,6 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
     Crée une nouvelle réservation de salle.
     
     L'utilisateur doit être authentifié pour effectuer cette opération.
-    Vérifie d'abord si la salle et la classe ne sont pas déjà réservées pour ce créneau.
     
     Args:
         reservation (ReservationCreate): Données de la réservation à créer
@@ -43,7 +42,6 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
     Raises:
         HTTPException: 
             - Erreur 404 si l'utilisateur n'existe pas
-            - Erreur 409 si un conflit de réservation est détecté
             - Erreur 400 si la réservation ne peut pas être créée
     """
     user = get_user_by_id(user_id)
@@ -51,24 +49,6 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
     
     username = user["login"]
-    
-    conflict_check = check_reservation_conflicts(
-        date=reservation.date.isoformat(),
-        numero_salle=reservation.numero_salle,
-        heure_debut_creneau=str(reservation.heure_debut_creneau),
-        duree=reservation.duree,
-        nom_classe=reservation.nom_classe
-    )
-    
-    if conflict_check.get("conflict"):
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail={
-                "message": conflict_check.get("message"),
-                "conflict_type": conflict_check.get("conflict_type"),
-                "conflicting_reservations": conflict_check.get("conflicting_reservations")
-            }
-        )
     
     reservation_data = {
         "duree": reservation.duree,
@@ -90,7 +70,6 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
         }
     else:
         raise HTTPException(status_code=400, detail=result.get("message", "Erreur lors de la création de la réservation"))
-
 
 
 @router.get("/", response_model=List[ReservationResponse])
