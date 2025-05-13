@@ -4,10 +4,10 @@ from mysql.connector import Error
 from contextlib import contextmanager
 
 DB_CONFIG = {
-    'host': '127.0.0.1',
+    'host': '192.168.8.152',
     'database': 'poleinfo',
     'user': 'root',
-    'password': ''
+    'password': 'cielPOLEINFO25**'
 }
 
 @contextmanager
