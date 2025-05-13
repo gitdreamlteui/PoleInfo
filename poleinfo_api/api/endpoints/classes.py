@@ -12,7 +12,7 @@ Description : Gestion des routes API relatives aux opérations sur les classes
 from models.schemas import ClasseResponse, ClasseDelete, ClasseCreate
 from core.auth import verify_token
 from core.security import verify_admin
-from models.classes import get_all_classes, remove_classe, get_classe_by_nom, create_classe
+from db.requests.classes import get_all_classes, remove_classe, get_classe_by_nom, create_classe
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional

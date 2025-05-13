@@ -13,7 +13,7 @@ des privilèges administrateur.
 from fastapi import APIRouter, HTTPException, status, Depends
 from typing import List, Optional
 from models.schemas import UserCreate, UserResponse, UserDelete
-from models.user import create_user, get_user_by_login, get_all_users, delete_user_by_login
+from db.requests.user import create_user, get_user_by_login, get_all_users, delete_user_by_login
 from core.auth import verify_token
 from core.security import verify_admin
 

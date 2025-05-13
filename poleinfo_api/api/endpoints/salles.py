@@ -13,7 +13,7 @@ from models.schemas import SalleResponse, SalleDelete, SalleCreate
 from core.auth import verify_token
 from core.security import verify_admin
 
-from models.salle import get_all_salles, get_salle_by_numero, remove_salle, create_salle
+from db.requests.salle import get_all_salles, get_salle_by_numero, remove_salle, create_salle
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional

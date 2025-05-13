@@ -15,7 +15,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from core.security import create_access_token
 from core.auth import verify_token
 from models.schemas import Token
-from models.user import authenticate_user
+from db.requests.user import authenticate_user
 
 # Définition du router avec le tag pour la documentation Swagger
 router = APIRouter(tags=["authentification"])
