@@ -12,7 +12,7 @@ Description : Gestion des routes API relatives aux créneaux horaires
 from models.schemas import CreneauResponse, CreneauDelete, CreneauCreate
 from core.auth import verify_token
 from core.security import verify_admin
-from models.creneau import get_all_creneaux, get_creneau_by_heure, remove_creneau, create_creneau
+from db.requests.creneau import get_all_creneaux, get_creneau_by_heure, remove_creneau, create_creneau
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional

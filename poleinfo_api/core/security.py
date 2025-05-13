@@ -21,7 +21,7 @@ import jwt
 from fastapi import Depends, HTTPException, status
 from datetime import datetime, timedelta
 from config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from models.user import get_user_by_id
+from db.requests.user import get_user_by_id
 from core.auth import verify_token
 
 # Configuration du contexte de cryptographie utilisant l'algorithme bcrypt

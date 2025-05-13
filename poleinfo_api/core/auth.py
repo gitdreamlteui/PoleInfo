@@ -21,7 +21,7 @@ from jose import JWTError, jwt
 from typing import Optional
 
 from config import SECRET_KEY, ALGORITHM
-from models.user import get_user_by_id
+from db.requests.user import get_user_by_id
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
