@@ -71,7 +71,6 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
     else:
         raise HTTPException(status_code=400, detail=result.get("message", "Erreur lors de la création de la réservation, veuillez consulter un administrateur."))
 
-
 @router.get("/", response_model=List[ReservationResponse])
 def get_reservations(salle: str = Query(None, description="Numéro de la salle"),
                      croissant: bool = Query(None, description="Retourne les réservations dans l'ordre croissant"),
