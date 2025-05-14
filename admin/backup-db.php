@@ -15,11 +15,6 @@ $pass = 'cielPOLEINFO25**'; // votre mot de passe MySQL
 $backupDir = '/var/www/html/PoleInfo/backups'; // chemin absolu vers le dossier de sauvegarde
 
 try {
-
-    // Vérifier que le dossier est accessible en écriture
-    if (!is_writable($backupDir)) {
-        throw new Exception("Le dossier de sauvegarde n'est pas accessible en écriture");
-    }
     
     // Nom du fichier de sauvegarde
     $filename = $db . '_sauvegarde_' . date('Y-m-d_H-i-s') . '.sql';
