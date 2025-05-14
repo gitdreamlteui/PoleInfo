@@ -17,40 +17,66 @@ $host = $_ENV['DB_HOST'];
 $db   = $_ENV['DB_NAME'];
 $user = $_ENV['DB_USER'];
 $pass = $_ENV['DB_PASSWORD'];
-$backupDir = $_ENV['BACKUP_DIR'] ?? 'backups';
+$backupDir = $_ENV['BACKUP_DIR'];
 
-// Créer le dossier de sauvegarde s’il n’existe pas
+/// Créer le dossier de sauvegarde s'il n'existe pas
 if (!is_dir($backupDir)) {
-    mkdir($backupDir, 0755, true);
+    if (!mkdir($backupDir, 0755, true)) {
+        throw new Exception("Impossible de créer le dossier de sauvegarde");
+    }
 }
-
-// Nom du fichier de sauvegarde avec horodatage
-$date = date('Y-m-d_H-i-s');
-$file = "{$backupDir}/{$db}_backup_{$date}.sql";
-
+try {
+// Nom du fichier de sauvegarde
+$filename = $dbname . '_sauvegarde_' . date('Y-m-d_H-i-s') . '.sql';
+$backupFile = $backupDir . '/' . $filename;
 // Commande mysqldump
-$cmd = sprintf(
-    'mysqldump -h%s -u%s -p%s %s > %s',
+$command = sprintf(
+    'mysqldump --opt --skip-comments -h%s -u%s -p%s %s > %s',
     escapeshellarg($host),
-    escapeshellarg($user),
-    escapeshellarg($pass),
-    escapeshellarg($db),
-    escapeshellarg($file)
+    escapeshellarg($username),
+    escapeshellarg($password),
+    escapeshellarg($dbname),
+    escapeshellarg($backupFile)
 );
 
-// Exécuter la commande
-exec($cmd, $output, $resultCode);
+exec($command, $commandOutput, $returnVar);
 
-// Vérifier le résultat
-if ($resultCode === 0) {
-    echo "✅ Sauvegarde réussie : $file\n";
-    // Téléchargement du fichier
-    header('Content-Type: application/sql');
-    header("Content-Disposition: attachment; filename=\"$file\"");
-    readfile("$file");
-    unlink("$file");
-} else {
-    echo "❌ Erreur pendant la sauvegarde. Code : $resultCode\n";
+if ($returnVar !== 0) {
+    throw new Exception("La commande mysqldump a échoué avec le code $returnVar");
 }
-header('Location: ' . getWebUrl('admin.php'));
+
+// Pour la méthode PDO: sauvegarder dans un fichier
+file_put_contents($backupFile, $output);
+
+// Vérifier que le fichier existe
+if (!file_exists($backupFile) || filesize($backupFile) == 0) {
+    throw new Exception("La sauvegarde n'a pas été créée correctement");
+}
+
+// Configurer les en-têtes pour le téléchargement
+header('Content-Description: File Transfer');
+header('Content-Type: application/octet-stream');
+header('Content-Disposition: attachment; filename="' . $filename . '"');
+header('Content-Transfer-Encoding: binary');
+header('Expires: 0');
+header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+header('Pragma: public');
+header('Content-Length: ' . filesize($backupFile));
+
+// Envoyer le fichier au navigateur
+readfile($backupFile);
+
+// Nettoyer
+unlink($backupFile);
 exit;
+}
+catch (Exception $e) {
+// Gérer les erreurs de façon sécurisée
+error_log("Erreur de sauvegarde de BDD: " . $e->getMessage());
+
+// Rediriger vers une page d'erreur ou afficher un message
+$_SESSION['backup_error'] = "La sauvegarde a échoué. Veuillez contacter l'administrateur.";
+header('Location: ' . getWebUrl('/admin.php?error=backup_failed'));
+exit;
+}
+?>
