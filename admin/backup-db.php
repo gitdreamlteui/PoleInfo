@@ -1,8 +1,6 @@
 <?php
 require_once __DIR__ . '/../config.php';
 
-use Dotenv\Dotenv;
-
 session_start();
 if (!isset($_SESSION['token']) || $_SESSION['type_compte'] != 1) {
     header('Location' . getWebUrl("/interface_login.php?error=expired"));
@@ -10,9 +8,6 @@ if (!isset($_SESSION['token']) || $_SESSION['type_compte'] != 1) {
 }
 
 // Charger les variables d’environnement
-$dotenv = Dotenv::createImmutable(__DIR__);
-$dotenv->load();
-
 $host = $_ENV['DB_HOST'];
 $db   = $_ENV['DB_NAME'];
 $user = $_ENV['DB_USER'];
