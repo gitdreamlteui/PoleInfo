@@ -68,6 +68,8 @@ readfile($backupFile);
 
 // Nettoyer
 unlink($backupFile);
+header('Location: ' . getWebUrl('/interface_admin.php'));
+exit;
 exit;
 }
 catch (Exception $e) {
