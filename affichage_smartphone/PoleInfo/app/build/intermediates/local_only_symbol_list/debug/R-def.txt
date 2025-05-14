@@ -17,6 +17,7 @@ id tvProfesseur
 id tvSalle
 layout activity_main
 layout item_reservation
+mipmap logo
 string app_name
 style AppActionBar
 style AppTheme

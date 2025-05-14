@@ -11,6 +11,7 @@
   <androidx.ads/>
   <androidx.annotation/>
   <androidx.appcompat/>
+  <androidx.appfunctions/>
   <androidx.appsearch/>
   <androidx.arch.core/>
   <androidx.asynclayoutinflater/>
@@ -46,6 +47,7 @@
   <androidx.core/>
   <androidx.core.uwb/>
   <androidx.credentials/>
+  <androidx.credentials.providerevents/>
   <androidx.credentials.registry/>
   <androidx.cursoradapter/>
   <androidx.customview/>
@@ -224,6 +226,7 @@
   <com.google.ambient.crossdevice/>
   <com.google.android.ads/>
   <com.google.android.ads.consent/>
+  <com.google.android.appcrawler/>
   <com.google.android.apps.common.testing.accessibility.framework/>
   <com.google.android.car.connectionservice/>
   <com.google.android.datatransport/>
