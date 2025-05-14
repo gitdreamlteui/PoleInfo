@@ -304,6 +304,29 @@ $date_jour = $date_actuelle->format('d/m/Y');
                 </form>
             </div>
         </div>
+        <div class="bg-primary text-white p-3 mt-12 font-semibold text-lg rounded-lg shadow">
+    Gestion des sauvegardes de la base de données
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    <!-- Création de backup -->
+    <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+        <h2 class="text-xl font-semibold mb-4 text-primary">Créer une sauvegarde</h2>
+        <form action="backup-db.php" method="POST">
+            <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors w-full font-medium">Télécharger une sauvegarde</button>
+        </form>
+    </div>
+
+    <!-- Restauration de backup -->
+    <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
+        <h2 class="text-xl font-semibold mb-4 text-primary">Restaurer une sauvegarde</h2>
+        <form action="restore-db.php" method="POST" enctype="multipart/form-data">
+            <input type="file" name="sql_file" accept=".sql" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary mb-3">
+            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors w-full font-medium">Restaurer la base</button>
+        </form>
+    </div>
+</div>
+
 
         <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
             © 2025 Système d'information BTS - Tous droits réservés
