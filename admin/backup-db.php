@@ -80,7 +80,7 @@ catch (Exception $e) {
 
     // Rediriger vers une page d'erreur
     $_SESSION['backup_error'] = "La sauvegarde a échoué: " . $e->getMessage();
-    header('Location: ' . getWebUrl('/interface_admin.php?error=backup_failed'));
+    header('Location: ' . getWebUrl('/admin/interface_admin.php?error=backup_failed'));
     exit;
 }
 ?>
