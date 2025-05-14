@@ -62,21 +62,31 @@ if (!empty($errors)) {
 
 $classes_string = implode(", ", $classe);
 
-// CORRECTION: Utiliser directement la valeur décimale de la durée
-// sans la multiplier par 100, pour conserver le format attendu par l'API
+// Conversion de la durée décimale en format ISO 8601
 $duration_value = floatval($duration);
+$hours = floor($duration_value);
+$minutes = round(($duration_value - $hours) * 60);
+
+// Format ISO 8601 pour la durée : "PTxHyM" où x est le nombre d'heures et y le nombre de minutes
+$iso_duration = "PT" . $hours . "H";
+if ($minutes > 0) {
+    $iso_duration .= $minutes . "M";
+}
 
 // Préparation des données à envoyer à l'API
 $data = [
     "id_reservation" => $id_reservation,
     "date" => $date_reserv,
     "heure_debut_creneau" => $startTime,
-    "duree" => $duration_value,
+    "duree" => $iso_duration,
     "info" => $info,
     "numero_salle" => $salle,
     "nom_matiere" => $matiere,
     "nom_classe" => $classes_string
 ];
+
+// Pour le débogage - afficher les données avant envoi
+// echo "<pre>"; print_r($data); echo "</pre>"; exit;
 
 $api_url = getApiUrl("/reservations/");
 
