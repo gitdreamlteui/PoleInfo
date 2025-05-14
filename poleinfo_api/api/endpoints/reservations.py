@@ -18,8 +18,6 @@ from datetime import date
 
 from db.requests.reservation import get_all_reservations, get_reservations_by_salle_increase, get_reservations_by_salle, post_reservation, get_reservations_by_prof_increase, remove_reservation, remove_reservation_by_id, update_reservation, get_reservation_by_id
 from db.requests.user import get_user_by_id
-from db.requests.checks import check_reservation_conflicts
-
 # Définition du router avec le tag pour la documentation Swagger
 router = APIRouter(
     tags=["reservations"]
