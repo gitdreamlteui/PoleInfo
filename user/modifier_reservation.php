@@ -26,7 +26,7 @@ $classes = isset($_POST['classe']) && is_array($_POST['classe']) ? $_POST['class
 $date = $_POST['date_reserv'] ?? '';
 $info = $_POST['message'] ?? '';
 $heure_debut = $_POST['startTime'] ?? '';
-$duree = $_POST['duration'];
+$duree = number_format(floatval($_POST['duration'] ?? 0), 3, '.', '');
 
 $nom_classe = !empty($classes) ? implode(", ", $classes) : "";
 
