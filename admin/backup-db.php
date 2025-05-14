@@ -12,7 +12,7 @@ $host = 'localhost'; // ou l'adresse de votre serveur MySQL
 $db = 'poleinfo'; // nom de votre base de données
 $user = 'root'; // votre nom d'utilisateur MySQL
 $pass = 'cielPOLEINFO25**'; // votre mot de passe MySQL
-$backupDir = __DIR__ . '/../backups'; // chemin absolu vers le dossier de sauvegarde
+$backupDir = __DIR__ . '../backups'; // chemin absolu vers le dossier de sauvegarde
 
 try {
     // Créer le dossier de sauvegarde s'il n'existe pas
