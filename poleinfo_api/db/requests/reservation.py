@@ -124,45 +124,74 @@ def get_reservations_by_salle_increase(numero_salle: str) -> List[Dict[str, Any]
 def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_creneau, login_user, nom_classe):
     with get_db_cursor() as cursor:
         try:
-            query_reservation = """
-            INSERT INTO reservation (
-                duree, 
-                date, 
-                info, 
-                id_salle, 
-                id_matiere, 
-                id_creneau, 
-                id_user
-            ) VALUES (
-                %s,
-                %s,
-                %s,
-                (SELECT id_salle FROM salle WHERE numero = %s),
-                (SELECT id_matiere FROM matiere WHERE nom = %s),
-                (SELECT id_creneau FROM creneau WHERE heure_debut = %s),
-                (SELECT id_user FROM user WHERE login = %s)
-            )"""
-            
-            cursor.execute(query_reservation, (float(duree), date, info, numero_salle, nom_matiere, heure_debut_creneau, login_user))
-            reservation_id = cursor.lastrowid
-            
+            # Vérifier si une des classes est déjà réservée à cette date et créneau
             classes = [classe.strip() for classe in nom_classe.split(',')]
             
             for classe in classes:
-                cursor.execute("SELECT id_classe_grp FROM classe WHERE nom = %s", (classe,))
-                classe_result = cursor.fetchone()
-                if classe_result is None:
-                    raise Exception(f"Classe '{classe}' non trouvée")
-                    
-                id_classe = classe_result['id_classe_grp']
+                query_check_classe = """
+                SELECT r.id_reservation
+                FROM reservation r
+                JOIN classe_reservation cr ON r.id_reservation = cr.id_reservation
+                JOIN classe cl ON cr.id_classe_grp = cl.id_classe_grp
+                JOIN creneau c ON r.id_creneau = c.id_creneau
+                WHERE cl.nom = %s AND r.date = %s AND c.heure_debut = %s
+                """
+                cursor.execute(query_check_classe, (classe, date, heure_debut_creneau))
+                existing_reservation = cursor.fetchone()
                 
-                cursor.execute("INSERT INTO classe_reservation (id_reservation, id_classe_grp) VALUES (%s, %s)", 
-                              (reservation_id, id_classe))
+                if existing_reservation:
+                    return {
+                        "status": "error", 
+                        "message": f"La classe {classe} est déjà réservée à cette date et ce créneau horaire"
+                    }
             
-            return {"status": "success", "message": "Réservation créée avec succès", "id_reservation": reservation_id}
-        
+            # Si pas de conflit, continuer avec l'insertion de la réservation
+            cursor.execute("SELECT id_salle FROM salle WHERE numero = %s", (numero_salle,))
+            result_salle = cursor.fetchone()
+            if not result_salle:
+                return {"status": "error", "message": f"Salle {numero_salle} non trouvée"}
+            id_salle = result_salle['id_salle']
+
+            cursor.execute("SELECT id_matiere FROM matiere WHERE nom = %s", (nom_matiere,))
+            result_matiere = cursor.fetchone()
+            if not result_matiere:
+                return {"status": "error", "message": f"Matière {nom_matiere} non trouvée"}
+            id_matiere = result_matiere['id_matiere']
+
+            cursor.execute("SELECT id_creneau FROM creneau WHERE heure_debut = %s", (heure_debut_creneau,))
+            result_creneau = cursor.fetchone()
+            if not result_creneau:
+                return {"status": "error", "message": f"Créneau {heure_debut_creneau} non trouvé"}
+            id_creneau = result_creneau['id_creneau']
+
+            cursor.execute("SELECT id_user FROM user WHERE login = %s", (login_user,))
+            result_user = cursor.fetchone()
+            if not result_user:
+                return {"status": "error", "message": f"Utilisateur {login_user} non trouvé"}
+            id_user = result_user['id_user']
+
+            # Insérer la réservation
+            cursor.execute("""
+                INSERT INTO reservation (duree, date, info, id_salle, id_matiere, id_creneau, id_user)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
+            """, (duree, date, info, id_salle, id_matiere, id_creneau, id_user))
+            
+            id_reservation = cursor.lastrowid
+
+            # Ajouter les classes à la réservation
+            for classe in classes:
+                cursor.execute("SELECT id_classe_grp FROM classe WHERE nom = %s", (classe,))
+                result_classe = cursor.fetchone()
+                if not result_classe:
+                    return {"status": "error", "message": f"Classe {classe} non trouvée"}
+                id_classe = result_classe['id_classe_grp']
+                cursor.execute("INSERT INTO classe_reservation (id_reservation, id_classe_grp) VALUES (%s, %s)",
+                              (id_reservation, id_classe))
+            
+            return {"status": "success", "id_reservation": id_reservation}
+
         except Exception as e:
-            return {"status": "error", "message": f"Erreur lors de la création de la réservation: {str(e)}"}
+            return {"status": "error", "message": str(e)}
 
 def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
     """Récupère toutes les réservations pour un professeur spécifique par ordre croissant"""
