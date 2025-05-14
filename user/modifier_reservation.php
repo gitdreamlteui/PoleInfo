@@ -26,13 +26,14 @@ $classes = isset($_POST['classe']) && is_array($_POST['classe']) ? $_POST['class
 $date = $_POST['date_reserv'] ?? '';
 $info = $_POST['message'] ?? '';
 $heure_debut = $_POST['startTime'] ?? '';
-$duree = intval($_POST['duration'] ?? 0);  // Utiliser directement la valeur en minutes
+$duree = intval($_POST['duration'] ?? 0);
 
 $nom_classe = !empty($classes) ? implode(", ", $classes) : "";
 
 if (empty($numero_salle) || empty($nom_matiere) || empty($nom_classe) || empty($date) || empty($heure_debut) || $duree <= 0) {
     die("Erreur : Tous les champs obligatoires doivent être remplis.");
 }
+
 $login_user = $_SESSION['login'] ?? $_SESSION['username'] ?? "Inconnu";
 
 // Préparer les données pour l'API
