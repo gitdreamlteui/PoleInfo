@@ -80,7 +80,7 @@ class ReservationUpdate(BaseModel):
     id_reservation: int
     date: Optional[date]
     heure_debut_creneau: Optional[str]
-    duree: Optional[int]
+    duree: Optional[float]
     info: Optional[str]
     numero_salle: Optional[str]
     nom_matiere: Optional[str]
