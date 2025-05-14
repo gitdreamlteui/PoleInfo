@@ -136,7 +136,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             
             if existing_reservation:
                 return {
-                    "status": "error", 
+                    "status": "error_reserv", 
                     "message": f"La salle {numero_salle} est déjà occupée à cette date et ce créneau horaire"
                 }
             
