@@ -51,7 +51,11 @@ if (isset($_SESSION['info_message'])) {
     $success_message = $_SESSION['info_message'];
     unset($_SESSION['info_message']);
 }
-
+$error_message = "";
+if (isset($_SESSION['error_message'])) {
+    $error_message = $_SESSION['error_message'];
+    unset($_SESSION['error_message']);
+}
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url_reservations);
@@ -176,6 +180,14 @@ elseif ($type == 0) {
                 <div class="flex items-center">
                     <i class="fas fa-check-circle mr-2"></i>
                     <p><?php echo htmlspecialchars($success_message); ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
+        <?php if ($error_message): ?>
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded shadow-sm">
+                <div class="flex items-center">
+                    <i class="fa fa-exclamation-circle mr-2"></i>
+                    <p><?php echo htmlspecialchars($error_message); ?></p>
                 </div>
             </div>
         <?php endif; ?>
