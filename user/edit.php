@@ -65,10 +65,7 @@ $heure_debut_formatee = '';
 if (preg_match('/^PT(\d+)H(?:(\d+)M)?$/', $heure_debut_raw, $matches)) {
     $heures = $matches[1];
     $minutes = isset($matches[2]) ? $matches[2] : '00';
-    $heure_debut_formatee = $heures . 'h' . $minutes;
-    if ($minutes === '') {
-        $heure_debut_formatee .= '00';
-    }
+    $heure_debut_formatee = sprintf("%02dh%02d", $heures, $minutes);
 }
 
 $classes_reservees = explode(', ', $reservation['noms_classes']);
@@ -199,10 +196,13 @@ $classes_reservees = explode(', ', $reservation['noms_classes']);
                                         <option value="">Sélectionnez une heure</option>
                                         <?php foreach ($creneaux as $creneau): ?>
                                             <?php 
-                                            // Formatage du créneau pour l'affichage
-                                            $creneau_affichage = preg_replace('/^PT(\d+)H(?:(\d+)M)?$/', '$1h$2', $creneau);
-                                            if (substr($creneau_affichage, -1) === 'h') { 
-                                                $creneau_affichage .= '00';
+                                            // Format d'affichage pour l'interface utilisateur, cohérent avec l'index.php
+                                            if (preg_match('/^PT(\d+)H(?:(\d+)M)?$/', $creneau, $matches)) {
+                                                $heures = $matches[1];
+                                                $minutes = isset($matches[2]) ? $matches[2] : '00';
+                                                $creneau_affichage = sprintf("%02dh%02d", $heures, $minutes);
+                                            } else {
+                                                $creneau_affichage = $creneau;
                                             }
                                             ?>
                                             <option value="<?php echo $creneau; ?>" <?php echo ($creneau == $heure_debut_raw) ? 'selected' : ''; ?>>
