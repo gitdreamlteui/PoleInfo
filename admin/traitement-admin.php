@@ -58,7 +58,7 @@ function verif_HTTP($code){
         header("Location: interface_admin.php");
         exit;
     } else {
-        $message = "Erreur lors de l'ajout de l'utilisateur : ";
+        $message = "Erreur de l'opération : ";
         if (!empty($response)) {
             $error_data = json_decode($response, true);
             $message .= isset($error_data['detail']) ? $error_data['detail'] : (isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code);
