@@ -215,10 +215,10 @@ $classes_reservees = explode(', ', $reservation['noms_classes']);
                                     <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Durée</label>
                                     <select id="duration" name="duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
                                         <option value="">Sélectionnez une durée</option>
-                                        <option value="50" <?php echo ($reservation['duree'] == 50) ? 'selected' : ''; ?>>50 minutes</option>
-                                        <option value="100" <?php echo ($reservation['duree'] == 100) ? 'selected' : ''; ?>>1 heure 40</option>
-                                        <option value="150" <?php echo ($reservation['duree'] == 150) ? 'selected' : ''; ?>>2 heures 30</option>
-                                        <option value="200" <?php echo ($reservation['duree'] == 200) ? 'selected' : ''; ?>>3 heures 20</option>
+                                        <option value="0.84">50 minutes</option>
+                                        <option value="1.67">1 heure 40</option>
+                                        <option value="2.5" >2 heures 30</option>
+                                        <option value="3.33">3 heures 20</option>
                                     </select>
                                 </div>
                             </div>
