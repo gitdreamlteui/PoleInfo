@@ -124,7 +124,7 @@ $date_jour = $date_actuelle->format('d/m/Y');
                         $heuresfin = floor($heureFloat + $item['duree']);
                         $rawminutes = ($heureFloat + $item['duree'] - $heuresfin) * 60;
                         $minutesfin = (int) round($rawminutes);
-                        if(($heures<10&&$heuresfin>=10)||($heures<15&&$heuresfin>15))
+                        if(($heures<10&&$heuresfin>=10)||($heures<15&&$heuresfin>=15))
                         {
                             $minutesfin+=15;
                         }
