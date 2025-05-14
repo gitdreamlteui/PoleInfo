@@ -1,88 +1,52 @@
 <?php
-// modifier_reservation.php
 require_once __DIR__ . '/../config.php';
-
 session_start();
+
 if (!isset($_SESSION['token'])) {
-    header("Location: " . getWebUrl('interface_login.php?error=expired'));
+    header("Location: " . getWebUrl('login.php?error=unauthorized'));
     exit;
 }
 
+if ($_SERVER["REQUEST_METHOD"] !== "POST") {
+    die("Méthode non autorisée.");
+}
+
+// Récupération de l'ID de la réservation
+if (!isset($_POST['id_reservation']) || empty($_POST['id_reservation'])) {
+    die("Erreur : ID de réservation manquant.");
+}
+
+$id_reservation = intval($_POST['id_reservation']);
 $token = $_SESSION['token'];
+$api_url = getApiUrl('/reservations/');
 
-// Vérifier si le formulaire a été soumis
-if ($_SERVER["REQUEST_METHOD"] != "POST") {
-    $_SESSION['info_message'] = "Méthode non autorisée.";
-    header("Location: dashboard.php");
-    exit;
-}
-
-// Récupération et validation des données du formulaire
-$id_reservation = isset($_POST['id_reservation']) ? intval($_POST['id_reservation']) : 0;
-if ($id_reservation <= 0) {
-    $_SESSION['info_message'] = "ID de réservation invalide.";
-    header("Location: dashboard.php");
-    exit;
-}
-
-$date_reserv = $_POST['date_reserv'] ?? '';
-$startTime = $_POST['startTime'] ?? '';
-$duration = $_POST['duration'] ?? '';
+$numero_salle = $_POST['salle'] ?? '';
+$nom_matiere = $_POST['matiere'] ?? '';
+$classes = isset($_POST['classe']) && is_array($_POST['classe']) ? $_POST['classe'] : [];
+$date = $_POST['date_reserv'] ?? '';
 $info = $_POST['message'] ?? '';
-$matiere = $_POST['matiere'] ?? '';
-$salle = $_POST['salle'] ?? '';
-$classe = $_POST['classe'] ?? [];
+$heure_debut = $_POST['startTime'] ?? '';
+$duree = intval($_POST['duration'] ?? 0);  // Utiliser directement la valeur en minutes
 
-// Validation
-$errors = [];
-if (empty($date_reserv)) {
-    $errors[] = "La date de réservation est requise.";
-}
-if (empty($startTime)) {
-    $errors[] = "L'heure de début est requise.";
-}
-if (empty($duration)) {
-    $errors[] = "La durée est requise.";
-}
-if (empty($matiere)) {
-    $errors[] = "La matière est requise.";
-}
-if (empty($salle)) {
-    $errors[] = "La salle est requise.";
-}
-if (empty($classe)) {
-    $errors[] = "Au moins une classe doit être sélectionnée.";
-}
+$nom_classe = !empty($classes) ? implode(", ", $classes) : "";
 
-if (!empty($errors)) {
-    $_SESSION['info_message'] = implode(" ", $errors);
-    header("Location: edit.php?id=" . $id_reservation);
-    exit;
+if (empty($numero_salle) || empty($nom_matiere) || empty($nom_classe) || empty($date) || empty($heure_debut) || $duree <= 0) {
+    die("Erreur : Tous les champs obligatoires doivent être remplis.");
 }
+$login_user = $_SESSION['login'] ?? $_SESSION['username'] ?? "Inconnu";
 
-$classes_string = implode(", ", $classe);
-
-// Conversion de la durée décimale en minutes (entier)
-// Par exemple: 0.834 -> 50 minutes, 1.67 -> 100 minutes, etc.
-$duration_decimal = floatval($duration);
-$duration_minutes = round($duration_decimal * 60); // Conversion en minutes
-
-// Préparation des données à envoyer à l'API
+// Préparer les données pour l'API
 $data = [
     "id_reservation" => $id_reservation,
-    "date" => $date_reserv,
-    "heure_debut_creneau" => $startTime,
-    "duree" => $duration_minutes,  // Envoi de la durée en minutes (entier)
+    "duree" => $duree,
+    "date" => $date,
     "info" => $info,
-    "numero_salle" => $salle,
-    "nom_matiere" => $matiere,
-    "nom_classe" => $classes_string
+    "numero_salle" => $numero_salle,
+    "nom_matiere" => $nom_matiere,
+    "heure_debut_creneau" => $heure_debut,
+    "login_user" => $login_user,
+    "nom_classe" => $nom_classe,
 ];
-
-// Pour le débogage - décommenter pour voir les données avant envoi
-// echo "<pre>"; print_r($data); echo "</pre>"; exit;
-
-$api_url = getApiUrl("/reservations/");
 
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url);
@@ -90,8 +54,8 @@ curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
 curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    'Content-Type: application/json',
-    "Authorization: Bearer $token"
+    "Authorization: Bearer $token",
+    "Content-Type: application/json"
 ]);
 
 $response = curl_exec($ch);
@@ -99,26 +63,63 @@ $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 $curl_error = curl_error($ch);
 curl_close($ch);
 
-if ($http_code >= 200 && $http_code < 300) {
-    $_SESSION['info_message'] = "Réservation modifiée avec succès.";
-    header("Location: dashboard.php");
+if ($http_code === 200) {
+    $response_data = json_decode($response, true);
+    $message = $response_data['message'] ?? "Réservation modifiée avec succès!";
+    
+    $_SESSION['info_message'] = $message;
+    header("Location: " . getWebUrl('user/dashboard.php'));
     exit;
 } else {
-    $error_message = "Erreur lors de la modification. Code HTTP: $http_code";
-    if (!empty($curl_error)) {
-        $error_message .= ". Erreur cURL: " . $curl_error;
-    }
+    $error_message = "";
+    
     if ($response) {
         $response_data = json_decode($response, true);
-        if (is_array($response_data) && isset($response_data['detail'])) {
-            $error_message .= ". Détail: " . json_encode($response_data['detail']);
-        } else {
-            $error_message .= ". Réponse: " . substr($response, 0, 200);
+        
+        if (is_array($response_data)) {
+            if (isset($response_data['detail'])) {
+                if (is_string($response_data['detail'])) {
+                    $error_message = $response_data['detail'];
+                } else {
+                    $error_message = json_encode($response_data['detail']);
+                }
+            } elseif (isset($response_data['message'])) {
+                $error_message = $response_data['message'];
+            } elseif (isset($response_data['error'])) {
+                $error_message = $response_data['error'];
+            }
         }
     }
     
-    $_SESSION['info_message'] = $error_message;
-    header("Location: edit.php?id=" . $id_reservation);
+    if (empty($error_message)) {
+        $error_message = "Erreur lors de la modification de la réservation";
+        if (!empty($curl_error)) {
+            $error_message .= ": " . $curl_error;
+        } else {
+            $error_message .= " (code " . $http_code . ")";
+        }
+    }
+    
+    // Enrichir le message d'erreur en fonction du code HTTP
+    if ($http_code === 400) {
+        if (strpos($error_message, "déjà réservé") === false && 
+            strpos($error_message, "réserv") === false) {
+            if (strpos($error_message, "Cette salle est déjà réservé pour cet horaire") === false) {
+                $error_message = "Cette salle est déjà réservée pour cet horaire";
+            }
+        }
+    } elseif ($http_code === 404) {
+        if (empty($error_message)) {
+            $error_message = "Réservation non trouvée ou problème avec les données";
+        }
+    } elseif ($http_code === 401 || $http_code === 403) {
+        if (empty($error_message)) {
+            $error_message = "Vous n'avez pas les droits nécessaires pour effectuer cette action";
+        }
+    }
+    
+    $_SESSION['error_message'] = $error_message;
+    header("Location: " . getWebUrl('user/dashboard.php'));
     exit;
 }
 ?>
