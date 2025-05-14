@@ -44,6 +44,13 @@ exec($cmd, $output, $resultCode);
 // Vérifier le résultat
 if ($resultCode === 0) {
     echo "✅ Sauvegarde réussie : $file\n";
+    // Téléchargement du fichier
+    header('Content-Type: application/sql');
+    header("Content-Disposition: attachment; filename=\"$file\"");
+    readfile("$file");
+    unlink("$file");
 } else {
     echo "❌ Erreur pendant la sauvegarde. Code : $resultCode\n";
 }
+header('Location: ' . getWebUrl('admin.php'));
+exit;
