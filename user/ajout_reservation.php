@@ -64,17 +64,62 @@ if ($http_code === 201 || $http_code === 200) {
     header("Location: " . getWebUrl('user/dashboard.php'));
     exit;
 } else {
-    $message = "Erreur lors de l'ajout de la réservation: ";
-    if (!empty($response)) {
-        $error_data = json_decode($response, true);
-        $message .= isset($error_data['message']) ? $error_data['message'] : 'Code ' . $http_code;
-    } elseif (!empty($curl_error)) {
-        $message .= $curl_error;
-    } else {
-        $message .= 'Code ' . $http_code;
+    $error_message = "";
+    
+    if ($response) {
+        $response_data = json_decode($response, true);
+        
+        if (is_array($response_data)) {
+            // Recherche dans différents champs possibles de message d'erreur
+            if (isset($response_data['detail'])) {
+                // Si le message d'erreur est sous forme de string direct
+                if (is_string($response_data['detail'])) {
+                    $error_message = $response_data['detail'];
+                } 
+                // Si le message d'erreur est un tableau ou un objet
+                else {
+                    $error_message = json_encode($response_data['detail']);
+                }
+            } elseif (isset($response_data['message'])) {
+                $error_message = $response_data['message'];
+            } elseif (isset($response_data['error'])) {
+                $error_message = $response_data['error'];
+            }
+        }
     }
     
-    $_SESSION['info_message'] = $message;
+    // Si aucun message d'erreur n'a pu être extrait, utiliser un message générique
+    if (empty($error_message)) {
+        $error_message = "Erreur lors de l'ajout de la réservation";
+        if (!empty($curl_error)) {
+            $error_message .= ": " . $curl_error;
+        } else {
+            $error_message .= " (code " . $http_code . ")";
+        }
+    }
+    
+    // Enrichir le message d'erreur en fonction du code HTTP
+    if ($http_code === 400) {
+        // Vérifier si le message d'erreur concerne déjà une réservation existante
+        if (strpos($error_message, "déjà réservé") === false && 
+            strpos($error_message, "réserv") === false) {
+            // Si le message ne contient pas déjà cette information
+            if (strpos($error_message, "Cette salle est déjà réservé pour cet horaire") === false) {
+                // Le message original de l'API n'a pas été récupéré correctement
+                $error_message = "Cette salle est déjà réservée pour cet horaire";
+            }
+        }
+    } elseif ($http_code === 404) {
+        if (empty($error_message)) {
+            $error_message = "Utilisateur non trouvé ou problème avec les données de réservation";
+        }
+    } elseif ($http_code === 401 || $http_code === 403) {
+        if (empty($error_message)) {
+            $error_message = "Vous n'avez pas les droits nécessaires pour effectuer cette action";
+        }
+    }
+    
+    $_SESSION['info_message'] = $error_message;
     header("Location: " . getWebUrl('user/dashboard.php'));
     exit;
 }
