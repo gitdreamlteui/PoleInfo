@@ -1,17 +1,23 @@
 <?php
 // modifier_reservation.php
 require_once __DIR__ . '/../config.php';
-session_start();
 
+session_start();
 if (!isset($_SESSION['token'])) {
     header("Location: " . getWebUrl('interface_login.php?error=expired'));
     exit;
 }
 
 $token = $_SESSION['token'];
-$username = $_SESSION['username'];
 
-// Vérifier l'ID de réservation
+// Vérifier si le formulaire a été soumis
+if ($_SERVER["REQUEST_METHOD"] != "POST") {
+    $_SESSION['info_message'] = "Méthode non autorisée.";
+    header("Location: dashboard.php");
+    exit;
+}
+
+// Récupération et validation des données du formulaire
 $id_reservation = isset($_POST['id_reservation']) ? intval($_POST['id_reservation']) : 0;
 if ($id_reservation <= 0) {
     $_SESSION['info_message'] = "ID de réservation invalide.";
@@ -21,7 +27,7 @@ if ($id_reservation <= 0) {
 
 $date_reserv = $_POST['date_reserv'] ?? '';
 $startTime = $_POST['startTime'] ?? '';
-$duration = isset($_POST['duration']) ? $_POST['duration'] : 0;
+$duration = $_POST['duration'] ?? '';
 $info = $_POST['message'] ?? '';
 $matiere = $_POST['matiere'] ?? '';
 $salle = $_POST['salle'] ?? '';
@@ -56,18 +62,25 @@ if (!empty($errors)) {
 
 $classes_string = implode(", ", $classe);
 
-$duration_value = intval(floatval($duration) * 100); // Convertir en entier (en centièmes d'heure)
+// Conversion de la durée décimale en minutes (entier)
+// Par exemple: 0.834 -> 50 minutes, 1.67 -> 100 minutes, etc.
+$duration_decimal = floatval($duration);
+$duration_minutes = round($duration_decimal * 60); // Conversion en minutes
 
+// Préparation des données à envoyer à l'API
 $data = [
     "id_reservation" => $id_reservation,
     "date" => $date_reserv,
     "heure_debut_creneau" => $startTime,
-    "duree" => $duration_value,
+    "duree" => $duration_minutes,  // Envoi de la durée en minutes (entier)
     "info" => $info,
     "numero_salle" => $salle,
     "nom_matiere" => $matiere,
     "nom_classe" => $classes_string
 ];
+
+// Pour le débogage - décommenter pour voir les données avant envoi
+// echo "<pre>"; print_r($data); echo "</pre>"; exit;
 
 $api_url = getApiUrl("/reservations/");
 
