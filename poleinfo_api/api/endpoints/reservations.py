@@ -66,8 +66,10 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
             "message": f"Réservation enregistrée par {username}.", 
             "id": result.get("id_reservation")
         }
+    elif result.get("status") == "error_reserv" :
+        raise HTTPException(status_code=400, detail=result.get("message", "Cette salle est déjà réservé pour cet horaire"))
     else:
-        raise HTTPException(status_code=400, detail=result.get("message", "Erreur lors de la création de la réservation"))
+        raise HTTPException(status_code=400, detail=result.get("message", "Erreur lors de la création de la réservation, veuillez consulter un administrateur."))
 
 
 @router.get("/", response_model=List[ReservationResponse])
