@@ -124,28 +124,22 @@ def get_reservations_by_salle_increase(numero_salle: str) -> List[Dict[str, Any]
 def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_creneau, login_user, nom_classe):
     with get_db_cursor() as cursor:
         try:
-            # Vérifier si une des classes est déjà réservée à cette date et créneau
-            classes = [classe.strip() for classe in nom_classe.split(',')]
+            query_check_salle = """
+            SELECT r.id_reservation
+            FROM reservation r
+            JOIN salle s ON r.id_salle = s.id_salle
+            JOIN creneau c ON r.id_creneau = c.id_creneau
+            WHERE s.numero = %s AND r.date = %s AND c.heure_debut = %s
+            """
+            cursor.execute(query_check_salle, (numero_salle, date, heure_debut_creneau))
+            existing_reservation = cursor.fetchone()
             
-            for classe in classes:
-                query_check_classe = """
-                SELECT r.id_reservation
-                FROM reservation r
-                JOIN classe_reservation cr ON r.id_reservation = cr.id_reservation
-                JOIN classe cl ON cr.id_classe_grp = cl.id_classe_grp
-                JOIN creneau c ON r.id_creneau = c.id_creneau
-                WHERE cl.nom = %s AND r.date = %s AND c.heure_debut = %s
-                """
-                cursor.execute(query_check_classe, (classe, date, heure_debut_creneau))
-                existing_reservation = cursor.fetchone()
-                
-                if existing_reservation:
-                    return {
-                        "status": "error", 
-                        "message": f"La classe {classe} est déjà réservée à cette date et ce créneau horaire"
-                    }
+            if existing_reservation:
+                return {
+                    "status": "error", 
+                    "message": f"La salle {numero_salle} est déjà occupée à cette date et ce créneau horaire"
+                }
             
-            # Si pas de conflit, continuer avec l'insertion de la réservation
             cursor.execute("SELECT id_salle FROM salle WHERE numero = %s", (numero_salle,))
             result_salle = cursor.fetchone()
             if not result_salle:
@@ -179,6 +173,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             id_reservation = cursor.lastrowid
 
             # Ajouter les classes à la réservation
+            classes = [classe.strip() for classe in nom_classe.split(',')]
             for classe in classes:
                 cursor.execute("SELECT id_classe_grp FROM classe WHERE nom = %s", (classe,))
                 result_classe = cursor.fetchone()
@@ -192,6 +187,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
 
         except Exception as e:
             return {"status": "error", "message": str(e)}
+
 
 def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
     """Récupère toutes les réservations pour un professeur spécifique par ordre croissant"""
