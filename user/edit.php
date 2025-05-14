@@ -57,33 +57,19 @@ $classes = getClasses();
 // Formatage des données pour l'affichage
 $date_reservation = date('Y-m-d', strtotime($reservation['date']));
 
+// Extraction de l'heure de début
+$heure_debut_raw = $reservation['heure_debut'];
+$heure_debut_formatee = '';
 
-// Correction du traitement de l'heure de début
-$heure_debut_raw = $reservation['heure_debut']; // par exemple "PT9H"
-// Convertir l'heure de début en format lisible avec le code existant
-$heure_debut = preg_replace('/^PT(\d+)H(?:(\d+)M)?$/', '$1:$2', $heure_debut_raw);
-$heure_debut = str_replace(':','h',$heure_debut);
-if (substr($heure_debut, -1) === 'h') $heure_debut .= '00';
-// Maintenant, pour les créneaux, appliquez la même logique pour les comparer
-$creneaux_formattés = [];
-foreach ($creneaux as $creneau) {
-    // Si le créneau est déjà formaté, on le garde tel quel
-    if (strpos($creneau, 'h') !== false) {
-        $creneaux_formattés[] = $creneau;
-    } 
-    // Sinon, s'il est au format ISO, on le formate
-    else if (strpos($creneau, 'PT') === 0) {
-        $creneau_formatté = preg_replace('/^PT(\d+)H(?:(\d+)M)?$/', '$1:$2', $creneau);
-        $creneau_formatté = str_replace(':','h',$creneau_formatté);
-        if (substr($creneau_formatté, -1) === 'h') $creneau_formatté .= '00';
-        $creneaux_formattés[] = $creneau_formatté;
-    }
-    // Cas imprévu - on garde la valeur originale
-    else {
-        $creneaux_formattés[] = $creneau;
+// Format d'affichage pour l'interface utilisateur
+if (preg_match('/^PT(\d+)H(?:(\d+)M)?$/', $heure_debut_raw, $matches)) {
+    $heures = $matches[1];
+    $minutes = isset($matches[2]) ? $matches[2] : '00';
+    $heure_debut_formatee = $heures . 'h' . $minutes;
+    if ($minutes === '') {
+        $heure_debut_formatee .= '00';
     }
 }
-
 
 $classes_reservees = explode(', ', $reservation['noms_classes']);
 ?>
@@ -148,7 +134,7 @@ $classes_reservees = explode(', ', $reservation['noms_classes']);
                 <p class="text-gray-600">Modifiez les détails de votre réservation.</p>
             </div>
         </div>
-
+        
         <!-- Reservation Form Card -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 mb-6 overflow-hidden">
             <div class="bg-primary text-white p-3 font-semibold text-lg rounded-t-lg flex items-center">
@@ -213,13 +199,14 @@ $classes_reservees = explode(', ', $reservation['noms_classes']);
                                         <option value="">Sélectionnez une heure</option>
                                         <?php foreach ($creneaux as $creneau): ?>
                                             <?php 
-                                            // Appliquer le même formatage pour chaque créneau lors de la comparaison
-                                            $creneau_formatté = preg_replace('/^PT(\d+)H(?:(\d+)M)?$/', '$1:$2', $creneau);
-                                            $creneau_formatté = str_replace(':','h',$creneau_formatté);
-                                            if (substr($creneau_formatté, -1) === 'h') $creneau_formatté .= '00';
+                                            // Formatage du créneau pour l'affichage
+                                            $creneau_affichage = preg_replace('/^PT(\d+)H(?:(\d+)M)?$/', '$1h$2', $creneau);
+                                            if (substr($creneau_affichage, -1) === 'h') { 
+                                                $creneau_affichage .= '00';
+                                            }
                                             ?>
-                                            <option value="<?php echo $creneau; ?>" <?php echo ($creneau_formatté === $heure_debut) ? 'selected' : ''; ?>>
-                                                <?php echo $creneau_formatté; ?>
+                                            <option value="<?php echo $creneau; ?>" <?php echo ($creneau == $heure_debut_raw) ? 'selected' : ''; ?>>
+                                                <?php echo $creneau_affichage; ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -228,10 +215,10 @@ $classes_reservees = explode(', ', $reservation['noms_classes']);
                                     <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Durée</label>
                                     <select id="duration" name="duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
                                         <option value="">Sélectionnez une durée</option>
-                                        <option value="0.84" <?php echo ($reservation['duree'] == 50) ? 'selected' : ''; ?>>50 minutes</option>
-                                        <option value="1.67" <?php echo ($reservation['duree'] == 100) ? 'selected' : ''; ?>>1 heure 40</option>
-                                        <option value="2.5" <?php echo ($reservation['duree'] == 150) ? 'selected' : ''; ?>>2 heures 30</option>
-                                        <option value="3.33" <?php echo ($reservation['duree'] == 200) ? 'selected' : ''; ?>>3 heures 20</option>
+                                        <option value="50" <?php echo ($reservation['duree'] == 50) ? 'selected' : ''; ?>>50 minutes</option>
+                                        <option value="100" <?php echo ($reservation['duree'] == 100) ? 'selected' : ''; ?>>1 heure 40</option>
+                                        <option value="150" <?php echo ($reservation['duree'] == 150) ? 'selected' : ''; ?>>2 heures 30</option>
+                                        <option value="200" <?php echo ($reservation['duree'] == 200) ? 'selected' : ''; ?>>3 heures 20</option>
                                     </select>
                                 </div>
                             </div>
@@ -255,7 +242,6 @@ $classes_reservees = explode(', ', $reservation['noms_classes']);
         <!-- Footer -->
         <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
             © 2025 Système d'information BTS - Tous droits réservés
-
         </footer>
     </main>
 </body>
