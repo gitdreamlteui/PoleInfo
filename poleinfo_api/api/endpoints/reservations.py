@@ -41,6 +41,7 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
         HTTPException: 
             - Erreur 404 si l'utilisateur n'existe pas
             - Erreur 400 si la réservation ne peut pas être créée
+            - Erreur 409 si les classes sont déjà réservées
     """
     user = get_user_by_id(user_id)
     if not user:
@@ -66,8 +67,12 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
             "message": f"Réservation enregistrée par {username}.", 
             "id": result.get("id_reservation")
         }
+    elif "déjà réservée" in result.get("message", ""):
+        # Conflit de réservation pour une classe
+        raise HTTPException(status_code=409, detail=result.get("message"))
     else:
         raise HTTPException(status_code=400, detail=result.get("message", "Erreur lors de la création de la réservation"))
+
 
 
 @router.get("/", response_model=List[ReservationResponse])
