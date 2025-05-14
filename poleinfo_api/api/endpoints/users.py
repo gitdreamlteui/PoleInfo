@@ -92,7 +92,7 @@ def delete_users(user: UserDelete, user_id: int = Depends(verify_admin)):
             detail="Erreur lors de la suppression de l'utilisateur"
         )
     
-    return {"message": f"Utilisateur '{user.nom}' supprimé avec succès"}
+    return {"message": f"Utilisateur avec login '{user.login}' supprimé avec succès"}
 
 
 @router.get("/", response_model=List[UserResponse])
