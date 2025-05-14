@@ -12,15 +12,9 @@ $host = 'localhost'; // ou l'adresse de votre serveur MySQL
 $db = 'poleinfo'; // nom de votre base de données
 $user = 'root'; // votre nom d'utilisateur MySQL
 $pass = 'cielPOLEINFO25**'; // votre mot de passe MySQL
-$backupDir = __DIR__ . '/../backups'; // chemin absolu vers le dossier de sauvegarde
+$backupDir = __DIR__ . '/var/www/html/PoleInfo/backups'; // chemin absolu vers le dossier de sauvegarde
 
 try {
-    // Créer le dossier de sauvegarde s'il n'existe pas
-    if (!is_dir($backupDir)) {
-        if (!mkdir($backupDir, 0755, true)) {
-            throw new Exception("Impossible de créer le dossier de sauvegarde: $backupDir");
-        }
-    }
 
     // Vérifier que le dossier est accessible en écriture
     if (!is_writable($backupDir)) {
