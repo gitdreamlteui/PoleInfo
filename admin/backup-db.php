@@ -9,9 +9,9 @@ if (!isset($_SESSION['token']) || $_SESSION['type_compte'] != 1) {
 
 // Configuration de la base de données - REMPLACEZ PAR VOS VALEURS RÉELLES
 $host = 'localhost'; // ou l'adresse de votre serveur MySQL
-$db = 'nom_de_votre_base'; // nom de votre base de données
-$user = 'utilisateur_mysql'; // votre nom d'utilisateur MySQL
-$pass = 'mot_de_passe_mysql'; // votre mot de passe MySQL
+$db = 'poleinfo'; // nom de votre base de données
+$user = 'root'; // votre nom d'utilisateur MySQL
+$pass = 'cielPOLEINFO25**'; // votre mot de passe MySQL
 $backupDir = __DIR__ . '/../backups'; // chemin absolu vers le dossier de sauvegarde
 
 try {
