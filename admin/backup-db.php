@@ -3,75 +3,84 @@ require_once __DIR__ . '/../config.php';
 
 session_start();
 if (!isset($_SESSION['token']) || $_SESSION['type_compte'] != 1) {
-    header('Location' . getWebUrl("/interface_login.php?error=expired"));
+    header('Location: ' . getWebUrl("/interface_login.php?error=expired"));
     exit;
 }
 
-// Charger les variables d’environnement
-$host = $_ENV['DB_HOST'];
-$db   = $_ENV['DB_NAME'];
-$user = $_ENV['DB_USER'];
-$pass = $_ENV['DB_PASSWORD'];
-$backupDir = $_ENV['BACKUP_DIR'];
+// Configuration de la base de données - REMPLACEZ PAR VOS VALEURS RÉELLES
+$host = 'localhost'; // ou l'adresse de votre serveur MySQL
+$db = 'nom_de_votre_base'; // nom de votre base de données
+$user = 'utilisateur_mysql'; // votre nom d'utilisateur MySQL
+$pass = 'mot_de_passe_mysql'; // votre mot de passe MySQL
+$backupDir = __DIR__ . '/../backups'; // chemin absolu vers le dossier de sauvegarde
 
-/// Créer le dossier de sauvegarde s'il n'existe pas
-if (!is_dir($backupDir)) {
-    if (!mkdir($backupDir, 0755, true)) {
-        throw new Exception("Impossible de créer le dossier de sauvegarde");
-    }
-}
 try {
-// Nom du fichier de sauvegarde
-$filename = $dbname . '_sauvegarde_' . date('Y-m-d_H-i-s') . '.sql';
-$backupFile = $backupDir . '/' . $filename;
-// Commande mysqldump
-$command = sprintf(
-    'mysqldump --opt --skip-comments -h%s -u%s -p%s %s > %s',
-    escapeshellarg($host),
-    escapeshellarg($user),
-    escapeshellarg($pass),
-    escapeshellarg($db),
-    escapeshellarg($backupFile)
-);
+    // Créer le dossier de sauvegarde s'il n'existe pas
+    if (!is_dir($backupDir)) {
+        if (!mkdir($backupDir, 0755, true)) {
+            throw new Exception("Impossible de créer le dossier de sauvegarde: $backupDir");
+        }
+    }
 
-exec($command, $commandOutput, $returnVar);
+    // Vérifier que le dossier est accessible en écriture
+    if (!is_writable($backupDir)) {
+        throw new Exception("Le dossier de sauvegarde n'est pas accessible en écriture");
+    }
+    
+    // Nom du fichier de sauvegarde
+    $filename = $db . '_sauvegarde_' . date('Y-m-d_H-i-s') . '.sql';
+    $backupFile = $backupDir . '/' . $filename;
+    
+    // Commande mysqldump
+    $command = sprintf(
+        'mysqldump --opt --skip-comments -h%s -u%s -p%s %s > %s',
+        escapeshellarg($host),
+        escapeshellarg($user),
+        escapeshellarg($pass),
+        escapeshellarg($db),
+        escapeshellarg($backupFile)
+    );
 
-if ($returnVar !== 0) {
-    throw new Exception("La commande mysqldump a échoué avec le code $returnVar");
-}
+    // Exécuter la commande
+    exec($command, $commandOutput, $returnVar);
 
-// Pour la méthode PDO: sauvegarder dans un fichier
-file_put_contents($backupFile, $output);
+    if ($returnVar !== 0) {
+        throw new Exception("La commande mysqldump a échoué avec le code $returnVar");
+    }
 
-// Vérifier que le fichier existe
-if (!file_exists($backupFile) || filesize($backupFile) == 0) {
-    throw new Exception("La sauvegarde n'a pas été créée correctement");
-}
+    // Vérifier que le fichier existe et n'est pas vide
+    if (!file_exists($backupFile) || filesize($backupFile) == 0) {
+        throw new Exception("La sauvegarde n'a pas été créée correctement");
+    }
 
-// Configurer les en-têtes pour le téléchargement
-header('Content-Description: File Transfer');
-header('Content-Type: application/octet-stream');
-header('Content-Disposition: attachment; filename="' . $filename . '"');
-header('Content-Transfer-Encoding: binary');
-header('Expires: 0');
-header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-header('Pragma: public');
-header('Content-Length: ' . filesize($backupFile));
+    // Configurer les en-têtes pour le téléchargement
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . $filename . '"');
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($backupFile));
 
-// Envoyer le fichier au navigateur
-readfile($backupFile);
+    // Vider les tampons de sortie
+    ob_clean();
+    flush();
 
-// Nettoyer
-unlink($backupFile);
-exit;
+    // Envoyer le fichier au navigateur
+    readfile($backupFile);
+
+    // Nettoyer
+    unlink($backupFile);
+    exit;
 }
 catch (Exception $e) {
-// Gérer les erreurs de façon sécurisée
-error_log("Erreur de sauvegarde de BDD: " . $e->getMessage());
+    // Gérer les erreurs de façon sécurisée
+    error_log("Erreur de sauvegarde de BDD: " . $e->getMessage());
 
-// Rediriger vers une page d'erreur ou afficher un message
-$_SESSION['backup_error'] = "La sauvegarde a échoué. Veuillez contacter l'administrateur.";
-header('Location: ' . getWebUrl('/interface_admin.php?error=backup_failed'));
-exit;
+    // Rediriger vers une page d'erreur
+    $_SESSION['backup_error'] = "La sauvegarde a échoué: " . $e->getMessage();
+    header('Location: ' . getWebUrl('/interface_admin.php?error=backup_failed'));
+    exit;
 }
 ?>
