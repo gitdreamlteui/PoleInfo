@@ -312,4 +312,5 @@ def check_classe_availability(nom_classe: str, date: str, heure_debut_creneau: s
         """
         cursor.execute(query, (date, nom_classe, heure_debut_creneau))
         result = cursor.fetchone()
+        print(f"reservation.py  result > {result}")
         return result is None
