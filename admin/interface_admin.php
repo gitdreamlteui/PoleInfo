@@ -321,9 +321,12 @@ $date_jour = $date_actuelle->format('d/m/Y');
     <div class="bg-white shadow-sm p-6 rounded-lg border border-gray-200 hover:shadow-md transition-shadow">
         <h2 class="text-xl font-semibold mb-4 text-primary">Restaurer une sauvegarde</h2>
         <form action="restore-db.php" method="POST" enctype="multipart/form-data">
-            <input type="file" name="sql_file" accept=".sql" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary mb-3">
+            <input type="file" name="sql_file" accept=".sql" required class="w-full p-2 border border-gray-300 rounded-md focus:ring-primary focus:border-primary mb-3" require>
             <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors w-full font-medium">Restaurer la base</button>
         </form>
+        <div class="alert alert-warning">
+        <strong>Attention!</strong> Cette action remplacera toutes les données actuelles. Assurez-vous d'avoir une sauvegarde récente avant de procéder.
+        </div>
     </div>
 </div>
 
