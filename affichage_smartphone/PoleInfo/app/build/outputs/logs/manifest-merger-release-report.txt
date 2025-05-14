@@ -1,9 +1,9 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-35:12
-INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-35:12
-INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-35:12
-INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-35:12
+ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-37:12
+INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-37:12
+INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-37:12
+INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-37:12
 MERGED from [com.google.android.material:material:1.10.0] /Users/lucas/.gradle/caches/transforms-3/be1e9fd16d3b859222c261da27884c62/transformed/material-1.10.0/AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/lucas/.gradle/caches/transforms-3/d9eba0d1af077449d827fe9be587be02/transformed/constraintlayout-2.1.4/AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.6.1] /Users/lucas/.gradle/caches/transforms-3/ebfe1690160551efe7f3c1709ff1d601/transformed/jetified-appcompat-resources-1.6.1/AndroidManifest.xml:17:1-22:12
@@ -46,20 +46,20 @@ MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/lucas/.gradle/caches/
 MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/lucas/.gradle/caches/transforms-3/9ca2717820b85713f0645ec4043ebe5f/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/lucas/.gradle/caches/transforms-3/806b9ea62d5401a4bb51913bc8637a10/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.print:print:1.0.0] /Users/lucas/.gradle/caches/transforms-3/8280801263cd01eb93df0f0a2d3ec9ad/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
-INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-35:12
-INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-35:12
-INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-35:12
+INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-37:12
+INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-37:12
+INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-37:12
 	package
 		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:2:5-35
 		INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml
 		INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml
 	android:versionName
 		INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml
-		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-35:12
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-37:12
 		INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml
 	android:versionCode
 		INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml
-		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-35:12
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:1-37:12
 		INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml
 	xmlns:android
 		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:1:11-69
@@ -80,7 +80,7 @@ ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManif
 	android:mimeType
 		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:11:19-66
 application
-ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:16:5-33:19
+ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:16:5-35:19
 MERGED from [com.google.android.material:material:1.10.0] /Users/lucas/.gradle/caches/transforms-3/be1e9fd16d3b859222c261da27884c62/transformed/material-1.10.0/AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.material:material:1.10.0] /Users/lucas/.gradle/caches/transforms-3/be1e9fd16d3b859222c261da27884c62/transformed/material-1.10.0/AndroidManifest.xml:22:5-20
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] /Users/lucas/.gradle/caches/transforms-3/d9eba0d1af077449d827fe9be587be02/transformed/constraintlayout-2.1.4/AndroidManifest.xml:9:5-20
@@ -103,6 +103,10 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/lucas/.gradle/caches
 		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:20:9-35
 	android:label
 		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:19:9-34
+	android:roundIcon
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:23:9-41
+	android:icon
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:22:9-36
 	android:allowBackup
 		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:17:9-35
 	android:theme
@@ -110,23 +114,23 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/lucas/.gradle/caches
 	android:networkSecurityConfig
 		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:18:9-69
 activity#com.example.poleinfo.MainActivity
-ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:24:9-32:20
+ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:26:9-34:20
 	android:exported
-		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:27:13-36
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:29:13-36
 	android:theme
-		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:26:13-44
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:28:13-44
 	android:name
-		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:25:13-41
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:27:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:28:13-31:29
+ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:30:13-33:29
 action#android.intent.action.MAIN
-ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:29:17-69
+ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:31:17-69
 	android:name
-		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:29:25-66
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:31:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:30:17-77
+ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:32:17-77
 	android:name
-		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:30:27-74
+		ADDED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml:32:27-74
 uses-sdk
 INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /Users/lucas/AndroidStudioProjects/PoleInfo/app/src/main/AndroidManifest.xml

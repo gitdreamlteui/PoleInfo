@@ -18,7 +18,9 @@
         android:networkSecurityConfig="@xml/network_security_config"
         android:label="Pôle Info"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:icon="@mipmap/logo"
+        android:roundIcon="@mipmap/logo">
 
         <!-- Activité principale -->
         <activity

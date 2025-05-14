@@ -119,7 +119,7 @@ if ($http_code === 201 || $http_code === 200) {
         }
     }
     
-    $_SESSION['info_message'] = $error_message;
+    $_SESSION['error_message'] = $error_message;
     header("Location: " . getWebUrl('user/dashboard.php'));
     exit;
 }
