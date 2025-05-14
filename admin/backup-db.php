@@ -33,9 +33,9 @@ $backupFile = $backupDir . '/' . $filename;
 $command = sprintf(
     'mysqldump --opt --skip-comments -h%s -u%s -p%s %s > %s',
     escapeshellarg($host),
-    escapeshellarg($username),
-    escapeshellarg($password),
-    escapeshellarg($dbname),
+    escapeshellarg($user),
+    escapeshellarg($pass),
+    escapeshellarg($db),
     escapeshellarg($backupFile)
 );
 
@@ -68,8 +68,6 @@ readfile($backupFile);
 
 // Nettoyer
 unlink($backupFile);
-header('Location: ' . getWebUrl('/interface_admin.php'));
-exit;
 exit;
 }
 catch (Exception $e) {
