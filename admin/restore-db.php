@@ -93,11 +93,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['restore_error'] = 'Échec du téléchargement du fichier.';
         }
         
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        header('Location: ' . 'interface_admin.php');
         exit;
     } else {
         $_SESSION['restore_error'] = 'Aucun fichier n\'a été envoyé ou une erreur s\'est produite.';
-        header('Location: ' . $_SERVER['PHP_SELF']);
+        header('Location: ' . 'interface_admin.php');
         exit;
     }
 }
