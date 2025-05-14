@@ -153,7 +153,11 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                 classe_result = cursor.fetchone()
                 if classe_result is None:
                     raise Exception(f"Classe '{classe}' non trouvée")
-                    
+                
+                is_available = check_classe_availability(classe, date, heure_debut_creneau, float(duree))    
+                if not is_available:
+                    return {"status": "error", "message": f"La classe '{classe}' est déjà réservée à cette date et heure"}
+                
                 id_classe = classe_result['id_classe_grp']
                 
                 cursor.execute("INSERT INTO classe_reservation (id_reservation, id_classe_grp) VALUES (%s, %s)", 
@@ -279,3 +283,33 @@ def update_reservation(id_reservation: int, duree=None, date=None, info=None, nu
             return {"status": "success", "message": "Réservation mise à jour"}
         except Exception as e:
             return {"status": "error", "message": f"Erreur lors de la mise à jour : {str(e)}"}
+
+def check_classe_availability(nom_classe: str, date: str, heure_debut_creneau: str, duree: float) -> bool:
+    """
+    Vérifie si une classe est déjà réservée à une date et heure spécifiques
+    
+    Args:
+        nom_classe: Nom de la classe à vérifier
+        date: Date de la réservation
+        heure_debut_creneau: Heure de début du créneau
+        duree: Durée de la réservation en heures
+    
+    Returns:
+        True si la classe est disponible, False sinon
+    """
+    with get_db_cursor() as cursor:
+        # Convertir l'heure de début en datetime pour les calculs
+        query = """
+        SELECT r.id_reservation
+        FROM reservation r
+        JOIN creneau c ON r.id_creneau = c.id_creneau
+        JOIN classe_reservation cr ON r.id_reservation = cr.id_reservation
+        JOIN classe cl ON cr.id_classe_grp = cl.id_classe_grp
+        WHERE 
+            r.date = %s
+            AND cl.nom = %s
+            AND c.heure_debut = %s
+        """
+        cursor.execute(query, (date, nom_classe, heure_debut_creneau))
+        result = cursor.fetchone()
+        return result is None
