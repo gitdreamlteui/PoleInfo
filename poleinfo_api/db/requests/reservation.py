@@ -123,6 +123,7 @@ def get_reservations_by_salle_increase(numero_salle: str) -> List[Dict[str, Any]
         cursor.execute(query, (numero_salle,))
         return cursor.fetchall()
     
+
 def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_creneau, login_user, nom_classe):
     with get_db_cursor() as cursor:
         try:
@@ -163,17 +164,23 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             
             # Vérifier les chevauchements
             for reservation in existing_reservations:
-                heure_debut = reservation['heure_debut']
+                heure_debut_existante = reservation['heure_debut']
+                duree_existante = reservation['duree']
                 
-                # Convertir heure_debut en datetime
-                if isinstance(heure_debut, timedelta):
-                    seconds = heure_debut.total_seconds()
-                    hours, remainder = divmod(seconds, 3600)
-                    minutes, seconds = divmod(remainder, 60)
-                    heure_debut = time(int(hours), int(minutes), int(seconds))
+                # Conversion spécifique pour timedelta
+                if isinstance(heure_debut_existante, timedelta):
+                    # Calculer l'heure de début à partir des secondes totales
+                    secondes_totales = heure_debut_existante.total_seconds()
+                    heures = int(secondes_totales // 3600)
+                    minutes = int((secondes_totales % 3600) // 60)
+                    secondes = int(secondes_totales % 60)
+                    heure_debut_time = time(heures, minutes, secondes)
+                else:
+                    heure_debut_time = heure_debut_existante
                 
-                existante_debut = datetime.combine(date, heure_debut)
-                existante_fin = existante_debut + timedelta(hours=reservation['duree'])
+                # Créer des datetime pour la comparaison
+                existante_debut = datetime.combine(date, heure_debut_time)
+                existante_fin = existante_debut + timedelta(hours=duree_existante)
                 
                 # Vérifier le chevauchement
                 if (nouvelle_debut < existante_fin and nouvelle_fin > existante_debut):
@@ -222,7 +229,10 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             return {"status": "success", "id_reservation": id_reservation}
 
         except Exception as e:
+            import traceback
+            traceback.print_exc()
             return {"status": "error", "message": str(e)}
+
 
 
 def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
