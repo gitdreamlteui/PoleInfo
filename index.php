@@ -107,12 +107,20 @@ if (isset($_SESSION['token'])) {
             </div>
             <?php if (isset($connected) && $connected === TRUE): ?>
                 <div class="flex items-center">
-                    <div class="text-white mr-4">Vous êtes connecté.</div>
-                    <a href="user/dashboard.php" class="no-underline">
-                        <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
-                            Accéder à mon espace
-                        </button>
-                    </a>
+                    <div class="text-white mr-4">Bonjour, <?php echo $login; ?></div>
+                    <?php if (isset($type) && $type == 1): ?>
+                        <a href="admin/interface_admin.php" class="no-underline">
+                            <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
+                                Accéder à mon espace
+                            </button>
+                        </a>
+                    <?php else: ?>
+                        <a href="user/dashboard.php" class="no-underline">
+                            <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
+                                Accéder à mon espace
+                            </button>
+                        </a>
+                    <?php endif; ?>
                 </div>
             <?php else: ?>
                 <a href="interface_login.php" class="no-underline">
@@ -123,6 +131,7 @@ if (isset($_SESSION['token'])) {
             <?php endif; ?>
         </div>
     </header>
+
 
     
     <main class="container mx-auto px-4 py-6 mt-16">
