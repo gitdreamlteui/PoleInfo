@@ -344,7 +344,7 @@ elseif ($type == 0) {
                                     <button onclick="toggleDetails('details-<?php echo $reservation['id_reservation']; ?>')" class="text-primary hover:text-blue-800 mr-3">
                                         <i class="fas fa-info-circle"></i>
                                     </button>
-                                    <?php if ($reservation['nom_user'] === $username): ?>
+                                    <?php if ($reservation['nom_user'] === $username || $type === 1): ?>
                                     <a href="edit.php?id=<?php echo $reservation['id_reservation']; ?>" class="text-indigo-600 hover:text-indigo-800 mr-3">
                                         <i class="fas fa-edit"></i>
                                     </a>
