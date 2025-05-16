@@ -145,7 +145,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             limite_seconds = 17 * 3600 + 25 * 60
             limite_seconds = limite_seconds + 1
             
-            if fin_seconds > limite_seconds:
+            if fin_seconds >= limite_seconds:
                 heure_fin = f"{int(fin_seconds // 3600)}:{int((fin_seconds % 3600) // 60):02d}"
                 return {
                     "status": "error_time_limit", 
