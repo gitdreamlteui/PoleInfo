@@ -152,6 +152,13 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                         "status": "error_reserv", 
                         "message": f"La salle {numero_salle} est déjà occupée à cette date et ce créneau horaire"
                     }
+            heure_fin_creneau = heure_debut_creneau + timedelta(hours=duree_creneau)
+            limite_fin_journee = datetime.strptime('17:25', '%H:%M')
+            limite_midi = datetime.strptime('12:35', '%H:%M')
+            if heure_fin_creneau.time() > limite_fin_journee.time():
+                return {"status": "error", "message": f"L'horaire ne peut pas dépasser 17h25"}
+            if heure_debut_creneau.time() < limite_midi.time() and heure_fin_creneau.time() > limite_midi.time():
+                return {"status": "error", "message": f"L'horaire ne peut pas dépasser 12h35"}
             
             cursor.execute("SELECT id_salle FROM salle WHERE numero = %s", (numero_salle,))
             result_salle = cursor.fetchone()
@@ -176,6 +183,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             if not result_user:
                 return {"status": "error", "message": f"Utilisateur {login_user} non trouvé"}
             id_user = result_user['id_user']
+            
 
             # Insérer la réservation
             cursor.execute("""
