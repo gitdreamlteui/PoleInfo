@@ -143,9 +143,9 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             
             # 17h25 = 17 * 3600 + 25 * 60 = 62700 secondes depuis minuit
             limite_seconds = 17 * 3600 + 25 * 60
-            limite_seconds = limite_seconds + 1
             
-            if fin_seconds >= limite_seconds:
+            # Modifier la condition pour permettre les réservations qui se terminent exactement à 17h25
+            if fin_seconds > limite_seconds:
                 heure_fin = f"{int(fin_seconds // 3600)}:{int((fin_seconds % 3600) // 60):02d}"
                 return {
                     "status": "error_time_limit", 
@@ -182,28 +182,25 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                     "message": f"La salle {numero_salle} est déjà occupée durant cette période"
                 }
             
-            # Récupérer l'ID de la salle
+            # Le reste du code reste inchangé...
             cursor.execute("SELECT id_salle FROM salle WHERE numero = %s", (numero_salle,))
             result_salle = cursor.fetchone()
             if not result_salle:
                 return {"status": "error", "message": f"Salle {numero_salle} non trouvée"}
             id_salle = result_salle['id_salle']
 
-            # Récupérer l'ID de la matière
             cursor.execute("SELECT id_matiere FROM matiere WHERE nom = %s", (nom_matiere,))
             result_matiere = cursor.fetchone()
             if not result_matiere:
                 return {"status": "error", "message": f"Matière {nom_matiere} non trouvée"}
             id_matiere = result_matiere['id_matiere']
 
-            # Récupérer l'ID du créneau
             cursor.execute("SELECT id_creneau FROM creneau WHERE heure_debut = %s", (heure_debut_creneau,))
             result_creneau = cursor.fetchone()
             if not result_creneau:
                 return {"status": "error", "message": f"Créneau {heure_debut_creneau} non trouvé"}
             id_creneau = result_creneau['id_creneau']
 
-            # Récupérer l'ID de l'utilisateur
             cursor.execute("SELECT id_user FROM user WHERE login = %s", (login_user,))
             result_user = cursor.fetchone()
             if not result_user:
@@ -233,7 +230,6 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
 
         except Exception as e:
             return {"status": "error", "message": str(e)}
-
 
 
 def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
