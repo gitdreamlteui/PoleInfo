@@ -139,6 +139,8 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             # Convertir le temps en datetime pour la comparaison
             heure_debut_creneau_dt = datetime.combine(date, heure_debut_creneau)
             fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree)
+            print(f"heure_debut_creneau_dt {heure_debut_creneau_dt}")
+            print(f"fin_nouvelle_dt {fin_nouvelle_dt}")
 
             for existing_reservation in existing_reservations:
                 print("On rentre dans la boucle existing")
@@ -149,7 +151,11 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                 # Convertir l'heure de début en datetime
                 heure_debut_existante_dt = datetime.combine(date, heure_debut_existante)
                 fin_existante_dt = heure_debut_existante_dt + timedelta(hours=duree_existante)
-                
+                print(f"fin_existante_dt {fin_existante_dt}")
+                print(f"heure_debut_existante_dt {heure_debut_existante_dt}")
+
+                 
+
                 # Vérification du chevauchement
                 if not (fin_nouvelle_dt <= heure_debut_existante_dt or heure_debut_creneau_dt >= fin_existante_dt):
                     print("On return error")
