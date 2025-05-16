@@ -149,6 +149,14 @@ elseif ($type == 0) {
                 Retour au menu principal
             </button>
         </a>
+        <?php if ($type === 1) :?>
+        <a href="../admin/interface-admin.php">
+            <button class="bg-gray-200 text-gray-800 font-semibold py-2 px-5 rounded-md hover:bg-gray-300 transition-colors flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Interface d'administration
+            </button>
+        </a>
+        <?php endif; ?>
     </div>
 
     <div class="flex items-center justify-between mb-6">
@@ -318,7 +326,7 @@ elseif ($type == 0) {
                                     <?php echo date('d/m/Y', strtotime($reservation['date'])); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?php echo $heure_debut; ?> (<?php $reservation['duree']; ?>h)
+                                    <?php echo $heure_debut; ?> (<?php $reservation['duree']; ?>)
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-md">
