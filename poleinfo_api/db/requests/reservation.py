@@ -127,6 +127,21 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
         print("On rentre dans le cursor")
         try:
             print("On rentre dans le try")
+            # Débogage des variables
+            print(f"Type de date: {type(date)}, Valeur: {date}")
+            print(f"Type de heure_debut_creneau: {type(heure_debut_creneau)}, Valeur: {heure_debut_creneau}")
+            print(f"Type de duree: {type(duree)}, Valeur: {duree}")
+            
+            # Conversion des types si nécessaire
+            if isinstance(date, str):
+                date = datetime.strptime(date, "%Y-%m-%d").date()  # Ajustez le format si nécessaire
+            
+            if isinstance(heure_debut_creneau, str):
+                heure_debut_creneau = datetime.strptime(heure_debut_creneau, "%H:%M").time()  # Ajustez le format
+            
+            if isinstance(duree, str):
+                duree = float(duree)  # Convertir duree en nombre
+                
             query_check_salle = """
             SELECT c.heure_debut, r.duree
             FROM reservation r
@@ -137,9 +152,17 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             cursor.execute(query_check_salle, (numero_salle, date))
             print("entre les 2 fdp")
             existing_reservations = cursor.fetchall()
+            
             # Convertir le temps en datetime pour la comparaison
-            heure_debut_creneau_dt = datetime.combine(date, heure_debut_creneau)
-            fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree)
+            try:
+                heure_debut_creneau_dt = datetime.combine(date, heure_debut_creneau)
+                print("Conversion heure_debut_creneau_dt réussie")
+                fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree)
+                print("Conversion fin_nouvelle_dt réussie")
+            except Exception as conv_error:
+                print(f"Erreur lors de la conversion: {str(conv_error)}")
+                return {"status": "error", "message": f"Erreur de format d'heure ou de date: {str(conv_error)}"}
+                
             print(f"heure_debut_creneau_dt {heure_debut_creneau_dt}")
             print(f"fin_nouvelle_dt {fin_nouvelle_dt}")
             print("ici")
@@ -151,12 +174,15 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                 duree_existante = existing_reservation[1]
                 
                 # Convertir l'heure de début en datetime
-                heure_debut_existante_dt = datetime.combine(date, heure_debut_existante)
-                fin_existante_dt = heure_debut_existante_dt + timedelta(hours=duree_existante)
+                try:
+                    heure_debut_existante_dt = datetime.combine(date, heure_debut_existante)
+                    fin_existante_dt = heure_debut_existante_dt + timedelta(hours=duree_existante)
+                except Exception as e:
+                    print(f"Erreur lors de la conversion de l'heure existante: {str(e)}")
+                    continue  # Passer à la prochaine réservation si celle-ci pose problème
+                    
                 print(f"fin_existante_dt {fin_existante_dt}")
                 print(f"heure_debut_existante_dt {heure_debut_existante_dt}")
-
-                 
 
                 # Vérification du chevauchement
                 if not (fin_nouvelle_dt <= heure_debut_existante_dt or heure_debut_creneau_dt >= fin_existante_dt):
@@ -165,12 +191,15 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                         "status": "error_reserv", 
                         "message": f"La salle {numero_salle} est déjà occupée à cette date et ce créneau horaire"
                     }
-            heure_fin_creneau = heure_debut_creneau + timedelta(hours=duree)
-            limite_fin_journee = datetime.strptime('17:25', '%H:%M')
-            limite_midi = datetime.strptime('12:35', '%H:%M')
-            if heure_fin_creneau.time() > limite_fin_journee.time():
+            
+            # Gestion des limites d'heures - utiliser les objets datetime déjà créés
+            heure_fin_creneau = heure_debut_creneau_dt + timedelta(hours=duree)
+            limite_fin_journee = datetime.strptime('17:25', '%H:%M').time()
+            limite_midi = datetime.strptime('12:35', '%H:%M').time()
+            
+            if heure_fin_creneau.time() > limite_fin_journee:
                 return {"status": "error_overtime", "message": f"L'horaire ne peut pas dépasser 17h25"}
-            if heure_debut_creneau.time() < limite_midi.time() and heure_fin_creneau.time() > limite_midi.time():
+            if heure_debut_creneau_dt.time() < limite_midi and heure_fin_creneau.time() > limite_midi:
                 return {"status": "error_overtime_midi", "message": f"L'horaire ne peut pas dépasser 12h35"}
             
             cursor.execute("SELECT id_salle FROM salle WHERE numero = %s", (numero_salle,))
@@ -220,7 +249,12 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             return {"status": "success", "id_reservation": id_reservation}
 
         except Exception as e:
+            print(f"Erreur générale: {str(e)}")
+            print(f"Type d'erreur: {type(e).__name__}")
+            import traceback
+            traceback.print_exc()  # Affiche la trace complète de l'erreur
             return {"status": "error", "message": str(e)}
+
 
 
 def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
