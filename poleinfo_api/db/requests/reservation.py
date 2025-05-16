@@ -141,6 +141,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree)
             print(f"heure_debut_creneau_dt {heure_debut_creneau_dt}")
             print(f"fin_nouvelle_dt {fin_nouvelle_dt}")
+            print("ici")
 
             for existing_reservation in existing_reservations:
                 print("On rentre dans la boucle existing")
