@@ -38,7 +38,6 @@ if (isset($_SESSION['token'])) {
     }
 }
 
-
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -109,7 +108,7 @@ if (isset($_SESSION['token'])) {
             <?php if (isset($connected) && $connected === TRUE): ?>
                 <div class="flex items-center">
                     <div class="text-white mr-4">Bonjour, <?php echo $login; ?></div>
-                    <a href="dashboard.php" class="no-underline">
+                    <a href="user/dashboard.php" class="no-underline">
                         <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
                             Accéder à mon espace
                         </button>
@@ -124,6 +123,7 @@ if (isset($_SESSION['token'])) {
             <?php endif; ?>
         </div>
     </header>
+
     
     <main class="container mx-auto px-4 py-6 mt-16">
         <div class="bg-white p-3 mb-6 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center">
