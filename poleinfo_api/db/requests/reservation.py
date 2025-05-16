@@ -136,7 +136,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             existing_reservations = cursor.fetchall()
 
             for existing_reservation in existing_reservations:
-                if(existing_reservation==None or existing_reservation==0):
+                if(existing_reservation==None or existing_reservation==0 or existing_reservations==None):
                     break
                 heure_debut_existante = existing_reservation[0]
                 duree_existante = existing_reservation[1]
@@ -158,9 +158,9 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             limite_fin_journee = datetime.strptime('17:25', '%H:%M')
             limite_midi = datetime.strptime('12:35', '%H:%M')
             if heure_fin_creneau.time() > limite_fin_journee.time():
-                return {"status": "error", "message": f"L'horaire ne peut pas dépasser 17h25"}
+                return {"status": "error_overtime", "message": f"L'horaire ne peut pas dépasser 17h25"}
             if heure_debut_creneau.time() < limite_midi.time() and heure_fin_creneau.time() > limite_midi.time():
-                return {"status": "error", "message": f"L'horaire ne peut pas dépasser 12h35"}
+                return {"status": "error_overtime_midi", "message": f"L'horaire ne peut pas dépasser 12h35"}
             
             cursor.execute("SELECT id_salle FROM salle WHERE numero = %s", (numero_salle,))
             result_salle = cursor.fetchone()

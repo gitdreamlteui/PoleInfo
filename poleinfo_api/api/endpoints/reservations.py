@@ -68,6 +68,10 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
         }
     elif result.get("status") == "error_reserv" :
         raise HTTPException(status_code=400, detail=result.get("message", "Cette salle est déjà réservé pour cet horaire"))
+    elif result.get("status") == "error_overtime" :
+        raise HTTPException(status_code=400, detail=result.get("message", "L'horaire ne peut pas dépasser 17h25"))
+    elif result.get("status") == "error_overtime_midi" :
+        raise HTTPException(status_code=400, detail=result.get("message", "L'horaire ne peut pas dépasser 12h35"))
     else:
         raise HTTPException(status_code=400, detail=result.get("message", "Erreur lors de la création de la réservation, veuillez consulter un administrateur."))
 
