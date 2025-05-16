@@ -136,7 +136,6 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             existing_reservations = cursor.fetchall()
 
             for existing_reservation in existing_reservations:
-                print("fin_voulle_dt :"+fin_nouvelle_dt, heure_debut_existante_dt, heure_debut_creneau_dt, fin_existante_dt)
                 if(existing_reservation==None or existing_reservation==0 or existing_reservations==None):
                     break
                 heure_debut_existante = existing_reservation[0]
@@ -156,7 +155,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                         "message": f"La salle {numero_salle} est déjà occupée à cette date et ce créneau horaire"
                     }
                     
-            heure_fin_creneau = heure_debut_creneau + timedelta(hours=duree_creneau)
+            heure_fin_creneau = heure_debut_creneau + timedelta(hours=duree)
             limite_fin_journee = datetime.strptime('17:25', '%H:%M')
             limite_midi = datetime.strptime('12:35', '%H:%M')
             if heure_fin_creneau.time() > limite_fin_journee.time():
