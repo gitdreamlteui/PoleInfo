@@ -142,14 +142,14 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             fin_seconds = debut_seconds + duree_seconds
             
             # 17h25 = 17 * 3600 + 25 * 60 = 62700 secondes depuis minuit
-            limite_seconds = 17 * 3600 + 25 * 60
+            limite_seconds = 17 * 3600 + 25 * 60 + 1
             
             # Modifier la condition pour permettre les réservations qui se terminent exactement à 17h25
             if fin_seconds > limite_seconds:
                 heure_fin = f"{int(fin_seconds // 3600)}:{int((fin_seconds % 3600) // 60):02d}"
                 return {
                     "status": "error_time_limit", 
-                    "message": f"La réservation se termine à {heure_fin}, ce qui dépasse la limite de 17h25"
+                    "message": f"La réservation se termine à {heure_fin}, ce qui dépasse la limite de {limite_seconds}"
                 }
             
             # Vérifier si la salle est déjà réservée
