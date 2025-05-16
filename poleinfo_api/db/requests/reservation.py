@@ -2,8 +2,7 @@
 from db.database import get_db_cursor
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
-import time
-
+from datetime import time
 def get_all_reservations() -> List[Dict[str, Any]]:
     """Récupère toutes les réservations"""
     with get_db_cursor() as cursor:
