@@ -124,7 +124,9 @@ def get_reservations_by_salle_increase(numero_salle: str) -> List[Dict[str, Any]
     
 def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_creneau, login_user, nom_classe):
     with get_db_cursor() as cursor:
+        print("On rentre dans le cursor")
         try:
+            print("On rentre dans le try")
             query_check_salle = """
             SELECT c.heure_debut, r.duree
             FROM reservation r
@@ -134,27 +136,27 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             """
             cursor.execute(query_check_salle, (numero_salle, date))
             existing_reservations = cursor.fetchall()
+            # Convertir le temps en datetime pour la comparaison
+            heure_debut_creneau_dt = datetime.combine(date, heure_debut_creneau)
+            fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree)
 
             for existing_reservation in existing_reservations:
-                if(existing_reservation==None or existing_reservation==0 or existing_reservations==None):
-                    break
+                print("On rentre dans la boucle existing")
+
                 heure_debut_existante = existing_reservation[0]
                 duree_existante = existing_reservation[1]
-        
+                
                 # Convertir l'heure de début en datetime
                 heure_debut_existante_dt = datetime.combine(date, heure_debut_existante)
-                fin_existante_dt = heure_debut_existante_dt + timedelta(hours=duree)
+                fin_existante_dt = heure_debut_existante_dt + timedelta(hours=duree_existante)
                 
-                # Convertir la nouvelle réservation en datetime
-                heure_debut_creneau_dt = datetime.combine(date, heure_debut_creneau)
-                fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree)
-                print("fin_voulle_dt :"+fin_nouvelle_dt, heure_debut_existante_dt, heure_debut_creneau_dt, fin_existante_dt)
+                # Vérification du chevauchement
                 if not (fin_nouvelle_dt <= heure_debut_existante_dt or heure_debut_creneau_dt >= fin_existante_dt):
+                    print("On return error")
                     return {
                         "status": "error_reserv", 
                         "message": f"La salle {numero_salle} est déjà occupée à cette date et ce créneau horaire"
                     }
-                    
             heure_fin_creneau = heure_debut_creneau + timedelta(hours=duree)
             limite_fin_journee = datetime.strptime('17:25', '%H:%M')
             limite_midi = datetime.strptime('12:35', '%H:%M')
