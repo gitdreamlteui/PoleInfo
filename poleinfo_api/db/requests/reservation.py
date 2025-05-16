@@ -169,10 +169,11 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
 
             for existing_reservation in existing_reservations:
                 print("On rentre dans la boucle existing")
-
-                heure_debut_existante = existing_reservation[0]
-                duree_existante = existing_reservation[1]
+                print(f"Type et contenu de existing_reservation: {type(existing_reservation)}, {existing_reservation}")
                 
+                # Accéder aux données en utilisant le nom des colonnes au lieu des indices
+                heure_debut_existante = existing_reservation['heure_debut']
+                duree_existante = existing_reservation['duree']
                 # Convertir l'heure de début en datetime
                 try:
                     heure_debut_existante_dt = datetime.combine(date, heure_debut_existante)
