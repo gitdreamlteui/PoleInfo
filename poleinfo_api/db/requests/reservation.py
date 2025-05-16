@@ -1,6 +1,7 @@
 """Fonctions d'accès aux données des réservations"""
 from db.database import get_db_cursor
 from typing import List, Dict, Any, Optional
+from datetime import datetime, timedelta
 
 def get_all_reservations() -> List[Dict[str, Any]]:
     """Récupère toutes les réservations"""
@@ -125,20 +126,32 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
     with get_db_cursor() as cursor:
         try:
             query_check_salle = """
-            SELECT r.id_reservation
+            SELECT c.heure_debut, r.duree
             FROM reservation r
             JOIN salle s ON r.id_salle = s.id_salle
             JOIN creneau c ON r.id_creneau = c.id_creneau
-            WHERE s.numero = %s AND r.date = %s AND c.heure_debut = %s
+            WHERE s.numero = %s AND r.date = %s
             """
-            cursor.execute(query_check_salle, (numero_salle, date, heure_debut_creneau))
-            existing_reservation = cursor.fetchone()
-            
-            if existing_reservation:
-                return {
-                    "status": "error_reserv", 
-                    "message": f"La salle {numero_salle} est déjà occupée à cette date et ce créneau horaire"
-                }
+            cursor.execute(query_check_salle, (numero_salle, date))
+            existing_reservations = cursor.fetchall()
+
+            for existing_reservation in existing_reservations:
+                heure_debut_existante = existing_reservation[0]
+                duree_existante = existing_reservation[1]
+        
+                # Convertir l'heure de début en datetime
+                heure_debut_existante_dt = datetime.combine(date, heure_debut_existante)
+                fin_existante_dt = heure_debut_existante_dt + timedelta(hours=duree_existante)
+                
+                # Convertir la nouvelle réservation en datetime
+                heure_debut_creneau_dt = datetime.combine(date, heure_debut_creneau)
+                fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree_creneau)
+                
+                if not (fin_nouvelle_dt <= heure_debut_existante_dt or heure_debut_creneau_dt >= fin_existante_dt):
+                    return {
+                        "status": "error_reserv", 
+                        "message": f"La salle {numero_salle} est déjà occupée à cette date et ce créneau horaire"
+                    }
             
             cursor.execute("SELECT id_salle FROM salle WHERE numero = %s", (numero_salle,))
             result_salle = cursor.fetchone()
