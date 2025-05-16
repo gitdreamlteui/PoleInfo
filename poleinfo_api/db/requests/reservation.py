@@ -144,11 +144,11 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
         
                 # Convertir l'heure de début en datetime
                 heure_debut_existante_dt = datetime.combine(date, heure_debut_existante)
-                fin_existante_dt = heure_debut_existante_dt + timedelta(hours=duree_existante)
+                fin_existante_dt = heure_debut_existante_dt + timedelta(hours=duree)
                 
                 # Convertir la nouvelle réservation en datetime
                 heure_debut_creneau_dt = datetime.combine(date, heure_debut_creneau)
-                fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree_creneau)
+                fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree)
                 print("fin_voulle_dt :"+fin_nouvelle_dt, heure_debut_existante_dt, heure_debut_creneau_dt, fin_existante_dt)
                 if not (fin_nouvelle_dt <= heure_debut_existante_dt or heure_debut_creneau_dt >= fin_existante_dt):
                     return {
