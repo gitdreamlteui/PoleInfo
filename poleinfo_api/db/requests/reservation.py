@@ -136,6 +136,8 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             existing_reservations = cursor.fetchall()
 
             for existing_reservation in existing_reservations:
+                if(existing_reservation==None or existing_reservation==0):
+                    break
                 heure_debut_existante = existing_reservation[0]
                 duree_existante = existing_reservation[1]
         
