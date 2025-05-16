@@ -150,10 +150,12 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                 fin_nouvelle_dt = heure_debut_creneau_dt + timedelta(hours=duree_creneau)
                 
                 if not (fin_nouvelle_dt <= heure_debut_existante_dt or heure_debut_creneau_dt >= fin_existante_dt):
+                    print("fin_voulle_dt :"+fin_nouvelle_dt, heure_debut_existante_dt, heure_debut_creneau_dt, fin_existante_dt)
                     return {
                         "status": "error_reserv", 
                         "message": f"La salle {numero_salle} est déjà occupée à cette date et ce créneau horaire"
                     }
+                    
             heure_fin_creneau = heure_debut_creneau + timedelta(hours=duree_creneau)
             limite_fin_journee = datetime.strptime('17:25', '%H:%M')
             limite_midi = datetime.strptime('12:35', '%H:%M')
