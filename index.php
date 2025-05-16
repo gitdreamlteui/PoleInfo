@@ -1,6 +1,7 @@
 <?php
 // INDEX.PHP
 require_once __DIR__ . '/config.php';
+$connected = FALSE;
 
 $request_reservation = getApiUrl("/reservations/?croissant=true");
 $response_reservation = file_get_contents($request_reservation);
@@ -9,6 +10,35 @@ $data = json_decode($response_reservation, true);
 $date_actuelle = new DateTime();
 $heure_actuelle = $date_actuelle->format('H:i');
 $date_jour = $date_actuelle->format('d/m/Y');
+
+
+session_start();
+// Vérifier si l'utilisateur est connecté
+if (isset($_SESSION['token'])) {
+    $token = $_SESSION['token'];
+    $username = $_SESSION['username'];
+    $login = $_SESSION['login'];
+    $type = $_SESSION['type_compte'];
+
+    $api_url_verify = getApiUrl('/verify-token/');
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_URL, $api_url_verify);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        "Authorization: Bearer $token",
+    ]);
+
+    $response = curl_exec($ch);
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($http_code == 200) {
+        $connected = TRUE;
+    }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -76,11 +106,22 @@ $date_jour = $date_actuelle->format('d/m/Y');
             <div class="flex items-center">
                 <div class="font-semibold text-white text-2xl">Système d'information BTS - Pôle Info</div>
             </div>
-            <a href="interface_login.php" class="no-underline">
-                <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
-                    Se connecter
-                </button>
-            </a>
+            <?php if (isset($connected) && $connected === TRUE): ?>
+                <div class="flex items-center">
+                    <div class="text-white mr-4">Bonjour, <?php echo $login; ?></div>
+                    <a href="dashboard.php" class="no-underline">
+                        <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
+                            Accéder à mon espace
+                        </button>
+                    </a>
+                </div>
+            <?php else: ?>
+                <a href="interface_login.php" class="no-underline">
+                    <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors">
+                        Se connecter
+                    </button>
+                </a>
+            <?php endif; ?>
         </div>
     </header>
     
