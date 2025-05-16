@@ -318,7 +318,7 @@ elseif ($type == 0) {
                                     <?php echo date('d/m/Y', strtotime($reservation['date'])); ?>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <?php echo $heure_debut; ?> (<?php echo number_format($reservation['duree'], 2); ?>h)
+                                    <?php echo $heure_debut; ?> (<?php $reservation['duree']; ?>h)
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                     <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-md">
