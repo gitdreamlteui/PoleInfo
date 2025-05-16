@@ -27,20 +27,6 @@ router = APIRouter(
 def create_reservation(reservation: ReservationCreate, user_id: int = Depends(verify_token)):
     """
     Crée une nouvelle réservation de salle.
-    
-    L'utilisateur doit être authentifié pour effectuer cette opération.
-    
-    Args:
-        reservation (ReservationCreate): Données de la réservation à créer
-        user_id (int): ID de l'utilisateur authentifié
-        
-    Returns:
-        dict: Message de confirmation et ID de la réservation créée
-        
-    Raises:
-        HTTPException: 
-            - Erreur 404 si l'utilisateur n'existe pas
-            - Erreur 400 si la réservation ne peut pas être créée
     """
     user = get_user_by_id(user_id)
     if not user:
@@ -48,32 +34,42 @@ def create_reservation(reservation: ReservationCreate, user_id: int = Depends(ve
     
     username = user["login"]
     
+    # Préparation des données pour la requête
     reservation_data = {
         "duree": reservation.duree,
-        "date": reservation.date.isoformat(),
-        "info": reservation.info if reservation.info else "",
+        "date": reservation.date,
+        "info": reservation.info or "",
         "numero_salle": reservation.numero_salle,
         "nom_matiere": reservation.nom_matiere,
-        "heure_debut_creneau": str(reservation.heure_debut_creneau),
+        "heure_debut_creneau": reservation.heure_debut_creneau,
         "login_user": username,
         "nom_classe": reservation.nom_classe
     }
     
+    # Appel à la fonction de réservation
     result = post_reservation(**reservation_data)
     
+    # Gestion des réponses
     if result.get("status") == "success":
         return {
             "message": f"Réservation enregistrée par {username}.", 
             "id": result.get("id_reservation")
         }
-    elif result.get("status") == "error_reserv" :
-        raise HTTPException(status_code=400, detail=result.get("message", "Cette salle est déjà réservé pour cet horaire"))
-    elif result.get("status") == "error_overtime" :
-        raise HTTPException(status_code=400, detail=result.get("message", "L'horaire ne peut pas dépasser 17h25"))
-    elif result.get("status") == "error_overtime_midi" :
-        raise HTTPException(status_code=400, detail=result.get("message", "L'horaire ne peut pas dépasser 12h35"))
-    else:
-        raise HTTPException(status_code=400, detail=result.get("message", "Erreur lors de la création de la réservation, veuillez consulter un administrateur."))
+    
+    # Gestion des erreurs
+    error_mapping = {
+        "error_reserv": "Cette salle est déjà réservée pour cet horaire",
+        "error_overtime": "L'horaire ne peut pas dépasser 17h25",
+        "error_overtime_midi": "L'horaire ne peut pas dépasser 12h35"
+    }
+    
+    error_message = result.get("message") or error_mapping.get(
+        result.get("status"), 
+        "Erreur lors de la création de la réservation, veuillez consulter un administrateur."
+    )
+    
+    raise HTTPException(status_code=400, detail=error_message)
+
 
 @router.get("/", response_model=List[ReservationResponse])
 def get_reservations(salle: str = Query(None, description="Numéro de la salle"),
