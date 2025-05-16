@@ -149,6 +149,15 @@ elseif ($type == 0) {
                 Retour au menu principal
             </button>
         </a>
+        <?php if ($type === 1) :?>
+        <br>
+        <a href="../admin/interface_admin.php">
+            <button class="bg-gray-200 text-gray-800 font-semibold py-2 px-5 rounded-md hover:bg-gray-300 transition-colors flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Interface d'administration
+            </button>
+        </a>
+        <?php endif; ?>
     </div>
 
     <div class="flex items-center justify-between mb-6">
