@@ -2,6 +2,7 @@
 from db.database import get_db_cursor
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
+import time
 
 def get_all_reservations() -> List[Dict[str, Any]]:
     """Récupère toutes les réservations"""
@@ -171,19 +172,30 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                 print("On rentre dans la boucle existing")
                 print(f"Type et contenu de existing_reservation: {type(existing_reservation)}, {existing_reservation}")
                 
-                # Accéder aux données en utilisant le nom des colonnes au lieu des indices
+                # Récupérer les valeurs
                 heure_debut_existante = existing_reservation['heure_debut']
                 duree_existante = existing_reservation['duree']
-                # Convertir l'heure de début en datetime
+                
+                # Convertir timedelta en datetime pour la comparaison
                 try:
-                    heure_debut_existante_dt = datetime.combine(date, heure_debut_existante)
+                    if isinstance(heure_debut_existante, timedelta):
+                        # Si heure_debut est un timedelta, convertir en datetime en utilisant la date de référence
+                        seconds_since_midnight = heure_debut_existante.total_seconds()
+                        hours = int(seconds_since_midnight // 3600)
+                        minutes = int((seconds_since_midnight % 3600) // 60)
+                        seconds = int(seconds_since_midnight % 60)
+                        
+                        time_obj = time(hour=hours, minute=minutes, second=seconds)
+                        heure_debut_existante_dt = datetime.combine(date, time_obj)
+                    else:
+                        heure_debut_existante_dt = datetime.combine(date, heure_debut_existante)
+                        
                     fin_existante_dt = heure_debut_existante_dt + timedelta(hours=duree_existante)
                 except Exception as e:
                     print(f"Erreur lors de la conversion de l'heure existante: {str(e)}")
+                    print(f"heure_debut_existante type: {type(heure_debut_existante)}")
                     continue  # Passer à la prochaine réservation si celle-ci pose problème
-                    
-                print(f"fin_existante_dt {fin_existante_dt}")
-                print(f"heure_debut_existante_dt {heure_debut_existante_dt}")
+
 
                 # Vérification du chevauchement
                 if not (fin_nouvelle_dt <= heure_debut_existante_dt or heure_debut_creneau_dt >= fin_existante_dt):
