@@ -131,19 +131,24 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                 date = datetime.strptime(date, "%Y-%m-%d").date()
             
             if isinstance(heure_debut_creneau, str):
-                heure_debut_creneau = datetime.strptime(heure_debut_creneau, "%H:%M").time()
+                heure_debut_creneau_obj = datetime.strptime(heure_debut_creneau, "%H:%M").time()
+            else:
+                heure_debut_creneau_obj = heure_debut_creneau
             
             duree = float(duree) if isinstance(duree, str) else duree
             
             # Vérification des horaires possibles
-            heure_fin = (datetime.combine(date, heure_debut_creneau) + timedelta(hours=duree)).time()
+            heure_fin = (datetime.combine(date, heure_debut_creneau_obj) + timedelta(hours=duree)).time()
             
             # Vérifier si la réservation ne dépasse pas 17h25
-            if heure_fin > time(17, 25):
+            limite_fin_journee = dt.time(17, 25)
+            if heure_fin > limite_fin_journee:
                 return {"status": "error_overtime", "message": "L'horaire ne peut pas dépasser 17h25"}
             
             # Vérifier si la réservation ne dépasse pas 12h35 si elle commence le matin
-            if heure_debut_creneau < time(12, 0) and heure_fin > time(12, 35):
+            limite_midi = dt.time(12, 0)
+            limite_midi_fin = dt.time(12, 35)
+            if heure_debut_creneau_obj < limite_midi and heure_fin > limite_midi_fin:
                 return {"status": "error_overtime_midi", "message": "L'horaire ne peut pas dépasser 12h35"}
             
             # Vérifier les réservations existantes
@@ -158,7 +163,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             existing_reservations = cursor.fetchall()
             
             # Calculer le début et la fin du nouveau créneau
-            nouvelle_debut = datetime.combine(date, heure_debut_creneau)
+            nouvelle_debut = datetime.combine(date, heure_debut_creneau_obj)
             nouvelle_fin = nouvelle_debut + timedelta(hours=duree)
             
             # Vérifier les chevauchements
@@ -166,19 +171,8 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                 heure_debut_existante = reservation['heure_debut']
                 duree_existante = reservation['duree']
                 
-                # Conversion spécifique pour timedelta
-                if isinstance(heure_debut_existante, timedelta):
-                    # Calculer l'heure de début à partir des secondes totales
-                    secondes_totales = heure_debut_existante.total_seconds()
-                    heures = int(secondes_totales // 3600)
-                    minutes = int((secondes_totales % 3600) // 60)
-                    secondes = int(secondes_totales % 60)
-                    heure_debut_time = time(heures, minutes, secondes)
-                else:
-                    heure_debut_time = heure_debut_existante
-                
                 # Créer des datetime pour la comparaison
-                existante_debut = datetime.combine(date, heure_debut_time)
+                existante_debut = datetime.combine(date, heure_debut_existante)
                 existante_fin = existante_debut + timedelta(hours=duree_existante)
                 
                 # Vérifier le chevauchement
@@ -188,16 +182,25 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
                         "message": "Cette salle est déjà réservée pour cet horaire"
                     }
             
-            # Insérer le créneau
-            cursor.execute(
-                "INSERT INTO creneau (heure_debut, jour) VALUES (%s, %s)",
-                (heure_debut_creneau, date.weekday())
-            )
-            id_creneau = cursor.lastrowid
+            # Vérifier si le créneau existe déjà, sinon l'insérer
+            cursor.execute("SELECT id_creneau FROM creneau WHERE heure_debut = %s", 
+                          (heure_debut_creneau_obj,))
+            creneau_result = cursor.fetchone()
+            
+            if creneau_result:
+                id_creneau = creneau_result['id_creneau']
+            else:
+                # Insérer un nouveau créneau (sans le champ 'jour' qui n'existe pas)
+                cursor.execute("INSERT INTO creneau (heure_debut) VALUES (%s)", 
+                              (heure_debut_creneau_obj,))
+                id_creneau = cursor.lastrowid
             
             # Récupérer l'ID de la salle
             cursor.execute("SELECT id_salle FROM salle WHERE numero = %s", (numero_salle,))
-            id_salle = cursor.fetchone()['id_salle']
+            salle_result = cursor.fetchone()
+            if not salle_result:
+                return {"status": "error", "message": "Numéro de salle invalide"}
+            id_salle = salle_result['id_salle']
             
             # Récupérer l'ID de la matière
             cursor.execute("SELECT id_matiere FROM matiere WHERE nom = %s", (nom_matiere,))
@@ -208,22 +211,31 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             else:
                 id_matiere = matiere_result['id_matiere']
             
-            # Insérer la réservation
+            # Récupérer l'ID de l'utilisateur
+            cursor.execute("SELECT id_user FROM user WHERE login = %s", (login_user,))
+            user_result = cursor.fetchone()
+            if not user_result:
+                return {"status": "error", "message": "Utilisateur invalide"}
+            id_user = user_result['id_user']
+            
+            # Insérer la réservation - ajuster selon la structure exacte de la table
             cursor.execute(
-                "INSERT INTO reservation (date, duree, info, id_creneau, id_salle, id_matiere, login_user) "
+                "INSERT INTO reservation (id_salle, id_matiere, id_creneau, id_user, duree, date, info) "
                 "VALUES (%s, %s, %s, %s, %s, %s, %s)",
-                (date, duree, info, id_creneau, id_salle, id_matiere, login_user)
+                (id_salle, id_matiere, id_creneau, id_user, duree, date, info or "")
             )
             id_reservation = cursor.lastrowid
             
             # Associer la classe à la réservation
-            cursor.execute("SELECT id_classe_grp FROM classe_grp WHERE nom = %s", (nom_classe,))
+            cursor.execute("SELECT id_classe_grp FROM classe WHERE nom = %s", (nom_classe,))
             classe_result = cursor.fetchone()
             if classe_result:
                 cursor.execute(
                     "INSERT INTO classe_reservation (id_reservation, id_classe_grp) VALUES (%s, %s)",
                     (id_reservation, classe_result['id_classe_grp'])
                 )
+            else:
+                return {"status": "warning", "message": "Classe introuvable, la réservation a été créée sans classe associée", "id_reservation": id_reservation}
             
             return {"status": "success", "id_reservation": id_reservation}
 
@@ -231,7 +243,6 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             import traceback
             traceback.print_exc()
             return {"status": "error", "message": str(e)}
-
 
 
 def get_reservations_by_prof_increase(prof: str) -> List[Dict[str, Any]]:
