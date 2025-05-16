@@ -141,13 +141,13 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             heure_fin = (datetime.combine(date, heure_debut_creneau_obj) + timedelta(hours=duree)).time()
             
             # Vérifier si la réservation ne dépasse pas 17h25
-            limite_fin_journee = dt.time(17, 25)
+            limite_fin_journee = datetime.time(17, 25)
             if heure_fin > limite_fin_journee:
                 return {"status": "error_overtime", "message": "L'horaire ne peut pas dépasser 17h25"}
             
             # Vérifier si la réservation ne dépasse pas 12h35 si elle commence le matin
-            limite_midi = dt.time(12, 0)
-            limite_midi_fin = dt.time(12, 35)
+            limite_midi = datetime.time(12, 0)
+            limite_midi_fin = datetime.time(12, 35)
             if heure_debut_creneau_obj < limite_midi and heure_fin > limite_midi_fin:
                 return {"status": "error_overtime_midi", "message": "L'horaire ne peut pas dépasser 12h35"}
             
