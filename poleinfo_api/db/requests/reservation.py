@@ -135,6 +135,7 @@ def post_reservation(duree, date, info, numero_salle, nom_matiere, heure_debut_c
             WHERE s.numero = %s AND r.date = %s
             """
             cursor.execute(query_check_salle, (numero_salle, date))
+            print("entre les 2 fdp")
             existing_reservations = cursor.fetchall()
             # Convertir le temps en datetime pour la comparaison
             heure_debut_creneau_dt = datetime.combine(date, heure_debut_creneau)
