@@ -27,6 +27,8 @@ private slots:
     void updateDisplay();
 
 
+    void on_eraseAll_clicked();
+
 private:
     Ui::Dialog *ui;
     QSerialPort *serialPort;
@@ -34,9 +36,13 @@ private:
     QNetworkAccessManager *manager;
     QTimer *timer;
     QByteArray lastResponse;
+    QString salle;
+    QString portName;
 
 
-    bool openSerialPort();       // Ouvre et configure le port série
+    bool openSerialPort();
+    bool sendClockUpdate();
+    bool loadConfig();
     void closeSerialPort();      // Ferme le port série
     bool sendData(const QByteArray &data);  // Envoie les données
     unsigned char calculateChecksum(const QByteArray &data);

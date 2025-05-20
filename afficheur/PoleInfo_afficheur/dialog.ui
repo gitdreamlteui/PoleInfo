@@ -90,6 +90,19 @@
     <string>LP2I</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="eraseAll">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>80</y>
+     <width>80</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PushButton</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

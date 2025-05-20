@@ -1,0 +1,373 @@
+#include "dialog.h"
+#include "ui_dialog.h"
+#include <QMessageBox>
+#include <QDebug>
+#include <QTimer>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QTextCodec>
+#include <QThread>
+#include <algorithm> // Pour std::sort
+
+Dialog::Dialog(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::Dialog),
+    serialPort(new QSerialPort(this)),
+    manager(new QNetworkAccessManager(this)),
+    timer(new QTimer(this)),
+    lastResponse("")
+{
+    ui->setupUi(this);
+    setWindowTitle("Afficheur LED Mc Crypt 590996");
+
+    connect(ui->pushButtonSend, &QPushButton::clicked, this, &Dialog::onSendButtonClicked);
+    connect(serialPort, &QSerialPort::readyRead, this, &Dialog::receiveData);
+    connect(timer, &QTimer::timeout, this, &Dialog::updateDisplay);
+
+    if (!openSerialPort()) {
+        QMessageBox::critical(this, "Erreur", "Échec de l'initialisation du port série.");
+    }
+
+    timer->start(60000);
+    updateDisplay();
+}
+
+Dialog::~Dialog()
+{
+    closeSerialPort();
+    delete ui;
+}
+
+bool Dialog::openSerialPort()
+{
+    serialPort->setPortName("/dev/ttyUSB0");
+    serialPort->setBaudRate(QSerialPort::Baud9600);
+    serialPort->setDataBits(QSerialPort::Data8);
+    serialPort->setParity(QSerialPort::NoParity);
+    serialPort->setStopBits(QSerialPort::OneStop);
+    serialPort->setFlowControl(QSerialPort::NoFlowControl);
+
+    if (serialPort->open(QIODevice::ReadWrite)) {
+        qDebug() << "Port série ouvert avec succès.";
+        return true;
+    } else {
+        QString errorMsg = "Impossible d'ouvrir le port série : " + serialPort->errorString();
+        if (serialPort->error() == QSerialPort::PermissionError) {
+            errorMsg += "\nVérifiez les permissions sur /dev/ttyUSB0. Essayez 'sudo adduser $USER dialout' et redémarrez.";
+        }
+        qDebug() << errorMsg;
+        return false;
+    }
+}
+
+void Dialog::closeSerialPort()
+{
+    if (serialPort->isOpen()) {
+        serialPort->close();
+        qDebug() << "Port série fermé.";
+    }
+}
+
+bool Dialog::sendData(const QByteArray &data)
+{
+    if (!serialPort->isOpen()) {
+        qDebug() << "Port série non ouvert.";
+        return false;
+    }
+
+    qDebug() << "État du port avant envoi :" << (serialPort->isOpen() ? "Ouvert" : "Fermé");
+    qint64 bytesWritten = serialPort->write(data);
+    serialPort->waitForBytesWritten(1000);
+    if (bytesWritten != data.size()) {
+        qDebug() << "Erreur lors de l'envoi :" << serialPort->errorString();
+        return false;
+    }
+
+    qDebug() << "Trame envoyée :" << data.toHex(' ');
+    lastResponse.clear();
+    int timeout = 5000; // 5 secondes
+    while (timeout > 0) {
+        if (serialPort->waitForReadyRead(100)) {
+            lastResponse += serialPort->readAll();
+            qDebug() << "Fragment reçu :" << lastResponse.toHex(' ');
+            if (lastResponse.contains("ACK")) {
+                qDebug() << "Réponse complète : ACK";
+                return true;
+            } else if (lastResponse.contains("NACK")) {
+                qDebug() << "Réponse complète : NACK";
+                return false;
+            } else if (lastResponse.contains("NACKz")) {
+                qDebug() << "Réponse complète : NACK avec checksum attendu";
+                return false;
+            }
+        }
+        timeout -= 100;
+        QThread::msleep(10);
+    }
+
+    qDebug() << "Erreur : réponse incomplète ou absente :" << lastResponse.toHex(' ');
+    return false;
+}
+
+unsigned char Dialog::calculateChecksum(const QByteArray &data)
+{
+    unsigned char checksum = 0;
+    for (int i = 0; i < data.size(); ++i) {
+        checksum ^= static_cast<unsigned char>(data[i]);
+        qDebug() << "Caractère" << i << ":" << QString("%1").arg(data[i], 2, 16, QChar('0')).toUpper() << ", Checksum intermédiaire :" << QString("%1").arg(checksum, 2, 16, QChar('0')).toUpper();
+    }
+    qDebug() << "Checksum final pour" << data << ":" << QString("%1").arg(checksum, 2, 16, QChar('0')).toUpper();
+    return checksum;
+}
+
+void Dialog::onSendButtonClicked()
+{
+    updateDisplay();
+}
+
+void Dialog::receiveData()
+{
+    QByteArray response = serialPort->readAll();
+    if (!response.isEmpty()) {
+        lastResponse += response;
+        qDebug() << "Réponse reçue (asynchrone) :" << response.toHex(' ');
+    }
+}
+
+void Dialog::sendNextPage(const QMap<QString, QString> &pagesMessages)
+{
+    if (!serialPort->isOpen()) {
+        qDebug() << "Port série non ouvert, tentative de réouverture.";
+        if (!openSerialPort()) return;
+    }
+
+    // Étape 1 : Effacer les pages A, B et C
+    for (const QString &page : pagesMessages.keys()) {
+        QByteArray clearPageData = QString("<ID01><DL1P%1>").arg(page).toUtf8();
+        unsigned char clearChecksum = calculateChecksum(clearPageData.mid(6));
+        clearPageData.append(QString("%1").arg(clearChecksum, 2, 16, QChar('0')).toUpper());
+        clearPageData.append("<E>");
+        qDebug() << "Trame d'effacement pour page" << page << ":" << clearPageData;
+        if (!sendData(clearPageData)) {
+            qDebug() << "Échec de l'effacement de la page" << page;
+            return;
+        }
+        QThread::msleep(500);
+    }
+
+    // Étape 2 : Envoyer la page A (heure centrée, rouge clignotante, 10 secondes)
+    QString messageA = pagesMessages["A"]; // Exemple : "15h45"
+    int messageLengthA = messageA.length() * 6; // 6 points par caractère (police normale)
+    int startPositionA = (80 - messageLengthA) / 2; // Centrer sur 80 colonnes
+    if (startPositionA < 0) startPositionA = 0; // Éviter une position négative
+    QString positionHexA = QString("%1").arg(startPositionA, 2, 16, QChar('0')).toUpper();
+    QByteArray pageDataA = QString("<ID01><L1><PA><FA><MB><WI><FA><N%1><CA>%2")
+                           .arg(positionHexA).arg(messageA).toUtf8();
+    unsigned char checksumA = calculateChecksum(pageDataA.mid(6));
+    pageDataA.append(QString("%1").arg(checksumA, 2, 16, QChar('0')).toUpper());
+    pageDataA.append("<E>");
+    qDebug() << "Trame pour page A :" << pageDataA;
+    if (!sendData(pageDataA)) {
+        qDebug() << "Échec de l'envoi de la page A";
+        return;
+    }
+    QThread::msleep(1000); // Délai pour garantir que la page A est traitée
+
+    // Étape 3 : Définir la page A comme page par défaut
+    QByteArray defaultPageData = "<ID01><RPA>";
+    unsigned char defaultChecksum = calculateChecksum(defaultPageData.mid(6));
+    defaultPageData.append(QString("%1").arg(defaultChecksum, 2, 16, QChar('0')).toUpper());
+    defaultPageData.append("<E>");
+    qDebug() << "Trame pour définir page A par défaut :" << defaultPageData;
+    if (!sendData(defaultPageData)) {
+        qDebug() << "Échec de la définition de la page A par défaut";
+        return;
+    }
+    QThread::msleep(500); // Délai pour stabiliser
+
+    // Étape 4 : Envoyer la page B (salle centrée, 10 secondes)
+    QString messageB = pagesMessages["B"]; // Exemple : "3C01"
+    int messageLengthB = messageB.length() * 6;
+    int startPositionB = (80 - messageLengthB) / 2;
+    if (startPositionB < 0) startPositionB = 0;
+    QString positionHexB = QString("%1").arg(startPositionB, 2, 16, QChar('0')).toUpper();
+    QByteArray pageDataB = QString("<ID01><L1><PB><FA><MA><WI><FA><N%1>%2")
+                           .arg(positionHexB).arg(messageB).toUtf8();
+    unsigned char checksumB = calculateChecksum(pageDataB.mid(6));
+    pageDataB.append(QString("%1").arg(checksumB, 2, 16, QChar('0')).toUpper());
+    pageDataB.append("<E>");
+    qDebug() << "Trame pour page B :" << pageDataB;
+    if (!sendData(pageDataB)) {
+        qDebug() << "Échec de l'envoi de la page B";
+        return;
+    }
+    QThread::msleep(500);
+
+    // Étape 5 : Envoyer la page C (matière-classe avec défilement, 10 secondes)
+    QString messageC = pagesMessages["C"]; // Exemple : "Maths-1A"
+    QByteArray pageDataC = QString("<ID01><L1><PC><FE><MQ><WI><FA>%1")
+                           .arg(messageC).toUtf8();
+    unsigned char checksumC = calculateChecksum(pageDataC.mid(6));
+    pageDataC.append(QString("%1").arg(checksumC, 2, 16, QChar('0')).toUpper());
+    pageDataC.append("<E>");
+    qDebug() << "Trame pour page C :" << pageDataC;
+    if (!sendData(pageDataC)) {
+        qDebug() << "Échec de l'envoi de la page C";
+        return;
+    }
+    QThread::msleep(500);
+
+    // Étape 6 : Configurer la programmation horaire (affichage en boucle A, B, C)
+    QByteArray scheduleData = "<ID01><TA>00000000009900000000ABC";
+    unsigned char scheduleChecksum = calculateChecksum(scheduleData.mid(6));
+    scheduleData.append(QString("%1").arg(scheduleChecksum, 2, 16, QChar('0')).toUpper());
+    scheduleData.append("<E>");
+    qDebug() << "Trame de programmation :" << scheduleData;
+    if (!sendData(scheduleData)) {
+        qDebug() << "Échec de la programmation horaire.";
+        return;
+    }
+    QThread::msleep(500);
+
+    // Étape 7 : Activer l'affichage
+    QByteArray enableData = "<ID01><BF>";
+    unsigned char enableChecksum = calculateChecksum(enableData.mid(6));
+    enableData.append(QString("%1").arg(enableChecksum, 2, 16, QChar('0')).toUpper());
+    enableData.append("<E>");
+    qDebug() << "Trame d'activation :" << enableData;
+    if (!sendData(enableData)) {
+        qDebug() << "Échec de l'activation.";
+        return;
+    }
+    qDebug() << "Programmation terminée avec succès.";
+}
+
+void Dialog::updateDisplay()
+{
+    if (!serialPort->isOpen()) {
+        if (!openSerialPort()) {
+            return;
+        }
+    }
+
+    QNetworkRequest request(QUrl("http://192.168.8.152:8000/reservations/?salle=3C01&croissant=true"));
+    QNetworkReply *reply = manager->get(request);
+    QEventLoop loop;
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray responseData = reply->readAll();
+        reply->deleteLater();
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(responseData);
+
+        if (!jsonDoc.isArray() || jsonDoc.array().isEmpty()) {
+            QMessageBox::warning(this, "Erreur", "Réponse de l'API invalide ou vide.");
+            return;
+        }
+
+        // Date et heure actuelles
+        QDateTime now = QDateTime::currentDateTime();
+
+        QJsonArray reservations = jsonDoc.array();
+        QList<QDateTime> futureStarts;
+        QMap<QDateTime, QJsonObject> futureReservations;
+
+        // Parcourir toutes les réservations
+        for (const QJsonValue &value : reservations) {
+            QJsonObject obj = value.toObject();
+            QString dateStr = obj["date"].toString();
+            QString heureDebutStr = obj["heure_debut"].toString();
+
+            // Parser la date
+            QDate date = QDate::fromString(dateStr, "yyyy-MM-dd");
+
+            // Parser l'heure de début
+            int posH = heureDebutStr.indexOf('H');
+            int posM = heureDebutStr.indexOf('M', posH);
+            int heure = heureDebutStr.mid(2, posH - 2).toInt();
+            int minutes = 0;
+            if (posM > posH) {
+                minutes = heureDebutStr.mid(posH + 1, posM - posH - 1).toInt();
+            }
+
+            QTime time(heure, minutes);
+            QDateTime startTime(date, time);
+
+            // Vérifier si la séance est dans le futur
+            if (startTime > now) {
+                futureStarts.append(startTime);
+                futureReservations[startTime] = obj;
+            }
+        }
+
+        if (!futureStarts.isEmpty()) {
+            // Trier pour trouver la plus proche
+            std::sort(futureStarts.begin(), futureStarts.end());
+            QDateTime nextStart = futureStarts.first();
+            QJsonObject nextReservation = futureReservations[nextStart];
+
+            // Préparer les messages
+            auto removeAccents = [](const QString &str) {
+                QString normalized = str.normalized(QString::NormalizationForm_D);
+                QString result;
+                for (const QChar &c : normalized) {
+                    if (c.category() != QChar::Mark_NonSpacing) {
+                        result.append(c);
+                    }
+                }
+                return result;
+            };
+
+            QString messageA = nextStart.toString("HH'h'mm"); // Ex. "15h45"
+            QString messageB = nextReservation["numero_salle"].toString();
+            QString nomMatiere = removeAccents(nextReservation["nom_matiere"].toString());
+            QString nomsClasses = nextReservation["noms_classes"].toString();
+            QString messageC = nomMatiere + "-" + nomsClasses;
+
+            QMap<QString, QString> pagesMessages = {
+                {"A", messageA},
+                {"B", messageB},
+                {"C", messageC}
+            };
+            qDebug() << "Message A :" << messageA;
+            qDebug() << "Message B :" << messageB;
+            qDebug() << "Message C :" << messageC;
+            sendNextPage(pagesMessages);
+        } else {
+            QMessageBox::information(this, "Information", "Aucune réservation future.");
+        }
+    } else {
+        QMessageBox::critical(this, "Erreur", "Erreur API : " + reply->errorString());
+        reply->deleteLater();
+    }
+}
+
+void Dialog::on_eraseAll_clicked()
+{
+    if (!serialPort->isOpen()) {
+        qDebug() << "Port série non ouvert, tentative de réouverture.";
+        if (!openSerialPort()) {
+            QMessageBox::critical(this, "Erreur", "Impossible d'ouvrir le port série.");
+            return;
+        }
+    }
+
+    // Créer la trame pour effacer toute la mémoire
+    QByteArray eraseData = "<ID01><D*>";
+    unsigned char checksum = calculateChecksum(eraseData.mid(6)); // Calculer le checksum sur <D*>
+    eraseData.append(QString("%1").arg(checksum, 2, 16, QChar('0')).toUpper());
+    eraseData.append("<E>");
+
+    qDebug() << "Trame d'effacement total :" << eraseData;
+
+    // Envoyer la trame
+    if (sendData(eraseData)) {
+        QMessageBox::information(this, "Succès", "Mémoire de l'afficheur effacée avec succès.");
+    } else {
+        QMessageBox::critical(this, "Erreur", "Échec de l'effacement de la mémoire : " + lastResponse);
+    }
+}
