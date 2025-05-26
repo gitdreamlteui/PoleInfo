@@ -18,24 +18,37 @@ from db.requests.salle import get_all_salles, get_salle_by_numero, remove_salle,
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from typing import List, Optional
 
-# Définition du router avec le tag pour la documentation Swagger
 router = APIRouter(
     tags=["salles"]
 )
 
-@router.get("/", response_model=List[SalleResponse])
+@router.get(
+    "/",
+    response_model=List[SalleResponse],
+    responses={
+        200: {
+            "description": "Liste des salles récupérée avec succès",
+            "content": {
+                "application/json": {
+                    "example": [
+                        {"numero": "A101", "capacite": 30, "type": "Informatique"},
+                        {"numero": "B202", "capacite": 25, "type": "Labo"}
+                    ]
+                }
+            }
+        },
+        404: {
+            "description": "Aucune salle trouvée",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Aucune salles trouvée"}
+                }
+            }
+        }
+    }
+)
 def get_salles():
-    """
-    Récupère la liste de toutes les salles.
-    
-    Returns:
-        List[SalleResponse]: Liste des salles disponibles
-        
-    Raises:
-        HTTPException: Erreur 404 si aucune salle n'est trouvée
-    """
     salles = get_all_salles()
-    
     if not salles:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -44,27 +57,39 @@ def get_salles():
     return salles
 
 
-@router.delete("/", response_model=dict)
+@router.delete(
+    "/",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+    responses={
+        200: {
+            "description": "Salle supprimée avec succès",
+            "content": {
+                "application/json": {
+                    "example": {"message": "Salle 'B202' supprimée avec succès"}
+                }
+            }
+        },
+        404: {
+            "description": "Salle non trouvée",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Salle non trouvée"}
+                }
+            }
+        },
+        500: {
+            "description": "Erreur lors de la suppression de la salle",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Erreur lors de la suppression de la salle"}
+                }
+            }
+        }
+    }
+)
 def delete_salle(salle: SalleDelete, user_id: int = Depends(verify_admin)):
-    """
-    Supprime une salle existante.
-    
-    Cette opération nécessite des droits administrateur.
-    
-    Args:
-        salle (SalleDelete): Données de la salle à supprimer
-        user_id (int): ID de l'utilisateur (vérifié comme administrateur)
-        
-    Returns:
-        dict: Message de confirmation de la suppression
-        
-    Raises:
-        HTTPException: 
-            - Erreur 404 si la salle n'existe pas
-            - Erreur 500 en cas d'échec de la suppression
-    """
     existing_salle = get_salle_by_numero(salle.numero)
-    
     if not existing_salle:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -72,7 +97,6 @@ def delete_salle(salle: SalleDelete, user_id: int = Depends(verify_admin)):
         )
     
     result = remove_salle(salle.numero)
-    
     if not result:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -81,23 +105,31 @@ def delete_salle(salle: SalleDelete, user_id: int = Depends(verify_admin)):
     
     return {"message": f"Salle '{salle.numero}' supprimée avec succès"}
 
-@router.post("/", response_model=dict)
+
+@router.post(
+    "/",
+    response_model=dict,
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        201: {
+            "description": "Salle créée avec succès",
+            "content": {
+                "application/json": {
+                    "example": {"message": "Salle créé avec succès", "id": 12}
+                }
+            }
+        },
+        400: {
+            "description": "Une salle avec ce numéro existe déjà",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Une salle avec ce numéro existe déjà"}
+                }
+            }
+        }
+    }
+)
 def add_salle(salle: SalleCreate, user_id: int = Depends(verify_admin)):
-    """
-    Crée une nouvelle salle.
-    
-    Cette opération nécessite des droits administrateur.
-    
-    Args:
-        salle (SalleCreate): Données de la salle à créer (numéro, capacité, type)
-        user_id (int): ID de l'utilisateur (vérifié comme administrateur)
-        
-    Returns:
-        dict: Message de confirmation et ID de la salle créée
-        
-    Raises:
-        HTTPException: Erreur 400 si une salle avec le même numéro existe déjà
-    """
     existing_salle = get_salle_by_numero(salle.numero)
     if existing_salle:
         raise HTTPException(

@@ -14,24 +14,40 @@ from core.auth import verify_token
 from core.security import verify_admin
 from db.requests.matiere import get_all_matieres, remove_matiere, get_matiere_by_nom, create_matiere
 
-from fastapi import APIRouter, Depends, HTTPException, status, Query
-from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, status
+from typing import List
 
 # Définition du router avec le tag pour la documentation Swagger
 router = APIRouter(
     tags=["matieres"]
 )
 
-@router.get("/", response_model=List[MatiereResponse])
+@router.get(
+    "/",
+    response_model=List[MatiereResponse],
+    status_code=status.HTTP_200_OK,
+    responses={
+        200: {
+            "description": "Liste des matières récupérée avec succès",
+            "content": {
+                "application/json": {
+                    "example": [{"nom": "Mathématiques"}, {"nom": "Physique"}]
+                }
+            }
+        },
+        404: {
+            "description": "Aucune matière trouvée",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Aucune matière trouvée"}
+                }
+            }
+        }
+    }
+)
 def get_matieres():
     """
-    Récupère la liste de toutes les matières scolaires.
-    
-    Returns:
-        List[MatiereResponse]: Liste des matières disponibles
-        
-    Raises:
-        HTTPException: Erreur 404 si aucune matière n'est trouvée
+    Récupère la liste de toutes les matières.
     """
     matieres = get_all_matieres()
     
@@ -42,24 +58,42 @@ def get_matieres():
         )
     return matieres
 
-@router.delete("/", response_model=dict)
+
+@router.delete(
+    "/",
+    response_model=dict,
+    status_code=status.HTTP_200_OK,
+    responses={
+        200: {
+            "description": "Matière supprimée avec succès",
+            "content": {
+                "application/json": {
+                    "example": {"message": "Matière 'Mathématiques' supprimée avec succès"}
+                }
+            }
+        },
+        404: {
+            "description": "Matière non trouvée",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Matière non trouvée"}
+                }
+            }
+        },
+        500: {
+            "description": "Erreur serveur lors de la suppression",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Erreur lors de la suppression de la matière"}
+                }
+            }
+        }
+    }
+)
 def delete_matieres(matiere: MatiereDelete, user_id: int = Depends(verify_admin)):
     """
     Supprime une matière existante.
-    
     Cette opération nécessite des droits administrateur.
-    
-    Args:
-        matiere (MatiereDelete): Données de la matière à supprimer
-        user_id (int): ID de l'utilisateur (vérifié comme administrateur)
-        
-    Returns:
-        dict: Message de confirmation de la suppression
-        
-    Raises:
-        HTTPException: 
-            - Erreur 404 si la matière n'existe pas
-            - Erreur 500 en cas d'échec de la suppression
     """
     existing_matiere = get_matiere_by_nom(matiere.nom)
     
@@ -80,22 +114,33 @@ def delete_matieres(matiere: MatiereDelete, user_id: int = Depends(verify_admin)
     return {"message": f"Matière '{matiere.nom}' supprimée avec succès"}
 
 
-@router.post("/", response_model=dict)
+@router.post(
+    "/",
+    response_model=dict,
+    status_code=status.HTTP_201_CREATED,
+    responses={
+        201: {
+            "description": "Matière créée avec succès",
+            "content": {
+                "application/json": {
+                    "example": {"message": "Matière créée avec succès", "id": 7}
+                }
+            }
+        },
+        400: {
+            "description": "Matière déjà existante",
+            "content": {
+                "application/json": {
+                    "example": {"detail": "Une matière avec ce nom existe déjà"}
+                }
+            }
+        }
+    }
+)
 def add_matiere(matiere: MatiereCreate, user_id: int = Depends(verify_admin)):
     """
     Crée une nouvelle matière.
-    
     Cette opération nécessite des droits administrateur.
-    
-    Args:
-        matiere (MatiereCreate): Données de la matière à créer
-        user_id (int): ID de l'utilisateur (vérifié comme administrateur)
-        
-    Returns:
-        dict: Message de confirmation et ID de la matière créée
-        
-    Raises:
-        HTTPException: Erreur 400 si une matière avec le même nom existe déjà
     """
     existing_matiere = get_matiere_by_nom(matiere.nom)
     if existing_matiere:
@@ -104,8 +149,6 @@ def add_matiere(matiere: MatiereCreate, user_id: int = Depends(verify_admin)):
             detail="Une matière avec ce nom existe déjà"
         )
     
-    creneau_id = create_matiere(
-        nom=matiere.nom
-    )
+    matiere_id = create_matiere(nom=matiere.nom)
     
-    return {"message": "Matière créé avec succès", "id": creneau_id}
+    return {"message": "Matière créée avec succès", "id": matiere_id}

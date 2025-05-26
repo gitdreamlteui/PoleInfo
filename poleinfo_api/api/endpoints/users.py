@@ -22,7 +22,13 @@ router = APIRouter(
     tags=["utilisateurs"]
 )
 
-@router.post("/", response_model=dict)
+@router.post(
+    "/",
+    response_model=dict,
+    responses={
+        400: {"description": "Un utilisateur avec ce login existe déjà"},
+    }
+)
 def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
     """
     Ajoute un nouvel utilisateur dans le système.
@@ -36,9 +42,6 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
         
     Returns:
         dict: Message de confirmation avec l'identifiant de l'utilisateur créé
-        
-    Raises:
-        HTTPException: Erreur 400 si un utilisateur avec le même login existe déjà
     """
     existing_user = get_user_by_login(user.login)
     if existing_user:
@@ -57,7 +60,15 @@ def add_user(user: UserCreate, admin_id: int = Depends(verify_admin)):
     
     return {"message": "Utilisateur créé avec succès", "id": user_id}
 
-@router.delete("/", response_model=dict)
+
+@router.delete(
+    "/",
+    response_model=dict,
+    responses={
+        404: {"description": "Utilisateur non trouvé"},
+        500: {"description": "Erreur lors de la suppression de l'utilisateur"},
+    }
+)
 def delete_users(user: UserDelete, user_id: int = Depends(verify_admin)):
     """
     Supprime un utilisateur existant.
@@ -70,11 +81,6 @@ def delete_users(user: UserDelete, user_id: int = Depends(verify_admin)):
         
     Returns:
         dict: Message de confirmation de la suppression
-        
-    Raises:
-        HTTPException: 
-            - Erreur 404 si l'utilisateur n'existe pas
-            - Erreur 500 en cas d'échec de la suppression
     """
     existing_user = get_user_by_login(user.login)
     
@@ -95,16 +101,19 @@ def delete_users(user: UserDelete, user_id: int = Depends(verify_admin)):
     return {"message": f"Utilisateur avec login '{user.login}' supprimé avec succès"}
 
 
-@router.get("/", response_model=List[UserResponse])
+@router.get(
+    "/",
+    response_model=List[UserResponse],
+    responses={
+        404: {"description": "Aucun utilisateur trouvé"},
+    }
+)
 def get_users():
     """
     Récupère la liste de tous les utilisateurs.
     
     Returns:
         List[UserResponse]: Liste des utilisateurs enregistrés
-        
-    Raises:
-        HTTPException: Erreur 404 si aucun utilisateur n'est trouvé
     """
     users = get_all_users()
         
