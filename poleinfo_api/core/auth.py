@@ -5,11 +5,6 @@ API Pôle Info
 Auteur : Elias GAUTHIER
 Dernière date de mise à jour : 28/03/2025
 
-/core/
-    |----- security.py
-    |------auth.py <-- Vous êtes ici
-    |------password.py
-
 Description : ce programme contient les fonctions essentielles pour l'authentification
 et la vérification des tokens JWT utilisés dans l'ensemble de l'API. Il permet de sécuriser
 les routes en vérifiant la validité des tokens fournis par les utilisateurs.

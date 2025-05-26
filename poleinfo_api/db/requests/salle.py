@@ -3,6 +3,7 @@ from db.database import get_db_cursor
 from typing import List, Dict, Any
 
 def get_all_salles() -> List[Dict[int, Any]]:
+    """Récupère toute les salles"""
     with get_db_cursor() as cursor:
         query = "SELECT * FROM salle"
         cursor.execute(query)
@@ -10,6 +11,7 @@ def get_all_salles() -> List[Dict[int, Any]]:
     return results
 
 def get_salle_by_numero(numero: str) -> Dict[str, Any]:
+    """Récupère un ID de salle par son numéro"""
     with get_db_cursor() as cursor:
         query = "SELECT id_salle, numero FROM salle WHERE numero = %s"
         cursor.execute(query, (numero,))
@@ -17,6 +19,7 @@ def get_salle_by_numero(numero: str) -> Dict[str, Any]:
     return result
 
 def remove_salle(numero: str) -> bool:
+    """Supprime une salle par son numéro"""
     with get_db_cursor() as cursor:
         check_query = "SELECT id_salle FROM salle WHERE numero = %s"
         cursor.execute(check_query, (numero,))
@@ -34,11 +37,7 @@ def remove_salle(numero: str) -> bool:
     
 
 def create_salle(numero, capacite, type):
-    """Crée une nouvelle salle dans la base de données  
-    Returns:
-        int: ID de la salle crée
-    """
-    
+    """Créer une salle"""
     with get_db_cursor() as cursor:
         query = """
             INSERT INTO salle (numero, capacite, type)

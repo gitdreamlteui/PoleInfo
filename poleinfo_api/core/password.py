@@ -5,11 +5,6 @@ API Pôle Info
 Auteur : Elias GAUTHIER
 Dernière date de mise à jour : 28/03/2025
 
-/core/
-    |----- password.py <-- Vous êtes ici
-    |------auth.py
-    |------security.py
-
 Description : ce programme fournit les fonctions essentielles pour la sécurité 
 des mots de passe, notamment le hachage et la vérification des mots de passe
 utilisateurs. Ces fonctions sont utilisées dans les processus d'authentification

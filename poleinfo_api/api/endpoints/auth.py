@@ -38,6 +38,11 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
         
     Raises:
         HTTPException: Erreur 400 si les identifiants sont incorrects
+        
+    Codes de retour :
+        - 200 : Authentification réussie, retourne le token JWT avec les informations utilisateur
+        - 400 : Identifiants incorrects (username ou password invalide)
+        - 422 : Données de validation incorrectes (format de form_data invalide)
     """
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
@@ -69,5 +74,10 @@ def verify_token_endpoint(user_id: int = Depends(verify_token)):
         
     Returns:
         dict: Un objet JSON indiquant que le token est valide et l'ID de l'utilisateur
+        
+    Codes de retour :
+        - 200 : Token valide, retourne la confirmation avec l'ID utilisateur
+        - 401 : Token invalide, expiré, malformé, utilisateur inexistant en base, 
+                ou payload corrompu (géré par verify_token - "Credentials invalides")
     """
     return {"valid": True, "user_id": user_id}

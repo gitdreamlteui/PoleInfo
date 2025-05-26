@@ -5,11 +5,6 @@ API Pôle Info
 Auteur : Elias GAUTHIER
 Dernière date de mise à jour : 28/03/2025
 
-/core/
-    |----- security.py <-- Vous êtes ici
-    |------auth.py
-    |------utils.py
-
 Description : ce programme fournit les fonctions avancées de sécurité liées à
 l'authentification, notamment la génération de tokens JWT et la vérification
 des privilèges administrateur. Ces fonctions sont utilisées pour sécuriser l'accès

@@ -27,6 +27,18 @@ router = APIRouter(
 def create_reservation(reservation: ReservationCreate, user_id: int = Depends(verify_token)):
     """
     Crée une nouvelle réservation de salle.
+    
+    Args:
+        reservation (ReservationCreate): Données de la réservation à créer
+        user_id (int): ID de l'utilisateur authentifié
+        
+    Returns:
+        dict: Message de confirmation et ID de la réservation créée
+        
+    Raises:
+        HTTPException: 
+            - Erreur 404 si l'utilisateur n'est pas trouvé
+            - Erreur 400 si la salle est déjà réservée, horaire invalide ou autre erreur de création
     """
     user = get_user_by_id(user_id)
     if not user:
@@ -78,6 +90,18 @@ def get_reservations(salle: str = Query(None, description="Numéro de la salle")
                      reservation_id: int = Query(None, description="Retourne les informations d'une certaine réservation par son ID")):
     """
     Récupère la liste des réservations avec possibilité de filtrage.
+    
+    Args:
+        salle (str, optional): Numéro de la salle pour filtrer
+        croissant (bool, optional): Ordre croissant des résultats
+        prof (str, optional): Nom du professeur pour filtrer
+        reservation_id (int, optional): ID d'une réservation spécifique
+        
+    Returns:
+        List[ReservationResponse]: Liste des réservations trouvées
+        
+    Raises:
+        HTTPException: Erreur 410 si aucune réservation n'est trouvée
     """
     if reservation_id is not None:
         reservation = get_reservation_by_id(reservation_id)
@@ -117,7 +141,9 @@ def delete_reservation(reservation: ReservationDelete, user_id: int = Depends(ve
         dict: Message confirmant la suppression
         
     Raises:
-        HTTPException: Erreur 400 si la suppression échoue ou 422 si les paramètres sont insuffisants
+        HTTPException: 
+            - Erreur 400 si la suppression échoue
+            - Erreur 422 si les paramètres sont insuffisants
     """
     # Suppression par ID
     if reservation.id_reservation is not None:

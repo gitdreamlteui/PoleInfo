@@ -29,12 +29,8 @@ def authenticate_user(login, password):
     return user
 
 def create_user(login, password, type, nom, prenom):
-    """Crée un nouvel utilisateur dans la base de données  
-    Returns:
-        int: ID de l'utilisateur créé
-    """
+    """Créer un nouveau utilisateur"""
     hashed_password = hash_password(password)
-    
     with get_db_cursor() as cursor:
         query = """
             INSERT INTO user (login, passwd, type, nom, prenom)
