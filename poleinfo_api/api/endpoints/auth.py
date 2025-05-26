@@ -2,47 +2,66 @@
 API Pôle Info
 --------------
 
-Auteur : Elias GAUTHIER
+Auteur : Elias GAUTHIER  
 Dernière date de mise à jour : 14/04/2025
 
-Description : ce programme permet de créer toute les routes relatives aux authentifications 
+Description : ce programme permet de créer toutes les routes relatives aux authentifications 
 via un token. 
 """
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.responses import JSONResponse
 
 from core.security import create_access_token
 from core.auth import verify_token
 from models.schemas import Token
 from db.requests.user import authenticate_user
 
-# Définition du router avec le tag pour la documentation Swagger
 router = APIRouter(tags=["authentification"])
 
 
-@router.post("/token", response_model=Token)
+@router.post(
+    "/token",
+    response_model=Token,
+    status_code=status.HTTP_200_OK,
+    responses={
+        200: {
+            "description": "Authentification réussie",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "access_token": "jwt.token.value",
+                        "token_type": "bearer",
+                        "user_type": "admin",
+                        "user_name": "Elias Gauthier",
+                        "user_login": "egauthier"
+                    }
+                }
+            }
+        },
+        400: {
+            "description": "Identifiants incorrects",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Identifiants incorrects"
+                    }
+                }
+            }
+        },
+        422: {
+            "description": "Erreur de validation des données d'entrée"
+        }
+    }
+)
 def login(form_data: OAuth2PasswordRequestForm = Depends()):
     """
     Authentifie un utilisateur et génère un token JWT.
     
-    Cette fonction vérifie les identifiants de l'utilisateur,
-    génère un token JWT si l'authentification réussit, et renvoie le token 
-    avec le type d'utilisateur et son nom.
-    
-    Args:
-        form_data (OAuth2PasswordRequestForm): Formulaire contenant les identifiants (username, password)
-        
-    Returns:
-        Token: Un objet contenant le token d'accès, son type, le type d'utilisateur et son nom
-        
-    Raises:
-        HTTPException: Erreur 400 si les identifiants sont incorrects
-        
-    Codes de retour :
-        - 200 : Authentification réussie, retourne le token JWT avec les informations utilisateur
-        - 400 : Identifiants incorrects (username ou password invalide)
-        - 422 : Données de validation incorrectes (format de form_data invalide)
+    Vérifie les identifiants de l'utilisateur,
+    génère un token JWT si l'authentification réussit, et renvoie
+    les informations nécessaires.
     """
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
@@ -54,30 +73,49 @@ def login(form_data: OAuth2PasswordRequestForm = Depends()):
     type_user = user["type"]
     user_login = user["login"]
     user_name = user["nom"]
-    print(f"login {user_login}")
-    print(f"name {user_name}")
 
     token = create_access_token(user["id_user"])
-    return {"access_token": token, "token_type": "bearer", "user_type": type_user, "user_name": user_name, "user_login" : user_login}
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "user_type": type_user,
+        "user_name": user_name,
+        "user_login": user_login
+    }
 
 
-@router.get("/verify-token")
+@router.get(
+    "/verify-token",
+    status_code=status.HTTP_200_OK,
+    responses={
+        200: {
+            "description": "Token valide",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "valid": True,
+                        "user_id": 42
+                    }
+                }
+            }
+        },
+        401: {
+            "description": "Token invalide ou expiré",
+            "content": {
+                "application/json": {
+                    "example": {
+                        "detail": "Credentials invalides"
+                    }
+                }
+            }
+        }
+    }
+)
 def verify_token_endpoint(user_id: int = Depends(verify_token)):
     """
     Vérifie la validité d'un token JWT.
     
     Utilise la dépendance verify_token pour valider le token
-    et récupérer l'ID de l'utilisateur associé.
-    
-    Args:
-        user_id (int): ID de l'utilisateur extrait du token par verify_token
-        
-    Returns:
-        dict: Un objet JSON indiquant que le token est valide et l'ID de l'utilisateur
-        
-    Codes de retour :
-        - 200 : Token valide, retourne la confirmation avec l'ID utilisateur
-        - 401 : Token invalide, expiré, malformé, utilisateur inexistant en base, 
-                ou payload corrompu (géré par verify_token - "Credentials invalides")
+    et récupérer l'ID de l'utilisateur.
     """
     return {"valid": True, "user_id": user_id}
