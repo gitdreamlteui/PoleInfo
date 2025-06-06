@@ -127,7 +127,7 @@ elseif ($type == 0) {
             <div class="flex items-center space-x-4">
                 <div class="text-white flex items-center">
                     <i class="fas fa-user-circle mr-2"></i>
-                    <span>Bonjour, <?php echo htmlspecialchars($username); ?></span>
+                    <span>Bonjour <?php echo htmlspecialchars($username); ?></span>
                 </div>
                 <a href="logout.php" class="no-underline">
                     <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors flex items-center">
