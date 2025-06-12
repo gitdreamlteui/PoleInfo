@@ -9,7 +9,7 @@ $config = [
     'api_server' => [
         'ip' => '192.168.8.152',
         'port' => '8000',
-        'protocol' => 'http'
+        'protocol' => 'https'
     ],
     
     // Serveur web
