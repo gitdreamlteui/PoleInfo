@@ -70,8 +70,8 @@ if __name__ == "__main__":
     print("  PoleInfo API - Système de gestion des réservations")
     print("  Développé par Elias GAUTHIER")
     print("=" * 50)
-    print("  Documentation disponible à l'adresse: http://192.168.8.152:8000/docs")
+    print("  Documentation disponible à l'adresse: http://192.168.8.152:8443/docs")
     print("=" * 50)
     
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, ssl_keyfile="/home/user/Certificat/key.pem", ssl_certfile="/home/user/Certificat/cert.pem")
+    uvicorn.run(app, host="0.0.0.0", port=8443, ssl_keyfile="/home/user/Certificat/key.pem", ssl_certfile="/home/user/Certificat/cert.pem")
