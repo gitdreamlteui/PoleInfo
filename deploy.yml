@@ -15,11 +15,4 @@
         state: restarted
         enabled: yes
       become: yes
-    
-    - name: Redémarrer la redirection
-      ansible.builtin.systemd:
-        name: poleinfo_api_redirect
-        state: restarted
-        enabled: yes
-      become: yes
 
