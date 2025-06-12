@@ -74,4 +74,4 @@ if __name__ == "__main__":
     print("=" * 50)
     
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000, ssl_keyfile="/home/user/Certificat/key.pem", ssl_certfile="/home/user/Certificat/cert.pem")
