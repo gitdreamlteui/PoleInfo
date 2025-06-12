@@ -385,7 +385,8 @@ elseif ($type == 0) {
 
         <!-- Footer -->
         <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
-            © 2025 Système d'information BTS - Tous droits réservés
+            © 2025 Système d'information BTS - Elias GAUTHIER, Ethan CLEMENT, Lucas GUILLOTEAU
+            Projet promotion 2024/2025
         </footer>
     </main>
     <script>
