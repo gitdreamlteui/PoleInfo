@@ -5,10 +5,10 @@
 
 // Configuration des serveurs
 $config = [
-    // Serveur d'API principal
+    // Serveur d'API principal (maintenant en HTTPS sur le port 8443)
     'api_server' => [
         'ip' => '192.168.8.152',
-        'port' => '8000',
+        'port' => '8443',
         'protocol' => 'https'
     ],
     
