@@ -128,7 +128,7 @@ elseif ($type == 0) {
             <div class="flex items-center space-x-4">
                 <div class="text-white flex items-center">
                     <i class="fas fa-user-circle mr-2"></i>
-                    <span>Bonjour, <?php echo htmlspecialchars($username); ?></span>
+                    <span>Bonjour <?php echo htmlspecialchars($username); ?></span>
                 </div>
                 <a href="logout.php" class="no-underline">
                     <button class="bg-white text-primary font-semibold py-2 px-4 rounded hover:bg-blue-50 transition-colors flex items-center">
@@ -253,29 +253,25 @@ elseif ($type == 0) {
                     </div>
                     <div class="col-span-1 md:col-span-2 mb-4">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label for="startTime" class="block text-sm font-medium text-gray-700 mb-1">Heure de début</label>
-                                <select id="startTime" name="startTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
-                                    <option value="">Sélectionnez une heure</option>
-                                    <?php 
-                                        foreach ($creneaux as $creneau) {
-                                            echo "<option value='$creneau'>$creneau</option>";
+                        <div>
+                            <label for="startTime" class="block text-sm font-medium text-gray-700 mb-1">Heure de début</label>
+                            <select id="startTime" name="startTime" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
+                                <option value="">Sélectionnez une heure</option>
+                                <?php 
+                                    foreach ($creneaux as $creneau) {
+                                        // Format d'affichage pour l'interface utilisateur
+                                        if (preg_match('/^PT(\d+)H(?:(\d+)M)?$/', $creneau, $matches)) {
+                                            $heures = $matches[1];
+                                            $minutes = isset($matches[2]) ? $matches[2] : '00';
+                                            $creneau_affichage = sprintf("%02dh%02d", $heures, $minutes);
+                                        } else {
+                                            $creneau_affichage = $creneau;
                                         }
-                                    ?>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="duration" class="block text-sm font-medium text-gray-700 mb-1">Durée</label>
-                                <select id="duration" name="duration" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent" required>
-                                    <option value="">Sélectionnez une durée</option>
-                                    <option value="0.84">50 minutes</option>
-                                    <option value="1.67">1 heure 40</option>
-                                    <option value="2.5">2 heures 30</option>
-                                    <option value="3.33">3 heures 20</option>
-                                </select>
-                            </div>
+                                        echo "<option value='$creneau'>$creneau_affichage</option>";
+                                    }
+                                ?>
+                            </select>
                         </div>
-                    </div>
 
                     <div class="col-span-1 md:col-span-2 flex justify-end">
                         <button type="submit" class="bg-primary text-white font-semibold py-2 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center">
@@ -390,7 +386,8 @@ elseif ($type == 0) {
 
         <!-- Footer -->
         <footer class="text-center text-sm text-gray-500 mt-8 border-t border-gray-200 pt-4">
-            © 2025 Système d'information BTS - Tous droits réservés
+            © 2025 Système d'information BTS - Elias GAUTHIER, Ethan CLEMENT, Lucas GUILLOTEAU
+            Projet promotion 2024/2025
         </footer>
     </main>
     <script>

@@ -74,34 +74,5 @@ ansible --version
 Déploiement avec ansible : 
 `ansible-playbook -i inventory.ini deploy.yml
 `
-## Github action (pas fait)
-*.github/workflows/deploy.yml* -> pas le fichier deploy.yml précédent
-```
-name: Deploy with Ansible
-
-on:
-  push:
-    branches:
-      - dev
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Récupérer le code
-        uses: actions/checkout@v3
-
-      - name: Installer Ansible
-        run: sudo apt update && sudo apt install -y ansible
-
-      - name: Déployer via Ansible
-        run: ansible-playbook -i inventory.ini deploy.yml
-```
-# Usage de l'API
-```
-curl -X 'GET' \
-  'http://192.168.8.152:8000/reservations/?salle=3C01' \
-  -H 'accept: application/json'
-```
 
 
