@@ -1,4 +1,6 @@
 <?php
+// CONFIG.PHP
+
 /**
  * Configuration du serveur et des services
  */

@@ -1,5 +1,6 @@
 <?php
-// edit.PHP
+// EDIT.PHP
+
 require_once __DIR__ . '/../config.php';
 require_once 'utils/recuperer_creneaux.php';
 require_once 'utils/recuperer_salles.php';
@@ -196,7 +197,6 @@ $classes_reservees = explode(', ', $reservation['noms_classes']);
                                         <option value="">Sélectionnez une heure</option>
                                         <?php foreach ($creneaux as $creneau): ?>
                                             <?php 
-                                            // Format d'affichage pour l'interface utilisateur, cohérent avec l'index.php
                                             if (preg_match('/^PT(\d+)H(?:(\d+)M)?$/', $creneau, $matches)) {
                                                 $heures = $matches[1];
                                                 $minutes = isset($matches[2]) ? $matches[2] : '00';

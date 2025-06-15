@@ -1,4 +1,6 @@
 <?php
+// RECUPERER_MATIERES.PHP
+
 require_once __DIR__ . '/../../config.php';
 
 function getMatieres() {

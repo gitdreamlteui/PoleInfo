@@ -1,5 +1,6 @@
 <?php
 // DASHBOARD.PHP
+
 require_once __DIR__ . '/../config.php';
 require_once 'utils/recuperer_creneaux.php';
 require_once 'utils/recuperer_salles.php';

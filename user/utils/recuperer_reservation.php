@@ -1,4 +1,6 @@
 <?php
+// RECUPERER_RESERVATIONS.PHP
+
 require_once __DIR__ . '/../../config.php';
 
 function getReservations($nomProf = null) {
